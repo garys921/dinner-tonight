@@ -1,3 +1,5 @@
+
+<!-- deploy trigger -->
 # Dinner Tonight — Backend (email + live calendar + community ratings)
 
 This turns the static site into a real app:
