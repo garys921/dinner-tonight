@@ -132,11 +132,48 @@
   footer .brand{justify-content:center;margin-bottom:8px;color:var(--ink)}
 
   @media(max-width:760px){
-    .menu-board{padding:28px 22px}
-    .mb-head h1{font-size:27px}
+    .wrap{padding:0 16px}
+    /* nav: brand on top, links in a scrollable row below */
+    .nav{height:auto;flex-direction:column;align-items:stretch;gap:8px;padding:11px 0}
+    .brand{font-size:20px}
+    .nav .links{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+    .nav .links a{padding:6px 11px;font-size:12.5px;white-space:nowrap;background:var(--panel);border:1px solid var(--line);border-radius:999px}
+
+    .hero{padding:30px 0 6px}
+    .menu-board{padding:24px 16px}
+    .menu-board::after{inset:8px}
+    .mb-head h1{font-size:25px}
+    .mb-head .est{letter-spacing:.28em;font-size:10px}
+    .mb-rule::before,.mb-rule::after{max-width:80px}
+    .course-row{gap:12px;padding:13px 2px}
+    .course-row .emoji{font-size:32px;width:40px}
+    .course-row .ctitle{font-size:18px}
     .course-row .cgo{display:none}
-    .mc-cols{grid-template-columns:1fr;gap:22px}
-    .nav .links{display:none}
+    .mb-actions{flex-direction:column}
+    .mb-actions .btn{width:100%;text-align:center}
+
+    .section{padding:26px 0 6px}
+    .section h2{font-size:22px}
+    .course-head h3{font-size:19px}
+    .grid{grid-template-columns:1fr;gap:14px}
+    .card .top{height:120px;font-size:60px}
+
+    /* modal fits the screen */
+    .overlay{padding:16px 10px}
+    .menu-card{padding:30px 20px 22px}
+    .menu-card::before{}
+    .modal::before{inset:7px}
+    .mc-title{font-size:26px}
+    .mc-meta{gap:16px;margin:14px 0 4px}
+    .mc-cols{grid-template-columns:1fr;gap:20px}
+    .rate{padding:16px 20px 26px}
+    .modal .close{top:14px;right:14px}
+
+    /* signup + calendar cards stack full-width */
+    .signup-card{padding:22px 18px;flex-direction:column;align-items:stretch}
+    .su-form{width:100%}
+    .su-form input{width:100%;min-width:0}
+    .su-form .btn{width:100%;text-align:center}
   }
 </style>
 </head>
@@ -200,12 +237,12 @@
   <section class="section" id="signup">
     <div class="signup-card">
       <div class="su-text">
-        <h2>Get tonight's dinner in your inbox</h2>
-        <div class="sub" style="margin-bottom:0">One menu a day, with the recipes. No spam — just dinner, decided.</div>
+        <h2>Join the list</h2>
+        <div class="sub" style="margin-bottom:0">Leave your email and we'll let you know when daily menus start going out. No spam.</div>
       </div>
       <form class="su-form" id="suForm">
         <input type="email" id="suEmail" placeholder="you@email.com" required>
-        <button class="btn" type="submit">Notify me</button>
+        <button class="btn" type="submit">Join</button>
       </form>
     </div>
     <div class="su-note" id="suNote"></div>
@@ -640,7 +677,7 @@ document.getElementById('suForm').addEventListener('submit',async e=>{
   try{
     const r=await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
     const j=await r.json();
-    if(j.ok){ document.getElementById('suForm').reset(); note.textContent="You're on the list! Tonight's dinner will land in your inbox each morning."; }
+    if(j.ok){ document.getElementById('suForm').reset(); note.textContent="You're on the list! We'll email you as soon as daily menus start going out."; }
     else { note.textContent=j.error||"Hmm, that didn't work — check the address and try again."; }
   }catch(err){ note.textContent="Couldn't reach the server. Please try again."; }
 });
