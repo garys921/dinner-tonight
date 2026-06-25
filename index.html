@@ -534,11 +534,15 @@ function fmtDate(){ return new Date().toLocaleDateString(undefined,{weekday:'lon
 function byCourse(c){ return RECIPES.map((r,i)=>({r,i})).filter(x=>x.r.course===c); }
 function indexOfTitle(t){ return RECIPES.findIndex(r=>r.title===t); }
 
+// seafood/fish shows up less often in the daily evening menu (still browseable)
+function isFishy(r){ return r.cat==='seafood' || /salmon|shrimp|fish|cod|tuna|scallop/i.test(r.title); }
 // deterministic daily pick within a course (mains exclude meal-prep so the headline is a "real" dinner)
 function dailyPick(course, offset=0){
   let list = byCourse(course);
   if(course==='main') list = list.filter(x=>x.r.cat!=='mealprep');
-  return list[(daySeed()+offset)%list.length];
+  const pool=[];
+  list.forEach(x=>{ const w=isFishy(x.r)?1:2; for(let k=0;k<w;k++) pool.push(x); });
+  return pool[(daySeed()+offset)%pool.length];
 }
 
 function renderTodayMenu(){

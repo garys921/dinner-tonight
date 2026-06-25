@@ -251,7 +251,8 @@ const RECIPES = [
 
 function daySeed(d=new Date()){return Math.floor(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate())/86400000);}
 function byCourse(c){return RECIPES.filter(r=>r.course===c);}
-function pickForDate(course,d=new Date()){let l=byCourse(course);if(course==="main")l=l.filter(r=>r.cat!=="mealprep");return l[daySeed(d)%l.length];}
+function isFishy(r){return r.cat==="seafood"||/salmon|shrimp|fish|cod|tuna|scallop/i.test(r.title);}
+function pickForDate(course,d=new Date()){let l=byCourse(course);if(course==="main")l=l.filter(r=>r.cat!=="mealprep");const pool=[];l.forEach(r=>{const w=isFishy(r)?1:2;for(let k=0;k<w;k++)pool.push(r);});return pool[daySeed(d)%pool.length];}
 function menuForDate(d=new Date()){return {appetizer:pickForDate("appetizer",d),main:pickForDate("main",d),side:pickForDate("side",d),dessert:pickForDate("dessert",d)};}
 function todaysMenu(){return menuForDate(new Date());}
 function recipeForDate(d=new Date()){return pickForDate("main",d);}
