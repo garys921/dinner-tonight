@@ -51,7 +51,7 @@ export function buildICS(start = new Date(), days = 21, site = 'https://dinner-t
     L.push('DTSTAMP:' + stamp);
     L.push('DTSTART;VALUE=DATE:' + ymd(d));
     L.push('DTEND;VALUE=DATE:' + ymd(next));
-    L.push(fold('SUMMARY:🍽 ' + esc(m.main.title) + ' + 3 courses'));
+    L.push(fold('SUMMARY:' + esc(m.main.title) + ' + 3 courses'));
     L.push(fold('DESCRIPTION:' + esc(desc)));
     L.push('TRANSP:TRANSPARENT');
     L.push('END:VEVENT');

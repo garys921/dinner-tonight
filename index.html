@@ -41,15 +41,12 @@
   .mb-rule{display:flex;align-items:center;justify-content:center;margin:14px 0 6px}
   .mb-rule::before,.mb-rule::after{content:"";height:1px;background:rgba(201,161,74,.4);flex:1;max-width:200px}
   .mb-rule span{margin:0 14px;color:var(--gold);font-size:14px}
-  .course-row{display:flex;align-items:center;gap:18px;padding:15px 6px;border-bottom:1px dashed rgba(201,161,74,.18);cursor:pointer;transition:.15s}
+  .course-row{text-align:center;padding:17px 8px;border-bottom:1px solid rgba(201,161,74,.16);cursor:pointer;transition:.15s;border-radius:8px}
   .course-row:last-child{border-bottom:none}
   .course-row:hover{background:rgba(201,161,74,.06)}
-  .course-row .emoji{font-size:40px;line-height:1;flex:none;width:54px;text-align:center}
-  .course-row .cinfo{flex:1}
-  .course-row .clabel{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)}
-  .course-row .ctitle{font-family:var(--serif);font-size:21px;margin:3px 0 2px}
-  .course-row .cdesc{color:var(--muted);font-size:13px}
-  .course-row .cgo{color:var(--gold-soft);font-size:12px;flex:none;white-space:nowrap}
+  .course-row .clabel{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold)}
+  .course-row .ctitle{font-family:var(--serif);font-size:22px;color:var(--ink);margin:6px 0 4px}
+  .course-row .cdesc{color:var(--muted);font-size:13.5px;font-style:italic;max-width:30em;margin:0 auto}
   .mb-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:22px}
   .btn{background:var(--gold-soft);color:#221d10;border:none;font-size:14px;font-weight:700;letter-spacing:.03em;padding:13px 26px;border-radius:999px;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block}
   .btn:hover{background:var(--gold);transform:translateY(-1px)}
@@ -69,14 +66,14 @@
   .course-head h3{font-family:var(--serif);font-weight:normal;font-size:21px;letter-spacing:.05em;color:var(--gold-soft);white-space:nowrap}
   .course-head::after{content:"";height:1px;background:var(--line);flex:1}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(244px,1fr));gap:18px}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:.18s;display:flex;flex-direction:column}
-  .card:hover{transform:translateY(-3px);border-color:#5a4f33;box-shadow:0 14px 30px rgba(0,0,0,.35)}
-  .card .top{height:108px;display:flex;align-items:center;justify-content:center;font-size:54px;position:relative}
-  .card .cat{position:absolute;top:10px;left:10px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;background:rgba(0,0,0,.4);color:var(--gold-soft);padding:4px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.1)}
-  .card .info{padding:14px 16px 17px}
-  .card .info h4{font-family:var(--serif);font-weight:normal;font-size:17px;line-height:1.2;margin-bottom:6px}
-  .card .info .small{color:var(--muted);font-size:12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:0 0 14px 14px;cursor:pointer;transition:.18s;display:flex;flex-direction:column}
+  .card:hover{transform:translateY(-3px);border-color:#5a4f33;border-top-color:var(--gold-soft);box-shadow:0 14px 30px rgba(0,0,0,.35)}
+  .card .info{padding:18px 18px 18px}
+  .card .cat{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .card .info h4{font-family:var(--serif);font-weight:normal;font-size:18px;line-height:1.22;margin:7px 0 5px;color:var(--ink)}
+  .card .info .it{color:var(--muted);font-size:12.5px;font-style:italic;margin-bottom:8px}
+  .card .info .small{color:#8a8169;font-size:12px}
   .macro{display:inline-flex;gap:8px;align-items:center;margin-top:7px}
   .macro span{font-size:10px;letter-spacing:.06em;background:rgba(93,138,106,.18);color:#9fd1ad;border:1px solid rgba(93,138,106,.35);padding:3px 8px;border-radius:999px}
   .card .stars-mini{margin-top:8px;font-size:12px;color:var(--gold-soft);letter-spacing:1px}
@@ -91,7 +88,7 @@
   .modal .close:hover{background:#e6d9bd}
   .menu-card{padding:40px 46px 30px;position:relative;z-index:2}
   .mc-top{text-align:center;margin-bottom:6px}
-  .mc-emoji{font-size:48px;line-height:1;margin-bottom:8px}
+  .mc-orn{font-size:20px;line-height:1;color:#b08d3f;margin-bottom:8px}
   .mc-cat{font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#9a7d3c}
   .mc-title{font-family:var(--serif);font-weight:normal;font-size:31px;line-height:1.12;color:#2c2517;margin:8px 0 6px;text-align:center}
   .mc-it{font-style:italic;font-size:14px;color:#7c6a44;text-align:center}
@@ -156,7 +153,6 @@
     .section h2{font-size:22px}
     .course-head h3{font-size:19px}
     .grid{grid-template-columns:1fr;gap:14px}
-    .card .top{height:120px;font-size:60px}
 
     /* modal fits the screen */
     .overlay{padding:16px 10px}
@@ -551,13 +547,9 @@ function renderTodayMenu(){
   const row=(label,pick)=>{
     const r=pick.r;
     return `<div class="course-row" onclick="openRecipe(${pick.i})">
-      <span class="emoji">${r.emoji}</span>
-      <div class="cinfo">
-        <div class="clabel">${label}</div>
-        <div class="ctitle">${r.title}</div>
-        <div class="cdesc">${r.desc}</div>
-      </div>
-      <div class="cgo">View recipe →</div>
+      <div class="clabel">${label}</div>
+      <div class="ctitle">${r.title}</div>
+      <div class="cdesc">${r.desc}</div>
     </div>`;
   };
   document.getElementById('todayMenu').innerHTML = `
@@ -582,10 +574,12 @@ function cardHTML(r,i){
   const macro=r.cal?`<div class="macro"><span>${r.cal} cal</span>${r.protein?`<span>${r.protein} protein</span>`:''}</div>`:'';
   const mine=getRating(i)?`<div class="stars-mini">${starsMini(getRating(i))}</div>`:'';
   return `<div class="card" onclick="openRecipe(${i})">
-    <div class="top" style="background:radial-gradient(circle at 50% 45%, ${c.color}44, #211e16 75%)">
-      <span class="cat">${c.label}</span>${r.emoji}
+    <div class="info">
+      <div class="cat">${c.label}</div>
+      <h4>${r.title}</h4>
+      <div class="it">${r.it}</div>
+      <div class="small">${r.time} · ${r.level} · serves ${r.serves}</div>${macro}${mine}
     </div>
-    <div class="info"><h4>${r.title}</h4><div class="small">${r.time} · ${r.level} · serves ${r.serves}</div>${macro}${mine}</div>
   </div>`;
 }
 
@@ -634,7 +628,7 @@ function openRecipe(i){
   modal.innerHTML=`
     <button class="close" onclick="closeModal()">×</button>
     <div class="menu-card">
-      <div class="mc-top"><div class="mc-emoji">${r.emoji}</div><div class="mc-cat">${COURSES[r.course]} · ${c.label}</div></div>
+      <div class="mc-top"><div class="mc-orn">&#10022;</div><div class="mc-cat">${COURSES[r.course]} · ${c.label}</div></div>
       <div class="mc-title">${r.title}</div>
       <div class="mc-it">${r.it}</div>
       <div class="mc-rule"><span>✦</span></div>

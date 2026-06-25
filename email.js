@@ -7,7 +7,7 @@ function courseBlock(label, r){
   const meta = r.cal ? `${r.time} · ${r.level} · ~${r.cal} cal${r.protein ? ' · ' + r.protein : ''}` : `${r.time} · ${r.level} · serves ${r.serves}`;
   return `<tr><td style="padding:22px 40px 6px;border-top:1px solid #e3d8bd">
     <div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#9a7d3c">${label}</div>
-    <div style="font-family:Georgia,serif;font-size:23px;color:#2c2517;margin:4px 0 2px">${r.emoji} ${r.title}</div>
+    <div style="font-family:Georgia,serif;font-size:23px;color:#2c2517;margin:4px 0 2px">${r.title}</div>
     <div style="font-style:italic;color:#7c6a44;font-size:13px">${r.it} · ${CATS[r.cat].label}</div>
     <p style="color:#5b4f33;font-size:13.5px;margin:8px 0 4px">${r.desc}</p>
     <div style="font-size:11px;color:#8a7c5c;margin-bottom:6px">${meta}</div>
@@ -52,5 +52,5 @@ export function buildEmail(_ignored, site = 'https://dinner-tonight-daily.vercel
       .map(([l, r]) => `${l.toUpperCase()}: ${r.title} (${CATS[r.cat].label})\n${r.desc}\nIngredients: ${r.ing.join('; ')}\nSteps: ${r.steps.map((x, i) => (i + 1) + '. ' + x).join(' ')}`)
       .join('\n\n') + `\n\nMore: ${site}`;
 
-  return { subject: `🍽 Tonight's menu: ${m.main.title} + 3 courses`, html, text };
+  return { subject: `Tonight's menu: ${m.main.title} + 3 courses`, html, text };
 }
