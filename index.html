@@ -66,6 +66,16 @@
   .course-head h3{font-family:var(--serif);font-weight:normal;font-size:21px;letter-spacing:.05em;color:var(--gold-soft);white-space:nowrap}
   .course-head::after{content:"";height:1px;background:var(--line);flex:1}
   .subhead{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:22px 0 12px;padding-bottom:6px;border-bottom:1px solid rgba(201,161,74,.18)}
+  .craving-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:13px}
+  .ctile{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:0 0 12px 12px;padding:17px 18px;cursor:pointer;transition:.16s;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .ctile:hover{transform:translateY(-2px);border-color:#5a4f33;border-top-color:var(--gold-soft)}
+  .ctile .cname{font-family:var(--serif);font-size:17px;color:var(--ink)}
+  .ctile .ccount{color:var(--gold);font-size:13px;white-space:nowrap}
+  .back-link{background:none;border:none;color:var(--gold-soft);font-size:13px;letter-spacing:.04em;cursor:pointer;padding:0;margin-bottom:18px}
+  .back-link:hover{color:var(--gold)}
+  .craving-title{font-family:var(--serif);font-size:22px;color:var(--gold-soft);margin:0 0 4px}
+  .mc-serve{text-align:center;font-size:13px;color:#7c6a44;margin-top:14px;padding-top:14px;border-top:1px solid #d8c9a4}
+  .mc-serve b{color:#5b4f33;font-weight:normal;font-style:italic}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px}
   .card{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:0 0 14px 14px;cursor:pointer;transition:.18s;display:flex;flex-direction:column}
@@ -202,10 +212,9 @@
   </section>
 
   <section class="section" id="browse">
-    <h2>The Menu</h2>
-    <div class="sub">Every dish, laid out by course. Filter by cuisine, and tap any dish for the full recipe.</div>
-    <div class="filters" id="filters"></div>
-    <div id="courseBrowse"></div>
+    <h2>What are you craving?</h2>
+    <div class="sub">Pick a craving to see the dishes — each comes with the full recipe and a suggested side.</div>
+    <div id="cravingView"></div>
   </section>
 
   <section class="section" id="mealprep">
@@ -302,8 +311,8 @@ const RECIPES = [
   /* ===== MAIN COURSES ===== */
   {course:"main",cat:"italian",emoji:"🍝",title:"Spaghetti Aglio e Olio",it:"Garlic & oil, the Roman way",time:"20 min",serves:"2",level:"Easy",
    desc:"Pantry magic — golden garlic, good olive oil, chili and parsley on al dente spaghetti.",
-   ing:["6 oz spaghetti","1/3 cup olive oil","5 cloves garlic, sliced","1/2 tsp chili flakes","1/4 cup parsley","1/2 cup pasta water","Salt, Parmesan"],
-   steps:["Boil spaghetti until al dente; reserve 1/2 cup water.","Warm oil over medium-low, add garlic and chili, cook until pale gold.","Add a splash of pasta water; toss in pasta and parsley until silky.","Season, finish with Parmesan, serve."],
+   ing:["6 oz spaghetti","1/3 cup olive oil","5 cloves garlic, sliced","1/2 tsp chili flakes","1/4 cup parsley","1/2 cup pasta water","Salt, Parmesan","Optional protein: grilled chicken, shrimp or sausage"],
+   steps:["Boil spaghetti until al dente; reserve 1/2 cup water.","Warm oil over medium-low, add garlic and chili, cook until pale gold.","Add a splash of pasta water; toss in pasta and parsley until silky.","Season, finish with Parmesan, serve. Add a protein if you like."],
    pair:"A crisp Vermentino."},
   {course:"main",cat:"italian",emoji:"🍗",title:"Chicken Parmesan",it:"Pollo alla parmigiana",time:"45 min",serves:"2",level:"Medium",
    desc:"Crisp breaded cutlets under bubbling marinara and melted mozzarella.",
@@ -317,14 +326,49 @@ const RECIPES = [
    pair:"A light Pinot Noir."},
   {course:"main",cat:"italian",emoji:"🍅",title:"Penne alla Vodka",it:"Silky tomato-cream",time:"30 min",serves:"2",level:"Easy",
    desc:"Tomato, a splash of vodka and cream in a luxe blush sauce.",
-   ing:["6 oz penne","2 tbsp olive oil","2 cloves garlic","1/2 tsp chili","3 tbsp tomato paste","2 tbsp vodka","1/2 cup cream","1/4 cup Parmesan"],
-   steps:["Boil penne until al dente.","Soften garlic and chili in oil, add tomato paste, cook 2 min.","Add vodka 1 min, then cream until smooth.","Toss pasta with sauce, pasta water and Parmesan; finish with basil."],
+   ing:["6 oz penne","2 tbsp olive oil","2 cloves garlic","1/2 tsp chili","3 tbsp tomato paste","2 tbsp vodka","1/2 cup cream","1/4 cup Parmesan","Optional protein: grilled chicken, shrimp or sausage"],
+   steps:["Boil penne until al dente.","Soften garlic and chili in oil, add tomato paste, cook 2 min.","Add vodka 1 min, then cream until smooth.","Toss pasta with sauce, pasta water and Parmesan; finish with basil. Add a protein if you like."],
    pair:"A chilled rosé."},
+  {course:"main",cat:"italian",emoji:"🍝",title:"Fettuccine Alfredo",it:"Silky & rich",time:"25 min",serves:"2",level:"Easy",
+   desc:"Fettuccine in a silky Parmesan cream sauce.",
+   ing:["8 oz fettuccine","3 tbsp butter","1 cup cream","1 cup Parmesan","1 clove garlic","Salt, pepper, parsley","Optional protein: grilled chicken or shrimp"],
+   steps:["Boil fettuccine until al dente; reserve some water.","Melt butter with garlic; add cream and simmer 2 min.","Off heat, whisk in Parmesan until smooth.","Toss with pasta and a splash of water; season. Add a protein if you like."],
+   pair:"A Chardonnay."},
+  {course:"main",cat:"italian",emoji:"🍝",title:"Cacio e Pepe",it:"Pecorino & black pepper",time:"20 min",serves:"2",level:"Medium",
+   desc:"The Roman classic — pecorino and cracked black pepper emulsified into a glossy sauce.",
+   ing:["6 oz spaghetti or tonnarelli","1 cup pecorino, grated","2 tsp black pepper","Pasta water","Optional protein: grilled chicken or shrimp"],
+   steps:["Boil pasta until al dente; reserve 1 cup starchy water.","Toast the black pepper in a dry pan, add a ladle of pasta water.","Add pasta; off heat, toss with pecorino and more water until glossy.","Serve immediately. Add a protein if you like."],
+   pair:"A Frascati or light white."},
+  {course:"main",cat:"italian",emoji:"🍝",title:"Baked Ziti",it:"Cheesy & comforting",time:"45 min",serves:"3–4",level:"Easy",
+   desc:"Ziti baked with marinara, ricotta and melted mozzarella.",
+   ing:["12 oz ziti","3 cups marinara","1 cup ricotta","2 cups mozzarella","1/3 cup Parmesan","Basil","Optional protein: Italian sausage or ground beef"],
+   steps:["Boil ziti just shy of al dente; drain.","Mix with marinara and ricotta (and browned protein if using).","Layer in a dish with mozzarella and Parmesan.","Bake at 400°F 20–25 min until bubbly; finish with basil."],
+   pair:"A Chianti."},
   {course:"main",cat:"italian",emoji:"🍕",title:"Margherita Flatbread",it:"Quick weeknight pizza",time:"25 min",serves:"2",level:"Easy",
    desc:"Blistered flatbread with tomato, fresh mozzarella and basil.",
    ing:["2 flatbreads","1/2 cup crushed tomatoes","4 oz fresh mozzarella","1 clove garlic","Olive oil, basil","Salt, pepper"],
    steps:["Heat oven to 450°F. Rub flatbreads with garlic and oil.","Spread tomatoes, season, dot with mozzarella.","Bake 8–10 min until crisp; finish with basil and olive oil."],
    pair:"An Italian lager or Chianti."},
+  {course:"main",cat:"italian",emoji:"🍕",title:"Pepperoni Pizza",it:"Crispy & classic",time:"25 min",serves:"2",level:"Easy",
+   desc:"Crisp pizza crust with tomato sauce, mozzarella and plenty of pepperoni.",
+   ing:["1 pizza dough or crust","1/2 cup pizza sauce","1.5 cups mozzarella","3 oz pepperoni","Olive oil, oregano"],
+   steps:["Heat oven to 475°F.","Stretch the dough; spread sauce and mozzarella.","Top with pepperoni and a pinch of oregano.","Bake 10–12 min until bubbly and golden."],
+   pair:"An Italian lager."},
+  {course:"main",cat:"italian",emoji:"🍕",title:"BBQ Chicken Pizza",it:"Smoky & sweet",time:"25 min",serves:"2",level:"Easy",
+   desc:"BBQ sauce, grilled chicken, red onion and mozzarella, finished with cilantro.",
+   ing:["1 pizza crust","1/2 cup BBQ sauce","1 grilled chicken breast, diced","1/4 red onion, sliced","1.5 cups mozzarella","Cilantro"],
+   steps:["Heat oven to 475°F.","Spread BBQ sauce; add chicken, onion and mozzarella.","Bake 10–12 min until golden.","Finish with cilantro."],
+   pair:"A pale ale."},
+  {course:"main",cat:"italian",emoji:"🍕",title:"White Pizza with Ricotta & Spinach",it:"Garlicky & creamy",time:"25 min",serves:"2",level:"Easy",
+   desc:"Ricotta, mozzarella, garlic and spinach — no red sauce.",
+   ing:["1 pizza crust","3/4 cup ricotta","1 cup mozzarella","2 cups spinach","2 cloves garlic","Olive oil, salt"],
+   steps:["Heat oven to 475°F.","Brush the crust with garlic oil; dot with ricotta and mozzarella.","Scatter spinach over the top.","Bake 10–12 min until golden."],
+   pair:"A Pinot Grigio."},
+  {course:"main",cat:"italian",emoji:"🍕",title:"Prosciutto & Arugula Pizza",it:"Salty & fresh",time:"25 min",serves:"2",level:"Easy",
+   desc:"A simple cheese pizza finished with prosciutto and peppery arugula.",
+   ing:["1 pizza crust","1/2 cup pizza sauce","1.5 cups mozzarella","3 oz prosciutto","2 cups arugula","Olive oil, Parmesan"],
+   steps:["Heat oven to 475°F.","Top the crust with sauce and mozzarella; bake 10–12 min.","Drape with prosciutto and arugula.","Drizzle olive oil and shave over Parmesan."],
+   pair:"A Prosecco or Chianti."},
   {course:"main",cat:"seafood",emoji:"🍤",title:"Lemon Shrimp Linguine",it:"Linguine ai gamberi",time:"25 min",serves:"2",level:"Easy",
    desc:"Garlicky shrimp, lemon and white wine tangled through fresh linguine.",
    ing:["6 oz linguine","10 shrimp, peeled","3 cloves garlic","3 tbsp butter","1/4 cup white wine","1 lemon","Chili flakes, parsley"],
@@ -487,6 +531,26 @@ const RECIPES = [
    ing:["4 slices sourdough","6 oz roast beef","2 oz sharp cheddar","2 tbsp mayo + 1 tsp horseradish","2 tbsp butter"],
    steps:["Mix mayo with horseradish; spread inside.","Layer roast beef and cheddar.","Butter the outsides and griddle 3–4 min per side until melted.","Slice and serve."],
    pair:"An amber ale."},
+  {course:"main",cat:"sandwich",emoji:"🥪",title:"Meatball Sub Sandwich on a Hoagie",it:"Saucy & filling",time:"30 min",serves:"2",level:"Easy",
+   desc:"Italian meatballs in marinara with melted provolone on a toasted hoagie roll.",
+   ing:["2 hoagie rolls","8 meatballs","1 cup marinara","2 oz provolone","Parmesan, basil"],
+   steps:["Warm the meatballs in the marinara.","Split and toast the hoagie rolls.","Fill with meatballs, sauce and provolone.","Broil 1–2 min to melt; finish with Parmesan and basil."],
+   pair:"A Chianti."},
+  {course:"main",cat:"sandwich",emoji:"🥪",title:"French Dip Sandwich on a Baguette",it:"Beefy & rich",time:"20 min",serves:"2",level:"Easy",
+   desc:"Thin roast beef and provolone on a baguette with warm au jus for dipping.",
+   ing:["1 baguette","8 oz roast beef","2 oz provolone","1.5 cups beef broth","1 tsp Worcestershire"],
+   steps:["Warm the broth with Worcestershire for the jus.","Pile roast beef and provolone on a split baguette.","Broil 1–2 min to melt.","Serve with the jus for dipping."],
+   pair:"A Cabernet."},
+  {course:"main",cat:"sandwich",emoji:"🥪",title:"Reuben Melt on Rye",it:"Deli classic",time:"15 min",serves:"2",level:"Easy",
+   desc:"Corned beef, Swiss, sauerkraut and Russian dressing griddled on rye.",
+   ing:["4 slices rye bread","6 oz corned beef","2 oz Swiss","1/2 cup sauerkraut","2 tbsp Russian dressing","Butter"],
+   steps:["Spread dressing inside; layer corned beef, Swiss and sauerkraut.","Butter the outsides.","Griddle 3–4 min per side until crisp and melted.","Slice and serve."],
+   pair:"A lager."},
+  {course:"main",cat:"sandwich",emoji:"🥪",title:"Turkey Club on Brioche",it:"Stacked & soft",time:"15 min",serves:"2",level:"Easy",
+   desc:"Roast turkey, bacon, lettuce and tomato with mayo on toasted brioche.",
+   ing:["6 slices brioche, toasted","6 oz roast turkey","4 strips bacon, cooked","Lettuce & tomato","2 tbsp mayo"],
+   steps:["Toast the brioche; spread with mayo.","Build a double-decker with turkey, bacon, lettuce and tomato.","Secure with picks.","Cut into quarters."],
+   pair:"An iced tea."},
 
   /* ===== SIDES ===== */
   {course:"side",cat:"steakhouse",emoji:"🥔",title:"Garlic Parmesan Mashed Potatoes",it:"Creamy & rich",time:"30 min",serves:"2–3",level:"Easy",
@@ -627,7 +691,8 @@ function loadRatings(){ try{return JSON.parse(localStorage.getItem(STORE_KEY))||
 function saveRatings(r){ try{localStorage.setItem(STORE_KEY,JSON.stringify(r))}catch(e){} }
 let ratings = loadRatings();
 function getRating(i){ return ratings[RECIPES[i].title]||0; }
-function setRating(i,stars){ ratings[RECIPES[i].title]=stars; saveRatings(ratings); renderReco(); renderCourseBrowse(); renderMealPrep(); }
+function setRating(i,stars){ ratings[RECIPES[i].title]=stars; saveRatings(ratings); renderReco(); renderCravings(); renderMealPrep(); }
+function suggestedSide(r){ const sides=byCourse('side'); if(!sides.length) return null; let h=0; for(const ch of r.title) h=(h*31+ch.charCodeAt(0))>>>0; return sides[h%sides.length].r; }
 function categoryPrefs(){
   const sum={},cnt={};
   RECIPES.forEach((r,i)=>{const s=getRating(i); if(s){sum[r.cat]=(sum[r.cat]||0)+s; cnt[r.cat]=(cnt[r.cat]||0)+1;}});
@@ -694,22 +759,24 @@ function cardHTML(r,i){
   </div>`;
 }
 
-function renderFilters(){
-  const f=document.getElementById('filters');
-  const cats=['all',...Object.keys(CATS)];
-  f.innerHTML=cats.map(k=>{
-    const label=k==='all'?'All cuisines':CATS[k].label;
-    return `<button class="chip${k===activeCat?' active':''}" onclick="setCat('${k}')">${label}</button>`;
-  }).join('');
+let activeCraving=null;
+function cravingGroups(){
+  const groups=[];
+  const mains=byCourse('main').filter(x=>x.r.cat!=='mealprep');
+  const byType={};
+  mains.forEach(x=>{ const ty=mainType(x.r); (byType[ty]=byType[ty]||[]).push(x); });
+  MAIN_TYPE_ORDER.filter(t=>t!=='Meal Prep'&&byType[t]).forEach(t=>groups.push({key:t,items:byType[t]}));
+  Object.keys(byType).filter(t=>!MAIN_TYPE_ORDER.includes(t)).forEach(t=>groups.push({key:t,items:byType[t]}));
+  [['appetizer','Appetizers'],['side','Sides'],['dessert','Desserts']].forEach(([c,label])=>{ const items=byCourse(c); if(items.length) groups.push({key:label,items}); });
+  return groups;
 }
-function setCat(k){ activeCat=k; renderFilters(); renderCourseBrowse(); }
 
 const MAIN_TYPE_ORDER=['Pasta','Gnocchi','Risotto','Pizza','Sandwiches','Bowls','Tacos','Soups & Stews','Seafood','Steak & Chops','Chicken & Poultry','Meal Prep','Other Mains'];
 function mainType(r){
   const t=r.title.toLowerCase();
   if(r.cat==='mealprep') return 'Meal Prep';
   if(/gnocchi/.test(t)) return 'Gnocchi';
-  if(/spaghetti|linguine|penne|pasta|aglio|vodka/.test(t)) return 'Pasta';
+  if(/spaghetti|linguine|penne|pasta|aglio|vodka|fettuccine|alfredo|cacio|ziti|rigatoni|carbonara|lasagna|tagliatelle/.test(t)) return 'Pasta';
   if(/risotto/.test(t)) return 'Risotto';
   if(/flatbread|pizza|margherita/.test(t)) return 'Pizza';
   if(/sourdough|sandwich|melt|club|blt|grilled cheese/.test(t)) return 'Sandwiches';
@@ -722,26 +789,18 @@ function mainType(r){
   return 'Other Mains';
 }
 
-function renderCourseBrowse(){
-  const host=document.getElementById('courseBrowse');
-  let html='';
-  Object.keys(COURSES).forEach(course=>{
-    const items=byCourse(course).filter(x=> activeCat==='all' || x.r.cat===activeCat);
-    if(items.length===0) return;
-    html+=`<div class="course-block"><div class="course-head"><h3>${COURSES[course]}</h3></div>`;
-    if(course==='main'){
-      const groups={};
-      items.forEach(x=>{ const ty=mainType(x.r); (groups[ty]=groups[ty]||[]).push(x); });
-      Object.keys(groups).sort((a,b)=>MAIN_TYPE_ORDER.indexOf(a)-MAIN_TYPE_ORDER.indexOf(b)).forEach(ty=>{
-        html+=`<div class="subhead">${ty}</div><div class="grid">${groups[ty].map(({r,i})=>cardHTML(r,i)).join('')}</div>`;
-      });
-    } else {
-      html+=`<div class="grid">${items.map(({r,i})=>cardHTML(r,i)).join('')}</div>`;
-    }
-    html+=`</div>`;
-  });
-  host.innerHTML=html || `<div class="sub">No dishes in this cuisine yet.</div>`;
+function renderCravings(){
+  const host=document.getElementById('cravingView');
+  const groups=cravingGroups();
+  if(!activeCraving){
+    host.innerHTML=`<div class="craving-grid">${groups.map(g=>`<div class="ctile" onclick='selectCraving(${JSON.stringify(g.key)})'><span class="cname">${g.key}</span><span class="ccount">${g.items.length}</span></div>`).join('')}</div>`;
+    return;
+  }
+  const g=groups.find(x=>x.key===activeCraving);
+  if(!g){ activeCraving=null; renderCravings(); return; }
+  host.innerHTML=`<button class="back-link" onclick="selectCraving(null)">← All cravings</button><div class="craving-title">${g.key}</div><div class="grid">${g.items.map(({r,i})=>cardHTML(r,i)).join('')}</div>`;
 }
+function selectCraving(k){ activeCraving=k; renderCravings(); document.getElementById('browse').scrollIntoView({behavior:'smooth',block:'start'}); }
 
 function renderMealPrep(){
   document.getElementById('mpGrid').innerHTML =
@@ -763,6 +822,7 @@ function renderReco(){
 
 function openRecipe(i){
   const r=RECIPES[i], c=CATS[r.cat];
+  const side=(r.course==='main'&&r.cat!=='mealprep')?suggestedSide(r):null;
   modal.innerHTML=`
     <button class="close" onclick="closeModal()">×</button>
     <div class="menu-card">
@@ -784,6 +844,7 @@ function openRecipe(i){
         <div><h5>Preparation</h5><ol>${r.steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>
       </div>
       ${r.pair?`<div class="mc-pair">${r.cal?r.pair:'To drink — '+r.pair}</div>`:''}
+      ${side?`<div class="mc-serve">Serve with <b>${side.title}</b></div>`:''}
     </div>
     <div class="rate">
       <div class="lab">Tried it? Rate it — we'll tailor your suggestions</div>
@@ -825,7 +886,7 @@ document.getElementById('suForm').addEventListener('submit',async e=>{
   const u=document.getElementById('calUrl'); if(u) u.textContent=`https://${host}/dinner.ics`;
 })();
 
-renderFilters(); renderTodayMenu(); renderCourseBrowse(); renderMealPrep(); renderReco();
+renderTodayMenu(); renderCravings(); renderMealPrep(); renderReco();
 </script>
 </body>
 </html>
