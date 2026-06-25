@@ -692,7 +692,20 @@ function saveRatings(r){ try{localStorage.setItem(STORE_KEY,JSON.stringify(r))}c
 let ratings = loadRatings();
 function getRating(i){ return ratings[RECIPES[i].title]||0; }
 function setRating(i,stars){ ratings[RECIPES[i].title]=stars; saveRatings(ratings); renderReco(); renderCravings(); renderMealPrep(); }
-function suggestedSide(r){ const sides=byCourse('side'); if(!sides.length) return null; let h=0; for(const ch of r.title) h=(h*31+ch.charCodeAt(0))>>>0; return sides[h%sides.length].r; }
+const SIDE_BY_TYPE={
+  'Pasta':'garlic bread and a green salad',
+  'Gnocchi':'a crisp green salad',
+  'Risotto':'a simple arugula salad',
+  'Pizza':'a simple green salad',
+  'Sandwiches':'kettle chips or a side salad',
+  'Bowls':null,
+  'Tacos':'rice, beans and chips',
+  'Soups & Stews':'crusty bread',
+  'Seafood':'blistered asparagus or rice',
+  'Steak & Chops':'garlic parmesan mashed potatoes',
+  'Chicken & Poultry':'roasted vegetables or a side salad'
+};
+function suggestedSide(r){ return SIDE_BY_TYPE[mainType(r)] || null; }
 function categoryPrefs(){
   const sum={},cnt={};
   RECIPES.forEach((r,i)=>{const s=getRating(i); if(s){sum[r.cat]=(sum[r.cat]||0)+s; cnt[r.cat]=(cnt[r.cat]||0)+1;}});
@@ -844,7 +857,7 @@ function openRecipe(i){
         <div><h5>Preparation</h5><ol>${r.steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>
       </div>
       ${r.pair?`<div class="mc-pair">${r.cal?r.pair:'To drink — '+r.pair}</div>`:''}
-      ${side?`<div class="mc-serve">Serve with <b>${side.title}</b></div>`:''}
+      ${side?`<div class="mc-serve">Serve with <b>${side}</b></div>`:''}
     </div>
     <div class="rate">
       <div class="lab">Tried it? Rate it — we'll tailor your suggestions</div>
