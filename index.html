@@ -946,6 +946,21 @@ document.getElementById('suForm').addEventListener('submit',async e=>{
 })();
 
 const RESTAURANTS=[
+  {name:"Robke's",town:"Northport",cat:"Italian-American",dishTitle:"Pork Chop Martini",tagline:"Robke's signature — thin, crispy breaded pork chops crowned with a tangy cherry-pepper and arugula salad.",
+   ing:["2 thin-cut pork chops, pounded thin","1 cup breadcrumbs + 1/2 cup grated Parmesan","2 eggs, beaten","Flour for dredging","2 cups arugula","Chopped cherry peppers + a splash of their vinegar","Olive oil, lemon, salt"],
+   steps:["Dredge the pounded chops in flour, then egg, then the Parmesan breadcrumbs.","Fry in olive oil until golden and cooked through; drain.","Toss arugula with cherry peppers, a splash of the vinegar, olive oil and lemon.","Pile the peppery salad on the hot chops and serve."]},
+  {name:"Luca",town:"Stony Brook",cat:"Italian",dishTitle:"Penne alla Vodka",tagline:"Luca's outstanding blush vodka sauce over fresh pasta.",
+   ing:["1 lb penne (fresh if you can)","1/4 cup tomato paste","1 onion, minced","3 cloves garlic","1/4 cup vodka","3/4 cup heavy cream","Parmesan, basil, chili flakes","Olive oil"],
+   steps:["Sauté onion and garlic in olive oil; add tomato paste and cook until brick-red.","Deglaze with vodka and cook off the alcohol.","Stir in cream and simmer to a blush sauce.","Toss with cooked pasta, Parmesan and basil; loosen with pasta water."]},
+  {name:"Ixchel Mexican Cuisine",town:"East Setauket",cat:"Mexican",dishTitle:"Birria Tacos",tagline:"Rich, chili-braised beef tacos with consommé for dipping — a Three Village favorite.",
+   ing:["2 lb chuck roast","3 dried guajillo + 2 ancho chiles","2 tomatoes, 1 onion, 4 garlic cloves","Cumin, oregano, bay, a small cinnamon stick","2 cups beef broth","Corn tortillas","Oaxaca or Jack cheese, cilantro, onion, lime"],
+   steps:["Toast and soak the chiles; blend with tomato, onion, garlic and spices.","Braise the beef in the chile sauce + broth until it shreds, ~3 hours.","Shred the beef; skim the red consommé into a bowl.","Dip tortillas in the fat, fill with beef and cheese, crisp on a griddle, and serve with consommé."]},
+  {name:"Elaine's",town:"East Setauket",cat:"Italian",dishTitle:"Linguine Carbonara",tagline:"Elaine's most-requested pasta — silky egg-and-pecorino carbonara with crisp guanciale.",
+   ing:["1 lb linguine","4 oz guanciale or pancetta, diced","3 egg yolks + 1 whole egg","3/4 cup grated Pecorino Romano","Lots of black pepper","Salt"],
+   steps:["Crisp the guanciale; reserve the rendered fat.","Whisk yolks, egg, Pecorino and black pepper.","Cook linguine; toss with the guanciale off the heat.","Add a splash of pasta water, then the egg mixture, tossing fast into a silky sauce."]},
+  {name:"Maria's",town:"Nesconset",cat:"Mexican & Latin",dishTitle:"Tampiqueña al Mar",tagline:"Maria's showstopper — grilled skirt steak topped with shrimp, scallops and calamari in chipotle cream.",
+   ing:["1 lb skirt steak","1/2 lb shrimp","1/2 lb sea scallops","1/4 lb calamari","2 chipotles in adobo","1/2 cup cream","1 onion, 2 garlic cloves","Lime, cilantro, salt"],
+   steps:["Season and grill the skirt steak to medium-rare; rest and slice.","Sauté onion and garlic; blend with chipotle and cream into a sauce.","Sear the shrimp, scallops and calamari, then simmer in the chipotle cream.","Spoon the seafood over the steak; finish with lime and cilantro."]},
   {name:"Peter Luger Steak House",town:"Great Neck",cat:"Steakhouse",dishTitle:"Dry-Aged Porterhouse",tagline:"A steakhouse porterhouse you can pull off at home — high heat, butter and the famous-style sauce.",
    ing:["1 porterhouse, 1.5–2 in thick","Kosher salt & coarse pepper","2 tbsp butter, melted","Sauce: ketchup, Worcestershire, prepared horseradish, brown sugar, splash of vinegar"],
    steps:["Salt the steak and rest at room temp 45 min; pat very dry.","Heat the broiler (or cast iron) screaming hot.","Sear/broil ~4 min per side for medium-rare (130–135°F); rest 8 min.","Brush with melted butter, slice off the bone, serve with the whisked sauce."]},
