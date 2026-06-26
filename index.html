@@ -76,6 +76,12 @@
   .craving-title{font-family:var(--serif);font-size:22px;color:var(--gold-soft);margin:0 0 4px}
   .mc-serve{text-align:center;font-size:13px;color:#7c6a44;margin-top:14px;padding-top:14px;border-top:1px solid #d8c9a4}
   .mc-serve b{color:#5b4f33;font-weight:normal;font-style:italic}
+  .li-card{background:var(--card);border:1px solid var(--line);border-top:2px solid #b07d3e;border-radius:0 0 14px 14px;padding:18px;text-decoration:none;display:flex;flex-direction:column;transition:.16s}
+  .li-card:hover{transform:translateY(-3px);border-color:#5a4f33;border-top-color:var(--gold-soft)}
+  .li-card .cat{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  .li-card h4{font-family:var(--serif);font-weight:normal;font-size:18px;color:var(--ink);margin:7px 0 5px}
+  .li-card .it{color:var(--muted);font-size:13px;font-style:italic;margin-bottom:10px;flex:1}
+  .li-card .li-go{color:var(--gold-soft);font-size:12px}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px}
   .card{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:0 0 14px 14px;cursor:pointer;transition:.18s;display:flex;flex-direction:column}
@@ -193,6 +199,7 @@
       <a href="#menu">Tonight</a>
       <a href="#browse">Menu</a>
       <a href="#mealprep">Meal Prep</a>
+      <a href="#localspots">Long Island</a>
       <a href="#calendar">Calendar</a>
     </div>
   </div>
@@ -224,6 +231,15 @@
       <div class="sub" style="margin-bottom:0">High-protein, calorie-smart batch recipes — calories and protein listed on every box.</div>
     </div>
     <div class="grid" id="mpGrid"></div>
+  </section>
+
+  <section class="section" id="localspots">
+    <div class="mp-banner" style="border-left-color:#b07d3e">
+      <div class="eyebrow" style="margin-bottom:8px">Dining Out · Long Island</div>
+      <h2 style="margin-bottom:6px">Local Long Island spots</h2>
+      <div class="sub" style="margin-bottom:0">Not in the mood to cook? Real Long Island institutions — and the dish to order at each. Tap a card for the map.</div>
+    </div>
+    <div class="grid" id="liGrid"></div>
   </section>
 
   <section class="section" id="calendar">
@@ -929,7 +945,62 @@ document.getElementById('suForm').addEventListener('submit',async e=>{
   const u=document.getElementById('calUrl'); if(u) u.textContent=`https://${host}/dinner.ics`;
 })();
 
-renderTodayMenu(); renderCravings(); renderMealPrep(); renderReco();
+const RESTAURANTS=[
+  {name:"Peter Luger Steak House",town:"Great Neck",cat:"Steakhouse",dishTitle:"Dry-Aged Porterhouse",tagline:"A steakhouse porterhouse you can pull off at home — high heat, butter and the famous-style sauce.",
+   ing:["1 porterhouse, 1.5–2 in thick","Kosher salt & coarse pepper","2 tbsp butter, melted","Sauce: ketchup, Worcestershire, prepared horseradish, brown sugar, splash of vinegar"],
+   steps:["Salt the steak and rest at room temp 45 min; pat very dry.","Heat the broiler (or cast iron) screaming hot.","Sear/broil ~4 min per side for medium-rare (130–135°F); rest 8 min.","Brush with melted butter, slice off the bone, serve with the whisked sauce."]},
+  {name:"Bigelow's New England Fried Clams",town:"Rockville Centre",cat:"Seafood",dishTitle:"New England Fried Clams",tagline:"Sweet whole clams in a light, crisp cornmeal crust.",
+   ing:["1 lb shucked whole clams","1 cup buttermilk","1 cup corn flour (fine cornmeal)","1/2 cup flour","Salt, pepper, paprika","Neutral oil for frying","Lemon & tartar sauce"],
+   steps:["Soak clams in buttermilk 15 min.","Mix corn flour, flour and seasoning.","Heat oil to 375°F.","Dredge and fry clams 1–2 min until golden; drain. Serve with lemon and tartar."]},
+  {name:"Zorn's of Bethpage",town:"Bethpage",cat:"Comfort",dishTitle:"Buttermilk Fried Chicken",tagline:"Juicy buttermilk-brined chicken with a craggy golden crust.",
+   ing:["8 pieces chicken","2 cups buttermilk","1 tbsp hot sauce","2 cups flour","Paprika, garlic powder, salt, pepper","Oil for frying"],
+   steps:["Brine chicken in buttermilk + hot sauce 2+ hours.","Dredge in seasoned flour, pressing to coat.","Fry at 325–350°F 12–15 min, turning, until 165°F.","Rest on a rack and salt right away."]},
+  {name:"All American Hamburger Drive-In",town:"Massapequa",cat:"Burgers",dishTitle:"Smash Cheeseburger & Shake",tagline:"A thin, crispy-edged smash burger and a thick strawberry shake.",
+   ing:["1/2 lb ground beef (80/20)","2 potato buns","2 slices American cheese","Salt, pepper","Pickles, onion, ketchup, mustard","Shake: vanilla ice cream, milk, frozen strawberries"],
+   steps:["Form loose beef balls; smash hard on a screaming-hot griddle.","Season, flip at 2 min, add cheese.","Toast buns; build with pickles, onion and sauce.","Blend ice cream, milk and strawberries for the shake."]},
+  {name:"Limani",town:"Roslyn",cat:"Mediterranean",dishTitle:"Grilled Octopus",tagline:"Tender, charred octopus with lemon, oregano and olive oil.",
+   ing:["1 octopus (~2 lb), cleaned","1 onion, bay leaf, peppercorns","1/4 cup olive oil","1 lemon","Dried oregano","Salt, pepper"],
+   steps:["Simmer octopus with onion, bay and peppercorns 45–60 min until tender; cool.","Cut into tentacles; toss with olive oil.","Grill over high heat until charred, 2–3 min per side.","Finish with lemon, oregano, salt and olive oil."]},
+  {name:"La Parma",town:"Williston Park",cat:"Italian",dishTitle:"Chicken Scarpariello",tagline:"Family-style chicken and sausage with sweet peppers in a tangy garlic-vinegar sauce.",
+   ing:["2 lb chicken pieces","2 Italian sausages","1 bell pepper + a few cherry peppers","4 cloves garlic","1/2 cup white wine","1/2 cup chicken stock","2 tbsp vinegar, rosemary"],
+   steps:["Brown chicken and sausage; set aside.","Sauté garlic and peppers.","Deglaze with wine, vinegar and stock; add rosemary.","Return the meat; simmer until cooked and saucy."]},
+  {name:"The Lobster Roll — LUNCH",town:"Amagansett",cat:"Seafood",dishTitle:"Classic Cold Lobster Roll",tagline:"Chilled lobster lightly dressed in lemon mayo on a buttery split-top bun.",
+   ing:["1 lb cooked lobster meat","3 tbsp mayo","1 tbsp lemon juice","1 stalk celery, minced","Chives, salt, pepper","2 split-top buns","Butter"],
+   steps:["Toss lobster with mayo, lemon, celery, chives, salt and pepper.","Butter and griddle the buns until golden.","Pile in the lobster salad.","Top with extra chives; serve cold."]},
+  {name:"Umberto's",town:"New Hyde Park",cat:"Pizza",dishTitle:"Grandma Pizza",tagline:"Thin, square, crispy-bottomed pizza with garlic, crushed tomato and mozzarella.",
+   ing:["1 lb pizza dough","2 tbsp olive oil","2 cups low-moisture mozzarella","1 cup crushed tomatoes","2 cloves garlic","Oregano, basil, Parmesan"],
+   steps:["Stretch dough into an oiled sheet pan; rest 20 min.","Top with mozzarella, then spoon over crushed tomato mixed with garlic.","Bake at 500°F 15–18 min until the bottom is crisp.","Finish with oregano, basil and Parmesan."]},
+  {name:"Maureen's Kitchen",town:"Smithtown",cat:"Breakfast",dishTitle:"The Big Diner Breakfast",tagline:"The full plate — eggs, crispy home fries, bacon and fluffy pancakes.",
+   ing:["4 eggs","4 strips bacon","2 potatoes, diced","Butter","Pancakes: flour, milk, egg, baking powder, sugar","Maple syrup"],
+   steps:["Crisp the bacon; fry the home fries in the drippings until golden.","Whisk pancake batter; cook on a buttered griddle.","Fry the eggs to your liking.","Plate it all with butter and syrup."]},
+  {name:"The Clam Bar at Napeague",town:"Amagansett",cat:"Seafood",dishTitle:"Warm Buttered Lobster Roll",tagline:"Connecticut-style — warm lobster tossed in lemon butter on a toasted bun.",
+   ing:["1 lb cooked lobster meat","4 tbsp butter","1 tbsp lemon juice","Chives, flaky salt","2 split-top buns"],
+   steps:["Warm the lobster gently in melted butter with lemon.","Butter and griddle the buns.","Fill with the warm buttered lobster.","Finish with chives and flaky salt."]}
+];
+function mapUrl(r){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(r.name+' '+r.town+' NY'); }
+function renderRestaurants(){
+  document.getElementById('liGrid').innerHTML=RESTAURANTS.map((r,i)=>`<div class="li-card" onclick="openRestaurant(${i})"><div class="cat">${r.cat} · ${r.town}</div><h4>${r.name}</h4><div class="it">Make it at home: ${r.dishTitle}</div><div class="li-go">View recipe →</div></div>`).join('');
+}
+function openRestaurant(i){
+  const r=RESTAURANTS[i];
+  modal.innerHTML=`<button class="close" onclick="closeModal()">×</button>
+    <div class="menu-card">
+      <div class="mc-top"><div class="mc-orn">&#10022;</div><div class="mc-cat">Copycat Recipe · ${r.cat}</div></div>
+      <div class="mc-title">${r.dishTitle}</div>
+      <div class="mc-it">Inspired by ${r.name} · ${r.town}</div>
+      <div class="mc-rule"><span>✦</span></div>
+      <div class="mc-desc">${r.tagline}</div>
+      <div class="mc-rule"><span>✦</span></div>
+      <div class="mc-cols">
+        <div><h5>The Plate</h5><ul>${r.ing.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div><h5>Preparation</h5><ol>${r.steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>
+      </div>
+      <div class="mc-pair"><a href="${mapUrl(r)}" target="_blank" rel="noopener" style="color:#8a6d2e">Or get the original — ${r.name} on the map →</a></div>
+    </div>`;
+  overlay.classList.add('open'); document.body.style.overflow='hidden';
+}
+
+renderTodayMenu(); renderCravings(); renderMealPrep(); renderRestaurants(); renderReco();
 </script>
 </body>
 </html>
