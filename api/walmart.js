@@ -8,7 +8,7 @@
 // walmart.com/search?q=... so nothing is silently dropped.
 
 import {
-  todaysMenu, findRecipeBySlug,
+  todaysMenu, menuForDateString, findRecipeBySlug,
   ingredientsForRecipe, ingredientsForMenu
 } from '../grocery.js';
 import { buildWalmartCart, walmartSearchURL } from '../walmart.js';
@@ -27,7 +27,8 @@ export default async function handler(req, res){
       title = r.title;
       ingredients = ingredientsForRecipe(r);
     } else {
-      const m = todaysMenu();
+      const dateStr = (q && q.date) ? String(q.date) : '';
+      const m = dateStr ? menuForDateString(dateStr) : todaysMenu();
       title = "Tonight's Dinner — " + (m.main && m.main.title || 'Four courses');
       ingredients = ingredientsForMenu(m);
     }
