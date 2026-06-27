@@ -305,7 +305,7 @@ export function shopRiteSearchURL(ingredients){
 // Foods items appear automatically when the user is in a WF service zone).
 export function amazonFreshSearchURL(ingredients){
   const q = ingredients.map(i => i.name).slice(0, 8).join(' ');
-  return 'https://www.amazon.com/s?i=amazonfresh&k=' + encodeURIComponent(q);
+  return 'https://www.amazon.com/s?i=grocery&k=' + encodeURIComponent(q);
 }
 
 // Walmart Grocery search URL. catId=976759 scopes to the Food/Grocery dept.
@@ -317,7 +317,7 @@ export function walmartSearchURL(ingredients){
 // Per-item search URLs (used for the "Find →" pills on each row of the
 // shopping list page so the shopper can drill into a single ingredient).
 export function amazonFreshItemSearchURL(name){
-  return 'https://www.amazon.com/s?i=amazonfresh&k=' + encodeURIComponent(String(name || ''));
+  return 'https://www.amazon.com/s?i=grocery&k=' + encodeURIComponent(String(name || ''));
 }
 export function walmartItemSearchURL(name){
   return 'https://www.walmart.com/search?q=' + encodeURIComponent(String(name || '')) + '&catId=976759';
