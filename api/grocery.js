@@ -164,7 +164,14 @@ function bridgesFor(site, slug, wantMenu, title, ingredients, dateStr){
     freshdirect: freshDirectSearchURL(ingredients),
     stopandshop: stopAndShopSearchURL(ingredients),
     shoprite:    shopRiteSearchURL(ingredients),
-    amazon:      (function(){ const p = buildAmazonPlan(ingredients); return p.cartUrl || p.freshSearchUrl || amazonFreshBulkSearchURL(ingredients); })(),
+    amazon:      (function(){
+      // Amazon's bulk cart-add URL was retired in 2026 (returns "SORRY
+      // something went wrong" and wipes the cart). Redirect to our own
+      // landing page which fans out to per-ingredient Amazon search tabs.
+      const dq = dateStr ? ('&date=' + encodeURIComponent(dateStr)) : '';
+      if (slug) return site + '/api/amazon-cart?recipe=' + encodeURIComponent(slug);
+      return site + '/api/amazon-cart?menu=today' + dq;
+    })(),
     walmart:     buildWalmartCart(ingredients).url,
     instacart:   instacartSearchURL(ingredients)
   };

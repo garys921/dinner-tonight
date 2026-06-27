@@ -1,16 +1,17 @@
-// GET /api/amazon-cart?recipe=<slug>   → Amazon Fresh shopping page (single recipe)
-// GET /api/amazon-cart?menu=today      → Amazon Fresh shopping page (full menu)
+// GET /api/amazon-cart?recipe=<slug>   → Amazon shopping landing page (single recipe)
+// GET /api/amazon-cart?menu=today      → Amazon shopping landing page (full menu)
 // GET /api/amazon-cart?menu=today&format=json  → JSON
-// GET /api/amazon-cart?menu=today&redirect=cart → 302 straight to Amazon cart-add URL
 //
-// Behavior: renders a list page with one big "Add staples to Amazon cart"
-// button (multi-item /gp/aws/cart/add.html URL) plus per-item Amazon Fresh
-// search links for produce / dairy / meat we don't have ASINs for.
+// The page shows one row per ingredient with a tap-to-search button that
+// opens Amazon grocery search in a new tab. From the search page Gary taps
+// the "Add to cart" button right on the result tile. There's also an "Open
+// all in tabs" button at the top that fan-outs the whole list at once.
 
-import { todaysMenu, findRecipeBySlug } from '../grocery.js';
+import { todaysMenu, findRecipeBySlug, menuForDateString } from '../grocery.js';
 import {
   ingredientsForRecipe, ingredientsForMenu,
-  buildAmazonPlan, amazonFreshSearchURL, coverageStats
+  buildAmazonPlan, amazonItemSearchURL, amazonBulkSearchURL,
+  coverageStats
 } from '../amazon.js';
 
 function escapeHtml(s){
@@ -18,43 +19,27 @@ function escapeHtml(s){
 }
 
 function renderListPage(title, plan, ingredients, site){
-  const matchedRows = plan.matched.map(m => {
-    const productLink = `https://www.amazon.com/dp/${m.asin}`;
-    return `<li class="match">
-      <label><input type="checkbox" checked>
-        <span class="name">${escapeHtml(m.name)}</span>
-        <span class="lbl">${escapeHtml(m.label)}</span>
+  const rows = plan.items.map((it, idx) => {
+    const search = escapeHtml(it.searchUrl);
+    const safeName = escapeHtml(it.name);
+    return `<li>
+      <label><input type="checkbox" class="cb" data-i="${idx}" checked>
+        <span class="name">${safeName}</span>
       </label>
-      <a class="find" href="${productLink}" target="_blank" rel="noopener">View →</a>
+      <a class="find" href="${search}" target="_blank" rel="noopener" data-i="${idx}">Search &amp; Add &rarr;</a>
     </li>`;
   }).join('');
 
-  const unmatchedRows = plan.unmatched.map(it => {
-    const search = amazonFreshSearchURL(it.name);
-    return `<li class="unmatch">
-      <label><input type="checkbox" checked>
-        <span class="name">${escapeHtml(it.name)}</span>
-        <span class="lbl">Search Amazon Fresh</span>
-      </label>
-      <a class="find" href="${search}" target="_blank" rel="noopener">Find →</a>
-    </li>`;
-  }).join('');
-
-  const cartHref = plan.cartUrl || plan.freshSearchUrl;
-  const cartLabel = plan.cartUrl
-    ? `🛒 Add ${plan.matched.length} item${plan.matched.length===1?'':'s'} to Amazon cart`
-    : '🛒 Search ingredients on Amazon Fresh';
-  const noteHtml = plan.cartUrl && plan.unmatched.length
-    ? `<div class="note">Staples go straight to your cart. ${plan.unmatched.length} fresh item${plan.unmatched.length===1?'':'s'} below — tap "Find →" to add each from Amazon Fresh.</div>`
-    : '<div class="note">Pantry staples (salt, pepper, oil, water) aren\'t included.</div>';
+  const itemSearchURLsJSON = JSON.stringify(plan.items.map(i => i.searchUrl));
+  const bulkUrl = escapeHtml(plan.freshSearchUrl);
 
   return `<!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${escapeHtml(title)} — Amazon Fresh · Dinner Tonight</title>
+<title>${escapeHtml(title)} - Amazon - Dinner Tonight</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:#16140f;color:#f3ead6;font-family:Georgia,'Times New Roman',serif;padding:32px 18px;min-height:100vh}
-  .wrap{max-width:560px;margin:0 auto}
+  .wrap{max-width:580px;margin:0 auto}
   .back{display:inline-block;color:#b3a98f;text-decoration:none;font-size:13px;margin-bottom:18px}
   .eyebrow{font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#ff9900;margin-bottom:8px}
   h1{font-weight:normal;font-size:28px;margin-bottom:6px;letter-spacing:.04em}
@@ -66,54 +51,53 @@ function renderListPage(title, plan, ingredients, site){
   li:last-child{border-bottom:none}
   label{display:flex;align-items:center;gap:10px;flex:1;cursor:pointer;flex-wrap:wrap}
   input[type=checkbox]{width:17px;height:17px;accent-color:#ff9900}
-  .name{color:#f3ead6;font-weight:600;min-width:130px}
-  .lbl{color:#8a7c5c;font-size:12px;font-style:italic}
-  .match .lbl{color:#9ab36a}
-  .find{color:#b3a98f;text-decoration:none;font-size:12px;padding:4px 10px;border:1px solid #3a3527;border-radius:999px;transition:.15s;flex-shrink:0}
-  .find:hover{color:#16140f;background:#ff9900;border-color:#ff9900}
+  .name{color:#f3ead6;font-weight:600}
+  .find{color:#16140f;background:#ff9900;text-decoration:none;font-size:12px;padding:6px 12px;border:1px solid #ff9900;border-radius:999px;transition:.15s;flex-shrink:0;font-weight:700}
+  .find:hover{background:#febd69;border-color:#febd69}
   .actions{margin-top:8px;display:flex;flex-direction:column;gap:10px}
-  .btn{display:block;text-align:center;background:#ff9900;color:#0f1111;text-decoration:none;font-weight:700;padding:14px 22px;border-radius:999px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;letter-spacing:.03em;transition:.15s}
+  .btn{display:block;text-align:center;background:#ff9900;color:#0f1111;text-decoration:none;font-weight:700;padding:14px 22px;border-radius:999px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;letter-spacing:.03em;transition:.15s;border:none;cursor:pointer}
   .btn:hover{background:#febd69}
   .btn.ghost{background:transparent;color:#f3ead6;border:1px solid #3a3527}
   .btn.ghost:hover{border-color:#ff9900;color:#ff9900}
-  .note{color:#8a7c5c;font-size:12px;margin-top:14px;text-align:center;font-style:italic}
-  .empty{color:#8a7c5c;font-style:italic;padding:8px 4px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px}
+  .note{color:#8a7c5c;font-size:12px;margin-top:14px;text-align:center;font-style:italic;line-height:1.5}
+  .how{background:#1a1810;border-left:3px solid #ff9900;padding:14px 16px;margin-bottom:14px;border-radius:6px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;color:#c4b89c;line-height:1.55}
+  .how b{color:#ff9900}
 </style>
 </head><body>
 <div class="wrap">
-  <a class="back" href="${site}">← Back to Dinner Tonight</a>
-  <div class="eyebrow">Amazon Fresh · Whole Foods</div>
+  <a class="back" href="${escapeHtml(site)}">&larr; Back to Dinner Tonight</a>
+  <div class="eyebrow">Amazon Grocery &middot; Whole Foods</div>
   <h1>${escapeHtml(title)}</h1>
-  <div class="sub">One-click pantry staples — produce, dairy &amp; meat in Fresh search below.</div>
+  <div class="sub">Tap any ingredient to open it on Amazon and add to cart.</div>
 
-  ${plan.matched.length ? `
-  <div class="card">
-    <h2>Staples · in cart</h2>
-    <ul>${matchedRows}</ul>
-  </div>` : ''}
+  <div class="how">
+    <b>How this works:</b> Amazon's direct cart-add URL was retired in 2026, so we open a fresh Amazon search for each ingredient. On each search results page tap the yellow <b>Add to cart</b> button on whichever brand looks right. Two taps per ingredient, no hand-entered ASINs that can go stale.
+  </div>
 
-  ${plan.unmatched.length ? `
   <div class="card">
-    <h2>Fresh · search on Amazon</h2>
-    <ul>${unmatchedRows}</ul>
-  </div>` : ''}
+    <h2>Ingredients (${plan.items.length})</h2>
+    <ul>${rows}</ul>
+  </div>
 
   <div class="actions">
-    <a class="btn" href="${cartHref}" target="_blank" rel="noopener">${cartLabel}</a>
-    <button class="btn ghost" onclick="copyList()">Copy full list</button>
-    <a class="btn ghost" href="${site}">Back to Dinner Tonight</a>
+    <button class="btn" id="openAllBtn">Open all ${plan.items.length} in tabs</button>
+    <a class="btn ghost" href="${bulkUrl}" target="_blank" rel="noopener">Or: one combined Amazon search</a>
+    <button class="btn ghost" id="copyBtn">Copy full list</button>
+    <a class="btn ghost" href="${escapeHtml(site)}">Back to Dinner Tonight</a>
   </div>
-  ${noteHtml}
+  <div class="note">If "Open all in tabs" is blocked, allow pop-ups for dinner-tonight-daily.vercel.app. Pantry staples (salt, pepper, water) aren't included.</div>
 </div>
 <script>
-function copyList(){
-  var items = Array.from(document.querySelectorAll('li')).map(function(li){
-    return li.querySelector('.name').textContent.trim();
-  }).join('\\n');
-  navigator.clipboard.writeText(items).then(function(){
-    alert('Shopping list copied to clipboard.');
-  });
-}
+var URLS = ${itemSearchURLsJSON};
+document.getElementById('openAllBtn').addEventListener('click', function(){
+  var checks = Array.from(document.querySelectorAll('.cb'));
+  var picked = checks.filter(function(c){ return c.checked; }).map(function(c){ return URLS[+c.dataset.i]; });
+  picked.forEach(function(u){ window.open(u, '_blank', 'noopener'); });
+});
+document.getElementById('copyBtn').addEventListener('click', function(){
+  var items = Array.from(document.querySelectorAll('li .name')).map(function(n){ return n.textContent.trim(); }).join('\\n');
+  navigator.clipboard.writeText(items).then(function(){ alert('Shopping list copied to clipboard.'); });
+});
 </script>
 </body></html>`;
 }
@@ -125,7 +109,6 @@ export default async function handler(req, res){
     const slug = (q.recipe || '').toString();
     const wantMenu = (q.menu || '').toString();
     const format = (q.format || '').toString().toLowerCase();
-    const redirect = (q.redirect || '').toString().toLowerCase();
 
     let title, ingredients;
     if (slug){
@@ -134,8 +117,9 @@ export default async function handler(req, res){
       title = r.title;
       ingredients = ingredientsForRecipe(r);
     } else {
-      const m = todaysMenu();
-      title = "Tonight's Dinner — " + (m.main && m.main.title || 'Four courses');
+      const dateStr = (q.date || '').toString();
+      const m = dateStr && menuForDateString ? menuForDateString(dateStr) : todaysMenu();
+      title = "Tonight's Dinner - " + (m.main && m.main.title || 'Four courses');
       ingredients = ingredientsForMenu(m);
     }
 
@@ -149,11 +133,6 @@ export default async function handler(req, res){
         plan,
         coverage: coverageStats()
       });
-    }
-
-    if (redirect === 'cart' && plan.cartUrl){
-      res.setHeader('Location', plan.cartUrl);
-      return res.status(302).end();
     }
 
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
