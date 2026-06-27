@@ -18,7 +18,7 @@
 import { buildWalmartCart } from '../walmart.js';
 import { buildAmazonPlan, amazonFreshBulkSearchURL } from '../amazon.js';
 import {
-  todaysMenu, findRecipeBySlug,
+  todaysMenu, menuForDateString, findRecipeBySlug,
   payloadForRecipe, payloadForMenu,
   ingredientsForRecipe, ingredientsForMenu,
   createInstacartRecipePage, instacartSearchURL,
@@ -150,14 +150,15 @@ function copyList(){
 }
 
 // Resolve the recipe-card URL on this site that Bring! will scrape.
-function recipeCardUrl(site, slug, wantMenu){
+function recipeCardUrl(site, slug, wantMenu, dateStr){
   if (slug) return site + '/api/recipe-card?recipe=' + encodeURIComponent(slug);
-  return site + '/api/recipe-card?menu=today';
+  const dq = dateStr ? ('&date=' + encodeURIComponent(dateStr)) : '';
+  return site + '/api/recipe-card?menu=today' + dq;
 }
 
-function bridgesFor(site, slug, wantMenu, title, ingredients){
+function bridgesFor(site, slug, wantMenu, title, ingredients, dateStr){
   return {
-    bring:       bringDeeplinkURL(recipeCardUrl(site, slug, wantMenu)),
+    bring:       bringDeeplinkURL(recipeCardUrl(site, slug, wantMenu, dateStr)),
     reminders:   mailtoListURL(title, ingredients),
     sms:         smsListURL(title, ingredients),
     freshdirect: freshDirectSearchURL(ingredients),
@@ -205,13 +206,14 @@ export default async function handler(req, res){
       ingredients = ingredientsForRecipe(r);
       payload = payloadForRecipe(r, site);
     } else {
-      const m = todaysMenu();
+      const dateStr = (q.date || '').toString();
+      const m = dateStr ? menuForDateString(dateStr) : todaysMenu();
       title = "Tonight's Dinner — " + (m.main && m.main.title || 'Four courses');
       ingredients = ingredientsForMenu(m);
       payload = payloadForMenu(m, site);
     }
 
-    const bridges = bridgesFor(site, slug, wantMenu, title, ingredients);
+    const bridges = bridgesFor(site, slug, wantMenu, title, ingredients, (q.date || '').toString());
 
     // service= bridge mode: short-circuit and redirect (or return JSON URL)
     if (service){

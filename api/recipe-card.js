@@ -6,7 +6,7 @@
 // the recipes themselves don't have schema markup; this endpoint plugs that gap.
 
 import {
-  todaysMenu, findRecipeBySlug,
+  todaysMenu, menuForDateString, findRecipeBySlug,
   ingredientsForRecipe, ingredientsForMenu
 } from '../grocery.js';
 
@@ -104,7 +104,7 @@ export default async function handler(req, res){
       image = r.img || null;
       canonicalPath = '/api/recipe-card?recipe=' + encodeURIComponent(slug);
     } else if (wantMenu){
-      const m = todaysMenu();
+      const dateStr = (req.query && req.query.date) ? String(req.query.date) : ''; const m = dateStr ? menuForDateString(dateStr) : todaysMenu();
       title = "Tonight's Dinner — " + (m.main && m.main.title || 'Four courses');
       ingredients = ingredientsForMenu(m);
       instructions = [
