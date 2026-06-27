@@ -43,7 +43,10 @@ const UNIT_MAP = {
 const LEADING_UNIT_RE = new RegExp(
   '^(?:sprigs?|scoops?|shots?|slices?|cloves?|cups?|tbsp|tbs|tsp|teaspoons?|tablespoons?|' +
   'pinch(?:es)?|dash(?:es)?|cans?|packages?|pkgs?|pieces?|heads?|stalks?|sticks?|' +
-  'jars?|bottles?|bags?|boxes?|loaves|loaf|sheets?|pints?|quarts?|bunch(?:es)?)\\s+',
+  'jars?|bottles?|bags?|boxes?|loaves|loaf|sheets?|pints?|quarts?|bunch(?:es)?|' +
+  // Portion/container words seen leaking in ("strips bacon", "ball mozzarella",
+  // "wedges lemon", "ears corn", "ribs celery") - strip so the noun lands first.
+  'strips?|balls?|wedges?|ears?|ribs?|knobs?|chunks?|cubes?|rounds?|rings?|kernels?)\\s+',
   'i'
 );
 
@@ -73,7 +76,15 @@ function parseOneIngredient(raw, originalDisplay){
   if (!raw) return null;
   let s = String(raw).trim();
   if (!s) return null;
+  // Normalize unicode dashes (en/em) to ASCII hyphen so quantity ranges
+  // like "4-6 chicken thighs" and "12-14 wonton wrappers" parse correctly.
+  // Without this, the leading-quantity regex misses the range entirely and
+  // the whole string lands in the search query.
+  s = s.replace(/[\u2013\u2014]/g, '-');
   if (/^optional\b/i.test(s)) return null;
+  // Lines like "Optional protein: grilled chicken, shrimp or sausage" should
+  // never become an ingredient.
+  if (/^optional\s+\w+\s*:/i.test(s)) return null;
 
   // Drop parenthetical asides BEFORE anything else — they create junk like
   // "Sriracha ()" when the inner text gets stripped by other passes.
@@ -219,7 +230,7 @@ export function buildRecipePayload({ title, image_url, servings, cooking_time, i
 }
 
 export function instacartSearchURL(ingredients){
-  const q = ingredients.map(i => i.name).slice(0, 8).join(' ');
+  const q = ingredients.map(i => canonicalIngredientName(i.name)).slice(0, 8).join(' ');
   return 'https://www.instacart.com/store/s?k=' + encodeURIComponent(q);
 }
 
@@ -289,6 +300,7 @@ export { menuForDate, todaysMenu };
 // day. Used by all standalone endpoints so the chips fetch the SAME menu
 // the homepage rendered, even between ET-midnight and UTC-midnight.
 import { menuForYMD } from './recipes.js';
+import { canonicalIngredientName } from './synonyms.js';
 export function menuForDateString(dateStr){
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateStr || ''));
   if (!m) return todaysMenu();
@@ -334,17 +346,52 @@ export function bringDeeplinkURL(recipeCardUrl, opts){
 
 // Generic mailto bridge — works for Reminders, Notes, AnyList, OurGroceries,
 // Paprika (all support sharing a plain-text list via mail/share-sheet).
+// Truncate an ingredient line array so the encoded URI fits within `maxUri`.
+// Returns the line array (possibly with a "... and N more" tail).
+function truncateForUri(lines, maxUri, fixedOverheadEncodedLen){
+  // Quick path: if the joined body encoded length + fixed overhead is fine, keep all.
+  const joined = lines.join('\n');
+  if (encodeURIComponent(joined).length + fixedOverheadEncodedLen <= maxUri) return lines;
+  // Otherwise: progressively peel from the tail until we fit, leaving room
+  // for the "... and N more" sentinel.
+  const out = lines.slice();
+  while (out.length > 1){
+    const trimmed = out.slice();
+    const more = lines.length - trimmed.length + 1; // +1 because we'll drop one more
+    trimmed.pop();
+    const tail = trimmed.length < lines.length ? '\n... and ' + (lines.length - trimmed.length) + ' more' : '';
+    const candidate = trimmed.join('\n') + tail;
+    if (encodeURIComponent(candidate).length + fixedOverheadEncodedLen <= maxUri){
+      return [...trimmed, '... and ' + (lines.length - trimmed.length) + ' more'];
+    }
+    out.pop();
+  }
+  return out;
+}
+
 export function mailtoListURL(title, ingredients){
-  const subject = (title || 'Shopping list') + ' — Dinner Tonight';
-  const body = ingredientsAsLines(ingredients).join('\n');
-  return 'mailto:?subject=' + encodeURIComponent(subject)
-    + '&body=' + encodeURIComponent(body);
+  const subject = (title || 'Shopping list') + ' \u2014 Dinner Tonight';
+  const lines = ingredientsAsLines(ingredients);
+  // mailto: URIs over ~2000 chars get clipped by mail clients (Gmail/Apple Mail
+  // both cut around 2000–2048). Reserve overhead for "mailto:?subject=&body=" +
+  // encoded subject.
+  const subjectEnc = encodeURIComponent(subject);
+  const overhead = 'mailto:?subject=&body='.length + subjectEnc.length;
+  const safeLines = truncateForUri(lines, 1900, overhead);
+  const body = safeLines.join('\n');
+  return 'mailto:?subject=' + subjectEnc + '&body=' + encodeURIComponent(body);
 }
 
 // SMS bridge — same idea, lands directly in iMessage so user can long-press to
 // add to Reminders or forward to themselves.
 export function smsListURL(title, ingredients){
-  const body = (title ? title + ':\n' : '') + ingredientsAsLines(ingredients).join('\n');
+  // iOS Messages silently truncates SMS-scheme URIs around ~280 chars after
+  // encoding. We aim conservatively for 240 chars body so the deeplink fires.
+  const header = (title ? title + ':\n' : '');
+  const lines = ingredientsAsLines(ingredients);
+  const overhead = 'sms:?body='.length + encodeURIComponent(header).length;
+  const safeLines = truncateForUri(lines, 240, overhead);
+  const body = header + safeLines.join('\n');
   return 'sms:?body=' + encodeURIComponent(body);
 }
 
@@ -354,7 +401,7 @@ export function smsListURL(title, ingredients){
 // product search for the combined ingredient query.
 
 export function freshDirectSearchURL(ingredients){
-  const q = ingredients.map(i => i.name).slice(0, 8).join(' ');
+  const q = ingredients.map(i => canonicalIngredientName(i.name)).slice(0, 8).join(' ');
   return 'https://www.freshdirect.com/search?search=' + encodeURIComponent(q);
 }
 
@@ -362,23 +409,23 @@ export function freshDirectSearchURL(ingredients){
 // past ~6 tokens. We still expose the bulk URL for the chip-row, but the
 // recommended UX is the per-ingredient list page (api/stop-and-shop.js).
 export function stopAndShopSearchURL(ingredients){
-  const q = ingredients.map(i => i.name).slice(0, 3).join(' ');
+  const q = ingredients.map(i => canonicalIngredientName(i.name)).slice(0, 3).join(' ');
   return 'https://stopandshop.com/product-search/' + encodeURIComponent(q);
 }
 export function stopAndShopItemSearchURL(name){
-  return 'https://stopandshop.com/product-search/' + encodeURIComponent(String(name || ''));
+  return 'https://stopandshop.com/product-search/' + encodeURIComponent(canonicalIngredientName(name || ''));
 }
 
 // ShopRite From Home: same story — truncates silently. Keep bulk for the
 // chip-row, expose per-item for the surgical list page.
 export function shopRiteSearchURL(ingredients){
-  const q = ingredients.map(i => i.name).slice(0, 3).join(' ');
+  const q = ingredients.map(i => canonicalIngredientName(i.name)).slice(0, 3).join(' ');
   return 'https://www.shoprite.com/sm/planning/rsid/3000/results?q='
     + encodeURIComponent(q);
 }
 export function shopRiteItemSearchURL(name){
   return 'https://www.shoprite.com/sm/planning/rsid/3000/results?q='
-    + encodeURIComponent(String(name || ''));
+    + encodeURIComponent(canonicalIngredientName(name || ''));
 }
 
 // ─── Amazon Fresh & Walmart search URLs (added 2026-06-26 per user request) ──
@@ -398,27 +445,27 @@ export function shopRiteItemSearchURL(name){
 // Amazon Fresh search URL (i=amazonfresh scopes to Fresh delivery; Whole
 // Foods items appear automatically when the user is in a WF service zone).
 export function amazonFreshSearchURL(ingredients){
-  const q = ingredients.map(i => i.name).slice(0, 8).join(' ');
+  const q = ingredients.map(i => canonicalIngredientName(i.name)).slice(0, 8).join(' ');
   return 'https://www.amazon.com/s?i=grocery&k=' + encodeURIComponent(q);
 }
 
 // Walmart Grocery search URL. catId=976759 scopes to the Food/Grocery dept.
 export function walmartSearchURL(ingredients){
-  const q = ingredients.map(i => i.name).slice(0, 8).join(' ');
+  const q = ingredients.map(i => canonicalIngredientName(i.name)).slice(0, 8).join(' ');
   return 'https://www.walmart.com/search?q=' + encodeURIComponent(q) + '&catId=976759';
 }
 
 // Per-item search URLs (used for the "Find →" pills on each row of the
 // shopping list page so the shopper can drill into a single ingredient).
 export function amazonFreshItemSearchURL(name){
-  return 'https://www.amazon.com/s?i=grocery&k=' + encodeURIComponent(String(name || ''));
+  return 'https://www.amazon.com/s?i=grocery&k=' + encodeURIComponent(canonicalIngredientName(name || ''));
 }
 export function walmartItemSearchURL(name){
-  return 'https://www.walmart.com/search?q=' + encodeURIComponent(String(name || '')) + '&catId=976759';
+  return 'https://www.walmart.com/search?q=' + encodeURIComponent(canonicalIngredientName(name || '')) + '&catId=976759';
 }
 export function instacartItemSearchURL(name){
-  return 'https://www.instacart.com/store/s?k=' + encodeURIComponent(String(name || ''));
+  return 'https://www.instacart.com/store/s?k=' + encodeURIComponent(canonicalIngredientName(name || ''));
 }
 export function freshDirectItemSearchURL(name){
-  return 'https://www.freshdirect.com/srch.jsp?searchParams=' + encodeURIComponent(String(name || ''));
+  return 'https://www.freshdirect.com/srch.jsp?searchParams=' + encodeURIComponent(canonicalIngredientName(name || ''));
 }

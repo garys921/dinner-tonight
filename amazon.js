@@ -26,6 +26,7 @@
 //     when the multi-tab opener is blocked by a popup blocker.
 
 import { ingredientsForRecipe, ingredientsForMenu, slugify } from './grocery.js';
+import { canonicalIngredientName } from './synonyms.js';
 
 // Use the general grocery storefront, NOT amazonfresh — Amazon Fresh is
 // geo-blocked outside delivery zones (e.g. Gary's Long Island address gets
@@ -33,7 +34,8 @@ import { ingredientsForRecipe, ingredientsForMenu, slugify } from './grocery.js'
 // the Add-to-cart on results pages still routes through Amazon Fresh/WF
 // where available.
 export function amazonItemSearchURL(name){
-  const cleaned = String(name || '').replace(/[,]/g,' ').replace(/\s+/g,' ').trim();
+  const canon = canonicalIngredientName(name || '');
+  const cleaned = String(canon).replace(/[,]/g,' ').replace(/\s+/g,' ').trim();
   return 'https://www.amazon.com/s?i=grocery&k=' + encodeURIComponent(cleaned);
 }
 
@@ -41,7 +43,7 @@ export function amazonItemSearchURL(name){
 // Not ideal for adding to cart (results will be mixed), but acts as a
 // graceful fallback when per-item tabs are unavailable.
 export function amazonBulkSearchURL(ingredients){
-  const q = (ingredients || []).map(i => i.name).slice(0, 6).join(' ');
+  const q = (ingredients || []).map(i => canonicalIngredientName(i.name)).slice(0, 6).join(' ');
   return 'https://www.amazon.com/s?i=grocery&k=' + encodeURIComponent(q);
 }
 
