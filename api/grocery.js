@@ -54,97 +54,157 @@ function renderListPage(title, ingredients, instacartUrl, site, bridges){
       </span>
     </li>`;
   }).join('');
-  const bridgeBtns = bridges ? `
-    <div class="bridges">
-      <div class="bridge-label">Search & shop at</div>
-      <a class="chip retailer fd-c" href="${bridges.freshdirect}" target="_blank" rel="noopener" title="Long Island delivery">🥬 FreshDirect</a>
-      <a class="chip retailer amzn-c" href="${bridges.amazon}" target="_blank" rel="noopener" title="Prime delivery — most US metros">📦 Amazon Fresh</a>
-      <a class="chip retailer wmt-c" href="${bridges.walmart}" target="_blank" rel="noopener" title="Pickup + delivery nationwide">🛒 Walmart</a>
-      <a class="chip retailer ic-c" href="${bridges.instacart}" target="_blank" rel="noopener" title="Multi-banner aggregator">🥕 Instacart</a>
-      <a class="chip retailer ss-c" href="${bridges.stopandshop}" target="_blank" rel="noopener" title="Long Island">Stop &amp; Shop</a>
-      <a class="chip retailer sr-c" href="${bridges.shoprite}" target="_blank" rel="noopener" title="Long Island">ShopRite</a>
-      <div class="bridge-label" style="margin-top:14px">Or send list to</div>
-      <a class="chip" href="${bridges.bring}" target="_blank" rel="noopener">Bring!</a>
-      <a class="chip" href="${bridges.reminders}">Reminders / email</a>
-      <a class="chip" href="${bridges.sms}">Text it to me</a>
-    </div>` : '';
+
+  // Store picker config: each entry maps to a primary "go" button at the bottom
+  // of the list. Default tab is Amazon Fresh (most universal Long Island option).
+  const stores = [
+    { id:'amazon',      label:'Amazon Fresh', short:'Amazon', accent:'#ff9900', dark:'#0f1111', url: bridges.amazon },
+    { id:'freshdirect', label:'FreshDirect',  short:'FreshDirect', accent:'#e8462b', dark:'#fff', url: bridges.freshdirect },
+    { id:'walmart',     label:'Walmart',      short:'Walmart', accent:'#0071dc', dark:'#fff', url: bridges.walmart },
+    { id:'stopandshop', label:'Stop & Shop',  short:'Stop & Shop', accent:'#cc0000', dark:'#fff', url: bridges.stopandshop },
+    { id:'shoprite',    label:'ShopRite',     short:'ShopRite', accent:'#dd0000', dark:'#fff', url: bridges.shoprite },
+    { id:'instacart',   label:'Instacart',    short:'Instacart', accent:'#43a047', dark:'#fff', url: bridges.instacart },
+    { id:'bring',       label:'Bring! list',  short:'Bring!', accent:'#d04a02', dark:'#fff', url: bridges.bring },
+    { id:'plain',       label:'Plain text',   short:'Plain list', accent:'#c9a14a', dark:'#221d10', url: '#print' }
+  ];
+  const storeTabs = stores.map((st, i) => `<button class="store-tab${i===0?' active':''}" data-store="${st.id}" data-url="${escapeHtml(st.url)}" data-accent="${st.accent}" data-dark="${st.dark}" data-label="${escapeHtml(st.label)}">${escapeHtml(st.short)}</button>`).join('');
+
   return `<!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${escapeHtml(title)} — shopping list · Dinner Tonight</title>
+<meta name="theme-color" content="#16140f">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='6'%20fill='%2316140f'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='6.5'%20fill='%23c9a14a'/%3E%3C/svg%3E">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#16140f;color:#f3ead6;font-family:Georgia,'Times New Roman',serif;padding:32px 18px;min-height:100vh}
-  .wrap{max-width:560px;margin:0 auto}
-  .back{display:inline-block;color:#b3a98f;text-decoration:none;font-size:13px;margin-bottom:18px}
+  body{background:#16140f;color:#f3ead6;font-family:Georgia,'Times New Roman',serif;padding:32px 18px 60px;min-height:100vh;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:620px;margin:0 auto}
+  .back{display:inline-block;color:#b3a98f;text-decoration:none;font-size:13px;margin-bottom:18px;transition:.15s}
+  .back:hover{color:#e3c987}
   .eyebrow{font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#c9a14a;margin-bottom:8px}
-  h1{font-weight:normal;font-size:28px;margin-bottom:6px;letter-spacing:.04em}
-  .sub{color:#b3a98f;font-size:14px;font-style:italic;margin-bottom:20px}
+  h1{font-weight:normal;font-size:30px;margin-bottom:6px;letter-spacing:.04em;line-height:1.18}
+  .sub{color:#b3a98f;font-size:14px;font-style:italic;margin-bottom:24px;line-height:1.5}
+
+  /* Store picker — horizontal scrollable segmented control */
+  .picker-card{background:#1f1c15;border:1px solid #3a3527;border-radius:14px;padding:14px;margin-bottom:18px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+  .picker-label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#8a7c5c;margin-bottom:10px;font-family:'Helvetica Neue',Arial,sans-serif;text-align:center}
+  .store-tabs{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:thin;scrollbar-color:#3a3527 transparent}
+  .store-tabs::-webkit-scrollbar{height:6px}
+  .store-tabs::-webkit-scrollbar-thumb{background:#3a3527;border-radius:3px}
+  .store-tab{flex:0 0 auto;background:#15130e;border:1px solid #3a3527;color:#b3a98f;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:600;letter-spacing:.02em;padding:9px 16px;border-radius:999px;cursor:pointer;transition:.15s;white-space:nowrap;min-height:38px}
+  .store-tab:hover{color:#f3ead6;border-color:#5a4f33}
+  .store-tab.active{background:#c9a14a;color:#221d10;border-color:#e3c987;box-shadow:0 4px 12px rgba(201,161,74,.25)}
+
+  /* Ingredient list */
   .card{background:#1f1c15;border:1px solid #3a3527;border-radius:14px;padding:22px 22px 14px;box-shadow:0 18px 50px rgba(0,0,0,.45)}
   ul{list-style:none}
-  li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 4px;border-bottom:1px solid #2b2618;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14.5px}
+  li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 4px;border-bottom:1px solid #2b2618;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14.5px}
   li:last-child{border-bottom:none}
-  label{display:flex;align-items:center;gap:10px;flex:1;cursor:pointer}
-  input[type=checkbox]{width:17px;height:17px;accent-color:#c9a14a}
-  .qty{color:#c9a14a;font-weight:600;min-width:60px}
-  .name{color:#f3ead6}
-  .find{color:#b3a98f;text-decoration:none;font-size:12px;padding:4px 10px;border:1px solid #3a3527;border-radius:999px;transition:.15s}
-  .find:hover{color:#16140f;background:#e3c987;border-color:#e3c987}
-  .actions{margin-top:24px;display:flex;flex-direction:column;gap:10px}
-  .btn{display:block;text-align:center;background:#c9a14a;color:#221d10;text-decoration:none;font-weight:700;padding:14px 22px;border-radius:999px;font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;letter-spacing:.03em;transition:.15s}
-  .btn:hover{background:#e3c987}
-  .btn.ghost{background:transparent;color:#f3ead6;border:1px solid #3a3527}
-  .btn.ghost:hover{border-color:#e3c987;color:#e3c987}
-  .bridges{margin-top:18px;padding-top:14px;border-top:1px solid #2b2618;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:'Helvetica Neue',Arial,sans-serif}
-  .bridge-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#8a7c5c;width:100%;margin-bottom:4px}
-  .chip{font-size:12.5px;color:#f3ead6;background:#2b2618;border:1px solid #3a3527;padding:7px 12px;border-radius:999px;text-decoration:none;transition:.15s}
-  .chip:hover{background:#3a3527;border-color:#c9a14a;color:#e3c987}
-  .chip.retailer{font-weight:600}
-  .chip.fd-c{background:rgba(232,70,43,.12);border-color:rgba(232,70,43,.45);color:#f3ead6}
-  .chip.fd-c:hover{background:#e8462b;color:#fff;border-color:#e8462b}
-  .chip.amzn-c{background:rgba(255,153,0,.12);border-color:rgba(255,153,0,.45);color:#f3ead6}
-  .chip.amzn-c:hover{background:#ff9900;color:#0f1111;border-color:#ff9900}
-  .chip.wmt-c{background:rgba(0,113,220,.14);border-color:rgba(0,113,220,.45);color:#f3ead6}
-  .chip.wmt-c:hover{background:#0071dc;color:#fff;border-color:#0071dc}
-  .chip.ic-c{background:rgba(67,160,71,.14);border-color:rgba(67,160,71,.45);color:#f3ead6}
-  .chip.ic-c:hover{background:#43a047;color:#fff;border-color:#43a047}
-  .chip.ss-c:hover{background:#cc0000;color:#fff;border-color:#cc0000}
-  .chip.sr-c:hover{background:#dd0000;color:#fff;border-color:#dd0000}
+  li:has(input:not(:checked)) .qty,
+  li:has(input:not(:checked)) .name{opacity:.4;text-decoration:line-through}
+  label{display:flex;align-items:center;gap:10px;flex:1;cursor:pointer;min-height:32px}
+  input[type=checkbox]{width:18px;height:18px;accent-color:#c9a14a;cursor:pointer;flex-shrink:0}
+  .qty{color:#c9a14a;font-weight:600;min-width:60px;transition:.15s}
+  .name{color:#f3ead6;transition:.15s}
   .find-row{display:flex;gap:4px;flex-shrink:0}
-  .find-row .find{font-size:10px;font-weight:600;letter-spacing:.04em;padding:5px 7px;min-width:30px;text-align:center;border-radius:6px}
-  .find-row .find.fd:hover{background:#e8462b;color:#fff;border-color:#e8462b}
-  .find-row .find.amzn:hover{background:#ff9900;color:#0f1111;border-color:#ff9900}
-  .find-row .find.wmt:hover{background:#0071dc;color:#fff;border-color:#0071dc}
-  .find-row .find.ic:hover{background:#43a047;color:#fff;border-color:#43a047}
-  .note{color:#8a7c5c;font-size:12px;margin-top:14px;text-align:center;font-style:italic}
+  .find{color:#b3a98f;text-decoration:none;font-size:10px;font-weight:600;letter-spacing:.04em;padding:5px 7px;min-width:32px;text-align:center;border:1px solid #3a3527;border-radius:6px;transition:.15s}
+  .find.fd:hover{background:#e8462b;color:#fff;border-color:#e8462b}
+  .find.amzn:hover{background:#ff9900;color:#0f1111;border-color:#ff9900}
+  .find.wmt:hover{background:#0071dc;color:#fff;border-color:#0071dc}
+  .find.ic:hover{background:#43a047;color:#fff;border-color:#43a047}
+
+  /* Primary CTA — re-renders to match the active store tab */
+  .order-cta-wrap{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .order-cta{display:flex;align-items:center;justify-content:center;gap:10px;background:#c9a14a;color:#221d10;font-family:'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:15px;letter-spacing:.02em;padding:16px 22px;border:1px solid #e3c987;border-radius:14px;text-decoration:none;transition:.18s ease;min-height:54px;box-shadow:0 6px 18px rgba(201,161,74,.28),inset 0 1px 0 rgba(255,255,255,.18);text-align:center}
+  .order-cta:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(201,161,74,.4),inset 0 1px 0 rgba(255,255,255,.22)}
+  .order-cta:active{transform:translateY(0)}
+  .order-cta.disabled{pointer-events:none;opacity:.55}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap}
+  .btn-row .btn-sm{flex:1;display:flex;align-items:center;justify-content:center;background:transparent;color:#b3a98f;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;font-weight:600;padding:11px 16px;border:1px solid #3a3527;border-radius:12px;cursor:pointer;transition:.15s;text-decoration:none;min-height:42px}
+  .btn-row .btn-sm:hover{border-color:#c9a14a;color:#e3c987}
+
+  .note{color:#8a7c5c;font-size:12px;margin-top:18px;text-align:center;font-style:italic}
+
+  @media(max-width:520px){
+    body{padding:22px 14px 50px}
+    h1{font-size:24px}
+    .card{padding:18px 16px 10px}
+    .find-row{display:none}
+    li{padding:14px 2px}
+    .name{font-size:15px}
+  }
+  @media print{
+    body{background:#fff;color:#000;padding:20px}
+    .back,.picker-card,.order-cta-wrap,.note,.find-row{display:none !important}
+    .card{background:#fff;border:none;box-shadow:none;padding:0}
+    h1,.qty,.name{color:#000 !important}
+    li{border-bottom:1px solid #ccc}
+  }
 </style>
 </head><body>
 <div class="wrap">
   <a class="back" href="${site}">← Back to Dinner Tonight</a>
   <div class="eyebrow">Shopping list</div>
   <h1>${escapeHtml(title)}</h1>
-  <div class="sub">Pick a delivery service below, or tap a per-item pill (FD/AF/WM/IC) to find one ingredient.</div>
+  <div class="sub">Pick a store, uncheck anything you already have, and tap the order button.</div>
+
+  <div class="picker-card">
+    <div class="picker-label">Order from</div>
+    <div class="store-tabs" id="storeTabs">${storeTabs}</div>
+  </div>
+
   <div class="card">
     <ul>${rows}</ul>
-    ${bridgeBtns}
   </div>
-  <div class="actions">
-    <a class="btn" href="${bridges.freshdirect}" target="_blank" rel="noopener">🥬 Send list to FreshDirect (Long Island)</a>
-    <button class="btn ghost" onclick="copyList()">Copy list</button>
-    <button class="btn ghost" onclick="window.print()">Print</button>
+
+  <div class="order-cta-wrap">
+    <a class="order-cta" id="orderCta" href="${bridges.amazon}" target="_blank" rel="noopener">Order from <span id="orderCtaStore">Amazon Fresh</span> →</a>
+    <div class="btn-row">
+      <button class="btn-sm" onclick="copyList()">Copy list</button>
+      <button class="btn-sm" onclick="window.print()">Print</button>
+    </div>
   </div>
   <div class="note">Pantry staples (salt, pepper, oil, water) aren't included.</div>
 </div>
 <script>
 function copyList(){
-  var items = Array.from(document.querySelectorAll('li')).map(function(li){
-    var q = li.querySelector('.qty').textContent.trim();
-    var n = li.querySelector('.name').textContent.trim();
-    return (q ? q + ' ' : '') + n;
+  var items = Array.from(document.querySelectorAll('li')).filter(function(li){
+    var cb = li.querySelector('input[type=checkbox]');
+    return cb && cb.checked;
+  }).map(function(li){
+    var q = (li.querySelector('.qty')||{}).textContent || '';
+    var n = (li.querySelector('.name')||{}).textContent || '';
+    return (q.trim() ? q.trim() + ' ' : '') + n.trim();
   }).join('\\n');
+  if (!items){ alert('Check at least one item first.'); return; }
   navigator.clipboard.writeText(items).then(function(){
-    alert('Shopping list copied to clipboard.');
-  });
+    var btn = document.querySelector('.btn-sm');
+    if (btn){ var orig = btn.textContent; btn.textContent = 'Copied!'; setTimeout(function(){ btn.textContent = orig; }, 1400); }
+  }, function(){ alert('Could not copy.'); });
 }
+// store picker — switch the primary CTA and accent color when a tab is clicked
+(function(){
+  var tabs = document.querySelectorAll('.store-tab');
+  var cta = document.getElementById('orderCta');
+  var ctaStore = document.getElementById('orderCtaStore');
+  function activate(tab){
+    tabs.forEach(function(t){ t.classList.remove('active'); });
+    tab.classList.add('active');
+    var url = tab.getAttribute('data-url');
+    var label = tab.getAttribute('data-label');
+    if (url === '#print'){
+      cta.href = 'javascript:void(0)';
+      cta.onclick = function(e){ e.preventDefault(); window.print(); };
+      ctaStore.textContent = 'Print';
+      cta.firstChild.textContent = 'Print the ';
+    } else {
+      cta.onclick = null;
+      cta.href = url;
+      ctaStore.textContent = label;
+      cta.firstChild.textContent = 'Order from ';
+    }
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ activate(t); }); });
+})();
 </script>
 </body></html>`;
 }
