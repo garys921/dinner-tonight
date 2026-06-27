@@ -61,6 +61,15 @@
   .send-row .send-chip{font-size:12px;color:#f3ead6;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);padding:6px 11px;border-radius:999px;text-decoration:none;transition:.15s;white-space:nowrap}
   .send-row .send-chip:hover{background:rgba(201,161,74,.18);border-color:#c9a14a;color:#e3c987}
   .send-row .send-chip.bring{background:rgba(201,161,74,.14);border-color:rgba(201,161,74,.45)}
+  .send-row .send-chip.rt{font-weight:600}
+  .send-row .send-chip.rt.fd{background:rgba(232,70,43,.14);border-color:rgba(232,70,43,.45)}
+  .send-row .send-chip.rt.fd:hover{background:#e8462b;color:#fff;border-color:#e8462b}
+  .send-row .send-chip.rt.af{background:rgba(255,153,0,.14);border-color:rgba(255,153,0,.45)}
+  .send-row .send-chip.rt.af:hover{background:#ff9900;color:#0f1111;border-color:#ff9900}
+  .send-row .send-chip.rt.wm{background:rgba(0,113,220,.14);border-color:rgba(0,113,220,.45)}
+  .send-row .send-chip.rt.wm:hover{background:#0071dc;color:#fff;border-color:#0071dc}
+  .send-row .send-chip.rt.ic{background:rgba(67,160,71,.14);border-color:rgba(67,160,71,.45)}
+  .send-row .send-chip.rt.ic:hover{background:#43a047;color:#fff;border-color:#43a047}
 
   .mc-cart{margin-top:18px;text-align:center}
 
@@ -810,7 +819,7 @@ function renderTodayMenu(){
     ${row('Side',side)}
     ${row('Dessert',des)}
     <div class="mb-actions">
-      <a class="btn cart-btn" href="/api/grocery?menu=today" target="_blank" rel="noopener">🛒 Order ingredients on Instacart</a>
+      <a class="btn cart-btn" href="/api/grocery?menu=today" target="_blank" rel="noopener">🛒 Get the ingredients</a>
       ${sendRowHTML('menu=today')}
       <a class="btn ghost" href="#browse">Browse the full menu</a>
       <a class="btn ghost" href="#calendar">Get it daily</a>
@@ -919,7 +928,7 @@ function openRecipe(i){
       ${r.pair?`<div class="mc-pair">${r.cal?r.pair:'To drink — '+r.pair}</div>`:''}
       ${side?`<div class="mc-serve">Serve with <b>${side}</b></div>`:''}
       <div class="mc-cart">
-        <a class="btn cart-btn" href="/api/grocery?recipe=${encodeURIComponent(slugify(r.title))}" target="_blank" rel="noopener">🛒 Order ingredients on Instacart</a>
+        <a class="btn cart-btn" href="/api/grocery?recipe=${encodeURIComponent(slugify(r.title))}" target="_blank" rel="noopener">🛒 Get the ingredients</a>
         ${sendRowHTML('recipe=' + encodeURIComponent(slugify(r.title)))}
       </div>
     </div>
@@ -945,14 +954,16 @@ function sendRowHTML(qs){
   const base = '/api/grocery?' + qs;
   return `
     <div class="send-row">
-      <div class="send-lbl">Or send list to</div>
+      <div class="send-lbl">Or open list at</div>
+      <a class="send-chip rt fd" href="${base}&service=freshdirect" target="_blank" rel="noopener" title="FreshDirect — Long Island delivery">🥬 FreshDirect</a>
+      <a class="send-chip rt af" href="${base}&service=amazon" target="_blank" rel="noopener" title="Amazon Fresh — Prime delivery, most US metros">📦 Amazon Fresh</a>
+      <a class="send-chip rt wm" href="${base}&service=walmart" target="_blank" rel="noopener" title="Walmart — pickup + delivery nationwide">🛒 Walmart</a>
+      <a class="send-chip rt ic" href="${base}&service=instacart" target="_blank" rel="noopener" title="Instacart — multi-banner aggregator">🥕 Instacart</a>
+      <a class="send-chip" href="${base}&service=stopandshop" target="_blank" rel="noopener" title="Search Stop & Shop / Peapod (Long Island)">Stop &amp; Shop</a>
+      <a class="send-chip" href="${base}&service=shoprite" target="_blank" rel="noopener" title="Search ShopRite From Home (Long Island)">ShopRite</a>
       <a class="send-chip bring" href="${base}&service=bring" target="_blank" rel="noopener" title="Send ingredients to your Bring! shopping list">Bring!</a>
       <a class="send-chip" href="${base}&service=reminders" title="Open mail prefilled — long-press to add to Apple Reminders / Notes">Reminders / Notes</a>
       <a class="send-chip" href="${base}&service=sms" title="Text the list to yourself">Text it</a>
-      <a class="send-chip" href="${base}&service=freshdirect" target="_blank" rel="noopener" title="Search FreshDirect (Long Island delivery)">FreshDirect</a>
-      <a class="send-chip" href="${base}&service=stopandshop" target="_blank" rel="noopener" title="Search Stop & Shop / Peapod (Long Island)">Stop &amp; Shop</a>
-      <a class="send-chip" href="${base}&service=shoprite" target="_blank" rel="noopener" title="Search ShopRite From Home (Long Island)">ShopRite</a>
-      <a class="send-chip" href="${base}&service=walmart" target="_blank" rel="noopener" title="Pre-fill a Walmart Grocery cart with tonight's ingredients">Order on Walmart</a>
     </div>`;
 }
 
