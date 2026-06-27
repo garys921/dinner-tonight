@@ -10,12 +10,13 @@
 //   ?service=freshdirect → 302 to FreshDirect search for the ingredients (LI delivery)
 //   ?service=stopandshop → 302 to Stop & Shop / Peapod search (LI delivery)
 //   ?service=shoprite    → 302 to ShopRite From Home search (LI delivery)
-//   ?service=amazon      → 302 to Amazon Fresh / Whole Foods search (Prime nationwide)
+//   ?service=amazon      → 302 to Amazon REAL cart-add URL (matched staples pre-staged; unmatched fall back to search)
 //   ?service=walmart     → 302 to Walmart REAL cart-prefill (items pre-staged via affil.walmart.com)
 //   ?service=instacart   → 302 to Instacart bulk search (multi-banner fallback)
 // Each service also supports &format=json to return {url} without redirecting.
 
 import { buildWalmartCart } from '../walmart.js';
+import { buildAmazonPlan, amazonFreshBulkSearchURL } from '../amazon.js';
 import {
   todaysMenu, findRecipeBySlug,
   payloadForRecipe, payloadForMenu,
@@ -162,7 +163,7 @@ function bridgesFor(site, slug, wantMenu, title, ingredients){
     freshdirect: freshDirectSearchURL(ingredients),
     stopandshop: stopAndShopSearchURL(ingredients),
     shoprite:    shopRiteSearchURL(ingredients),
-    amazon:      amazonFreshSearchURL(ingredients),
+    amazon:      (function(){ const p = buildAmazonPlan(ingredients); return p.cartUrl || p.freshSearchUrl || amazonFreshBulkSearchURL(ingredients); })(),
     walmart:     buildWalmartCart(ingredients).url,
     instacart:   instacartSearchURL(ingredients)
   };
@@ -178,6 +179,8 @@ function resolveService(service, bridges){
     case 'shoprite':    return bridges.shoprite;
     case 'amazon':      return bridges.amazon;
     case 'amazonfresh': return bridges.amazon;
+    case 'amazon-search': return amazonFreshSearchURL(ingredients);
+    case 'amazon-page': return '/api/amazon-cart' + (slug ? ('?recipe=' + encodeURIComponent(slug)) : '?menu=today');
     case 'walmart':     return bridges.walmart;
     case 'instacart':   return bridges.instacart;
     default: return null;
@@ -215,7 +218,7 @@ export default async function handler(req, res){
       const target = resolveService(service, bridges);
       if (!target){
         return res.status(400).json({
-          ok:false, error:'Unknown service. Valid: bring|reminders|sms|freshdirect|stopandshop|shoprite|amazon|walmart|instacart'
+          ok:false, error:'Unknown service. Valid: bring|reminders|sms|freshdirect|stopandshop|shoprite|amazon|amazon-search|amazon-page|walmart|instacart'
         });
       }
       if (format === 'json'){
