@@ -1,8 +1,13 @@
 {
-  "crons": [
-    { "path": "/api/send-daily", "schedule": "0 14 * * *" }
-  ],
-  "rewrites": [
-    { "source": "/dinner.ics", "destination": "/api/calendar" }
-  ]
+    "crons": [
+          { "path": "/api/send-daily", "schedule": "0 14 * * *" }
+    ],
+    "rewrites": [
+          { "source": "/dinner.ics", "destination": "/api/calendar" },
+          { "source": "/api/amazon-cart", "destination": "/api/store?service=amazon" },
+          { "source": "/api/walmart", "destination": "/api/store?service=walmart" },
+          { "source": "/api/freshdirect", "destination": "/api/store?service=freshdirect" },
+          { "source": "/api/stop-and-shop", "destination": "/api/store?service=stopandshop" },
+          { "source": "/api/shoprite", "destination": "/api/store?service=shoprite" }
+    ]
 }
