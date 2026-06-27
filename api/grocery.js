@@ -10,8 +10,10 @@
 //   ?service=freshdirect → 302 to FreshDirect search for the ingredients (LI delivery)
 //   ?service=stopandshop → 302 to Stop & Shop / Peapod search (LI delivery)
 //   ?service=shoprite    → 302 to ShopRite From Home search (LI delivery)
+//   ?service=walmart     → 302 to Walmart cart-prefill URL (items pre-staged)
 // Each service also supports &format=json to return {url} without redirecting.
 
+import { buildWalmartCart } from '../walmart.js';
 import {
   todaysMenu, findRecipeBySlug,
   payloadForRecipe, payloadForMenu,
@@ -125,7 +127,8 @@ function bridgesFor(site, slug, wantMenu, title, ingredients){
     sms:         smsListURL(title, ingredients),
     freshdirect: freshDirectSearchURL(ingredients),
     stopandshop: stopAndShopSearchURL(ingredients),
-    shoprite:    shopRiteSearchURL(ingredients)
+    shoprite:    shopRiteSearchURL(ingredients),
+    walmart:     buildWalmartCart(ingredients).url
   };
 }
 
@@ -137,6 +140,7 @@ function resolveService(service, bridges){
     case 'freshdirect': return bridges.freshdirect;
     case 'stopandshop': return bridges.stopandshop;
     case 'shoprite':    return bridges.shoprite;
+    case 'walmart':     return bridges.walmart;
     default: return null;
   }
 }
@@ -172,7 +176,7 @@ export default async function handler(req, res){
       const target = resolveService(service, bridges);
       if (!target){
         return res.status(400).json({
-          ok:false, error:'Unknown service. Valid: bring|reminders|sms|freshdirect|stopandshop|shoprite'
+          ok:false, error:'Unknown service. Valid: bring|reminders|sms|freshdirect|stopandshop|shoprite|walmart'
         });
       }
       if (format === 'json'){
