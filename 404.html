@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Off the menu · Dinner Tonight</title>
+<meta name="description" content="That page isn't on tonight's menu — head back to find dinner.">
+<meta name="theme-color" content="#16140f">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='6'%20fill='%2316140f'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='6.5'%20fill='%23c9a14a'/%3E%3C/svg%3E">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#16140f;color:#f3ead6;font-family:Georgia,'Times New Roman',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 18px;-webkit-font-smoothing:antialiased;line-height:1.55}
+  .wrap{max-width:520px;text-align:center}
+  .eyebrow{font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:#c9a14a;font-family:'Helvetica Neue',Arial,sans-serif;margin-bottom:14px}
+  .ornament{font-size:36px;color:#c9a14a;margin-bottom:18px;opacity:.7}
+  h1{font-weight:normal;letter-spacing:.04em;font-size:40px;margin:0 0 14px;line-height:1.15}
+  p{color:#b3a98f;font-size:15.5px;font-style:italic;margin:0 auto 30px;max-width:380px}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .btn{display:inline-flex;align-items:center;justify-content:center;font-family:'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:14px;letter-spacing:.02em;padding:14px 24px;border-radius:999px;text-decoration:none;transition:.18s ease;border:1px solid transparent;min-height:46px}
+  .btn.primary{background:linear-gradient(180deg,#d4af55,#b88c34);color:#1c170c;border-color:#e3c987;box-shadow:0 6px 18px rgba(201,161,74,.28),inset 0 1px 0 rgba(255,255,255,.18)}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(201,161,74,.4),inset 0 1px 0 rgba(255,255,255,.22)}
+  .btn.ghost{color:#f3ead6;border-color:#3a3527}
+  .btn.ghost:hover{border-color:#c9a14a;color:#e3c987}
+  .ornament-bottom{margin-top:40px;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:#5e5544;font-family:'Helvetica Neue',Arial,sans-serif}
+  @media(max-width:480px){
+    h1{font-size:30px}
+    .btn{flex:1;min-width:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Error · 404</div>
+  <div class="ornament">✦</div>
+  <h1>Off the menu</h1>
+  <p>The page you were looking for isn't on tonight's menu. The chef apologizes.</p>
+  <div class="actions">
+    <a class="btn primary" href="/">View tonight's menu</a>
+    <a class="btn ghost" href="/#browse">Browse all recipes</a>
+  </div>
+  <div class="ornament-bottom">— Dinner Tonight —</div>
+</div>
+</body>
+</html>

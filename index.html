@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dinner Tonight — Your daily dinner, decided</title>
 <meta name="description" content="A new full dinner menu every day — appetizer, main, side and dessert — each with the recipe. Browse by course or cuisine.">
+<meta name="theme-color" content="#16140f">
+<link rel="canonical" href="https://dinner-tonight-daily.vercel.app/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='6'%20fill='%2316140f'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='6.5'%20fill='%23c9a14a'/%3E%3Ctext%20x='16'%20y='21'%20font-family='Georgia,serif'%20font-size='10'%20text-anchor='middle'%20fill='%23221d10'%3ED%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20180%20180'%3E%3Crect%20width='180'%20height='180'%20rx='36'%20fill='%2316140f'/%3E%3Ccircle%20cx='90'%20cy='90'%20r='42'%20fill='%23c9a14a'/%3E%3Ctext%20x='90'%20y='110'%20font-family='Georgia,serif'%20font-size='56'%20text-anchor='middle'%20fill='%23221d10'%3ED%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dinner Tonight">
+<meta property="og:title" content="Dinner Tonight — Your daily dinner, decided">
+<meta property="og:description" content="A new four-course menu every evening — appetizer, main, side and dessert. Recipes, shopping list, one tap to order.">
+<meta property="og:url" content="https://dinner-tonight-daily.vercel.app/">
+<meta property="og:image" content="https://dinner-tonight-daily.vercel.app/api/og">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dinner Tonight — Your daily dinner, decided">
+<meta name="twitter:description" content="A new four-course menu every evening — the recipes, the shopping list, one tap to order.">
+<meta name="twitter:image" content="https://dinner-tonight-daily.vercel.app/api/og">
 <style>
   :root{
     --bg:#16140f; --panel:#1f1c15; --card:#232017; --ink:#f3ead6; --muted:#b3a98f;
@@ -28,8 +44,8 @@
   .nav .links a:hover{color:var(--ink)}
 
   .hero{padding:44px 0 10px}
-  .eyebrow{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
-  .date{color:var(--muted);font-size:14px;margin-bottom:22px}
+  .eyebrow{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+  .date{color:var(--muted);font-size:15px;margin-bottom:22px;font-family:var(--serif);font-style:italic;letter-spacing:.02em}
 
   /* prix-fixe daily menu card */
   .menu-board{background:linear-gradient(135deg,#272318,#1b1810);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:38px 40px 34px;position:relative}
@@ -41,13 +57,17 @@
   .mb-rule{display:flex;align-items:center;justify-content:center;margin:14px 0 6px}
   .mb-rule::before,.mb-rule::after{content:"";height:1px;background:rgba(201,161,74,.4);flex:1;max-width:200px}
   .mb-rule span{margin:0 14px;color:var(--gold);font-size:14px}
-  .course-row{text-align:center;padding:17px 8px;border-bottom:1px solid rgba(201,161,74,.16);cursor:pointer;transition:.15s;border-radius:8px}
+  .course-row{text-align:center;padding:20px 8px;border-bottom:1px solid rgba(201,161,74,.16);cursor:pointer;transition:.16s ease;border-radius:8px;min-height:44px}
   .course-row:last-child{border-bottom:none}
   .course-row:hover{background:rgba(201,161,74,.06)}
   .course-row .clabel{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold)}
   .course-row .ctitle{font-family:var(--serif);font-size:22px;color:var(--ink);margin:6px 0 4px}
   .course-row .cdesc{color:var(--muted);font-size:13.5px;font-style:italic;max-width:30em;margin:0 auto}
   .mb-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:22px}
+  .mb-sub-actions{display:flex;gap:10px;justify-content:center;align-items:center;margin-top:18px;font-size:13px;color:#8a7c5c;font-family:var(--sans);letter-spacing:.04em}
+  .sub-link{color:#b3a98f;text-decoration:none;padding:4px 2px;border-bottom:1px solid transparent;transition:.15s}
+  .sub-link:hover{color:#e3c987;border-bottom-color:rgba(227,201,135,.4)}
+  .sub-sep{color:#4a4232;user-select:none}
   .btn{background:var(--gold-soft);color:#221d10;border:none;font-size:14px;font-weight:700;letter-spacing:.03em;padding:13px 26px;border-radius:999px;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block}
   .btn:hover{background:var(--gold);transform:translateY(-1px)}
   .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
@@ -55,16 +75,31 @@
   .btn.cart-btn{background:#43a047;color:#fff;box-shadow:0 4px 14px rgba(67,160,71,.35)}
   .btn.cart-btn:hover{background:#388e3c;transform:translateY(-1px)}
 
-  /* shopping-list bridges — three intentional tiers */
-  .send-stack{display:flex;flex-direction:column;gap:14px;margin-top:18px;font-family:'Helvetica Neue',Arial,sans-serif;width:100%}
-  .send-group{display:flex;flex-wrap:wrap;gap:7px;align-items:center;justify-content:center}
-  .send-lbl{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#8a7c5c;width:100%;text-align:center;margin-bottom:4px}
-  .send-chip{font-size:12.5px;color:#f3ead6;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);padding:7px 13px;border-radius:999px;text-decoration:none;transition:.15s;white-space:nowrap;cursor:pointer;font-family:inherit}
-  .send-chip:hover{background:rgba(201,161,74,.16);border-color:#c9a14a;color:#e3c987}
-  .send-chip.primary{background:rgba(201,161,74,.18);border-color:rgba(201,161,74,.55);color:#fff5d4;font-weight:600;padding:9px 18px;font-size:13.5px}
-  .send-chip.primary:hover{background:rgba(201,161,74,.32);border-color:#e3c987}
-  .send-chip.order{background:rgba(67,160,71,.10);border-color:rgba(67,160,71,.34);color:#dcefd9}
-  .send-chip.order:hover{background:rgba(67,160,71,.22);border-color:#5dc863;color:#fff}
+  /* consolidated shopping-list CTA — one primary, one secondary, three small */
+  .order-stack{display:flex;flex-direction:column;gap:14px;margin-top:18px;font-family:'Helvetica Neue',Arial,sans-serif;width:100%;max-width:380px;margin-left:auto;margin-right:auto;align-items:stretch}
+  .cta-primary{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:linear-gradient(180deg,#d4af55,#b88c34);color:#1c170c;font-family:inherit;font-weight:700;letter-spacing:.02em;padding:16px 22px;border-radius:14px;text-decoration:none;transition:.18s ease;box-shadow:0 6px 18px rgba(201,161,74,.28),inset 0 1px 0 rgba(255,255,255,.18);border:1px solid #e3c987;min-height:64px;text-align:center}
+  .cta-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(201,161,74,.4),inset 0 1px 0 rgba(255,255,255,.22);background:linear-gradient(180deg,#e3c987,#c9a14a)}
+  .cta-primary:active{transform:translateY(0)}
+  .cta-icon{font-size:18px;margin-right:6px;display:inline-block;vertical-align:-2px}
+  .cta-label{font-size:16px;display:inline}
+  .cta-sub{font-size:11px;font-weight:500;letter-spacing:.04em;opacity:.78;margin-top:2px;display:block}
+  .cta-secondary{display:flex;align-items:center;justify-content:center;background:transparent;color:#f3ead6;font-family:inherit;font-size:14px;font-weight:600;padding:13px 22px;border-radius:14px;text-decoration:none;transition:.15s ease;border:1px solid rgba(201,161,74,.32);min-height:44px}
+  .cta-secondary:hover{border-color:#c9a14a;background:rgba(201,161,74,.07);color:#e3c987}
+  .cta-tertiary{display:flex;align-items:center;justify-content:center;gap:10px;font-family:inherit;font-size:12.5px;color:#8a7c5c;margin-top:2px}
+  .cta-tertiary a{color:#b3a98f;text-decoration:none;padding:6px 4px;transition:.15s;border-bottom:1px solid transparent}
+  .cta-tertiary a:hover{color:#e3c987;border-bottom-color:rgba(227,201,135,.45)}
+  .cta-tertiary .dot-sep{color:#4a4232;user-select:none}
+
+  /* Recipe modal uses a light parchment background — re-tune the CTA stack
+     so the buttons keep contrast and the tertiary links stay readable. */
+  .modal .cta-primary{background:linear-gradient(180deg,#b88c34,#8e6a25);color:#fff7e0;border-color:#8a6a2d;box-shadow:0 6px 18px rgba(110,80,30,.32),inset 0 1px 0 rgba(255,255,255,.22)}
+  .modal .cta-primary:hover{background:linear-gradient(180deg,#c9a14a,#a78030)}
+  .modal .cta-secondary{color:#3a2614;border-color:#b08d3f}
+  .modal .cta-secondary:hover{background:rgba(176,141,63,.16);color:#3a2614;border-color:#8a6a2d}
+  .modal .cta-tertiary{color:#6f5a2a}
+  .modal .cta-tertiary a{color:#5b4f33}
+  .modal .cta-tertiary a:hover{color:#3a2614;border-bottom-color:#8a6a2d}
+  .modal .cta-tertiary .dot-sep{color:#bfa66a}
 
   /* Make chips readable inside the recipe modal (parchment/light background) */
   .modal .send-chip{color:#3a2f1a;background:rgba(60,45,20,.06);border-color:rgba(91,79,51,.42)}
@@ -108,7 +143,7 @@
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px}
   .card{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:0 0 14px 14px;cursor:pointer;transition:.18s;display:flex;flex-direction:column}
-  .card:hover{transform:translateY(-3px);border-color:#5a4f33;border-top-color:var(--gold-soft);box-shadow:0 14px 30px rgba(0,0,0,.35)}
+  .card:hover{transform:translateY(-3px);border-color:#5a4f33;border-top-color:var(--gold-soft);box-shadow:0 14px 30px rgba(0,0,0,.4)}
   .card .info{padding:18px 18px 18px}
   .card .cat{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
   .card .info h4{font-family:var(--serif);font-weight:normal;font-size:18px;line-height:1.22;margin:7px 0 5px;color:var(--ink)}
@@ -151,7 +186,7 @@
   .rate{padding:18px 46px 30px;text-align:center;position:relative;z-index:2}
   .rate .lab{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#9a7d3c;margin-bottom:9px}
   .stars{display:flex;gap:6px;justify-content:center}
-  .stars button{background:none;border:none;cursor:pointer;font-size:28px;line-height:1;color:#d4c39c;transition:.12s;padding:0}
+  .stars button{background:none;border:none;cursor:pointer;font-size:30px;line-height:1;color:#d4c39c;transition:.18s ease;padding:6px 4px;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%}
   .stars button:hover,.stars button.on{color:#c9a14a;transform:scale(1.08)}
   .rate .msg{font-size:12px;color:#7c6a44;margin-top:9px;min-height:16px}
 
@@ -161,12 +196,15 @@
   .signup-card{background:linear-gradient(135deg,#272318,#1c1912);border:1px solid var(--line);border-radius:18px;padding:30px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
   .su-text h2{margin-bottom:6px}
   .su-form{display:flex;gap:10px;flex-wrap:wrap}
-  .su-form input{background:#15130e;border:1px solid var(--line);color:var(--ink);padding:13px 16px;border-radius:999px;font-size:14px;min-width:230px}
-  .su-form input:focus{outline:none;border-color:var(--gold-soft)}
+  .su-form input{background:#15130e;border:1px solid var(--line);color:var(--ink);padding:13px 18px;border-radius:999px;font-size:14px;min-width:230px;transition:.15s;min-height:46px}
+  .su-form input:focus{outline:none;border-color:var(--gold-soft);box-shadow:0 0 0 3px rgba(227,201,135,.18)}
+  .su-form input:invalid:not(:placeholder-shown){border-color:#b46a4a}
+  .su-form input::placeholder{color:#6b6044}
   .su-note{font-size:12px;color:var(--muted);margin-top:12px;text-align:center}
 
   footer{border-top:1px solid var(--line);padding:30px 0 50px;color:var(--muted);font-size:13px;text-align:center;margin-top:30px}
   footer .brand{justify-content:center;margin-bottom:8px;color:var(--ink)}
+  footer .foot-meta{margin-top:12px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:#5e5544}
 
   @media(max-width:760px){
     .wrap{padding:0 16px}
@@ -174,7 +212,7 @@
     .nav{height:auto;flex-direction:column;align-items:stretch;gap:8px;padding:11px 0}
     .brand{font-size:20px}
     .nav .links{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
-    .nav .links a{padding:6px 11px;font-size:12.5px;white-space:nowrap;background:var(--panel);border:1px solid var(--line);border-radius:999px}
+    .nav .links a{padding:9px 13px;font-size:12.5px;white-space:nowrap;background:var(--panel);border:1px solid var(--line);border-radius:999px;min-height:36px;display:inline-flex;align-items:center}
 
     .hero{padding:30px 0 6px}
     .menu-board{padding:24px 16px}
@@ -210,6 +248,9 @@
     .su-form{width:100%}
     .su-form input{width:100%;min-width:0}
     .su-form .btn{width:100%;text-align:center}
+    .order-stack{max-width:100%}
+    .cta-primary{padding:14px 18px;min-height:60px}
+    .cta-label{font-size:15.5px}
   }
 </style>
 </head>
@@ -299,7 +340,8 @@
 <footer>
   <div class="wrap">
     <div class="brand"><span style="color:var(--gold)">●</span> Dinner Tonight</div>
-    A new menu, decided for you — every single day.
+    <div>A new menu, decided for you — every single day.</div>
+    <div class="foot-meta" id="footMeta"></div>
   </div>
 </footer>
 
@@ -806,6 +848,15 @@ function dailyPick(course, offset=0){
   return pool[(daySeed()+offset)%pool.length];
 }
 
+function setFootMeta(){
+  try{
+    const el = document.getElementById('footMeta');
+    if (!el) return;
+    const now = new Date();
+    const fmt = new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}).format(now);
+    el.textContent = 'Last updated ' + fmt + ' ET';
+  }catch(e){}
+}
 function renderTodayMenu(){
   document.getElementById('dateLine').textContent = fmtDate();
   const app=dailyPick('appetizer'), main=dailyPick('main'), side=dailyPick('side'), des=dailyPick('dessert');
@@ -830,8 +881,11 @@ function renderTodayMenu(){
     ${row('Dessert',des)}
     <div class="mb-actions">
       ${sendRowHTML('menu=today')}
-      <a class="btn ghost" href="#browse">Browse the full menu</a>
-      <a class="btn ghost" href="#calendar">Get it daily</a>
+    </div>
+    <div class="mb-sub-actions">
+      <a class="sub-link" href="#browse">Browse the full menu</a>
+      <span class="sub-sep">·</span>
+      <a class="sub-link" href="#calendar">Get it daily</a>
     </div>`;
 }
 
@@ -962,34 +1016,31 @@ function sendRowHTML(qs){
   // For menu=today we append the user's local YYYY-MM-DD so the API resolves
   // the same menu the homepage rendered (avoids the UTC-rollover mismatch).
   function localDateISO(){
-    // ET-anchored YYYY-MM-DD so the chips always fetch the menu the
-    // homepage rendered (and the server's daySeed agrees with).
     const parts = _ET_FMT.formatToParts(new Date());
     const g = t => parts.find(p=>p.type===t).value;
     return g('year') + '-' + g('month') + '-' + g('day');
   }
   const dateQ = (qs === 'menu=today') ? ('&date=' + localDateISO()) : '';
-  const base = '/api/grocery?' + qs + dateQ;
-  const list = '/api/grocery?' + qs + dateQ + '&view=list';
+  const list = '/api/grocery?' + qs + dateQ;
+  const bring = '/api/grocery?' + qs + dateQ + '&service=bring';
+  const rem   = '/api/grocery?' + qs + dateQ + '&service=reminders';
+  const sms   = '/api/grocery?' + qs + dateQ + '&service=sms';
   return `
-    <div class="send-stack">
-      <div class="send-group">
-        <div class="send-lbl">Send to your shopping list</div>
-        <a class="send-chip primary" href="${base}&service=bring" target="_blank" rel="noopener" title="One-tap import to your Bring! shopping list app (mobile)">🛒 Send to Bring!</a>
-      </div>
-      <div class="send-group">
-        <div class="send-lbl">Order now (Long Island delivery)</div>
-        <a class="send-chip order" href="${base}&service=amazon" target="_blank" rel="noopener" title="Open Amazon: tap-to-search every ingredient, one Add-to-cart tap each">Amazon</a>
-        <a class="send-chip order" href="${base}&service=freshdirect" target="_blank" rel="noopener" title="Open FreshDirect search with tonight's ingredients">FreshDirect</a>
-        <a class="send-chip order" href="${base}&service=walmart" target="_blank" rel="noopener" title="Pre-load matching items into a Walmart Grocery cart">Walmart</a>
-        <a class="send-chip order" href="/api/stop-and-shop?${qs}${dateQ}" target="_blank" rel="noopener" title="Open Stop & Shop per-ingredient search page">Stop &amp; Shop</a>
-        <a class="send-chip order" href="/api/shoprite?${qs}${dateQ}" target="_blank" rel="noopener" title="Open ShopRite per-ingredient search page">ShopRite</a>
-      </div>
-      <div class="send-group">
-        <div class="send-lbl">Save the list</div>
-        <a class="send-chip" href="${base}&service=reminders" title="Email yourself — long-press on iOS to add to Reminders / Notes">Email / Reminders</a>
-        <a class="send-chip" href="${base}&service=sms" title="Text the list to yourself">Text it</a>
-        <a class="send-chip" href="${list}" target="_blank" rel="noopener" title="Open a printable checklist">Print list</a>
+    <div class="order-stack">
+      <a class="cta-primary" href="${list}" target="_blank" rel="noopener" title="Tonight's ingredients, ready to order from your store">
+        <span class="cta-icon">🛒</span>
+        <span class="cta-label">Order ingredients</span>
+        <span class="cta-sub">Pick your store on the next page</span>
+      </a>
+      <a class="cta-secondary" href="${bring}" target="_blank" rel="noopener" title="Send the list to Bring! (mobile shopping-list app)">
+        Save to my list (Bring!)
+      </a>
+      <div class="cta-tertiary">
+        <a href="${list}" target="_blank" rel="noopener">Print</a>
+        <span class="dot-sep">·</span>
+        <a href="${rem}">Email me</a>
+        <span class="dot-sep">·</span>
+        <a href="${sms}">Text it</a>
       </div>
     </div>`;
 }
@@ -1088,7 +1139,7 @@ function openRestaurant(i){
   overlay.classList.add('open'); document.body.style.overflow='hidden';
 }
 
-renderTodayMenu(); renderCravings(); renderMealPrep(); renderRestaurants(); renderReco();
+renderTodayMenu(); setFootMeta(); renderCravings(); renderMealPrep(); renderRestaurants(); renderReco();
 </script>
 </body>
 </html>
