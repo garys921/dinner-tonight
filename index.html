@@ -55,21 +55,16 @@
   .btn.cart-btn{background:#43a047;color:#fff;box-shadow:0 4px 14px rgba(67,160,71,.35)}
   .btn.cart-btn:hover{background:#388e3c;transform:translateY(-1px)}
 
-  /* shopping-list bridges (Bring!, Reminders, LI grocers) */
-  .send-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin-top:10px;font-family:'Helvetica Neue',Arial,sans-serif}
-  .send-row .send-lbl{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#8a7c5c;width:100%;text-align:center;margin-bottom:2px}
-  .send-row .send-chip{font-size:12px;color:#f3ead6;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);padding:6px 11px;border-radius:999px;text-decoration:none;transition:.15s;white-space:nowrap}
-  .send-row .send-chip:hover{background:rgba(201,161,74,.18);border-color:#c9a14a;color:#e3c987}
-  .send-row .send-chip.bring{background:rgba(201,161,74,.14);border-color:rgba(201,161,74,.45)}
-  .send-row .send-chip.rt{font-weight:600}
-  .send-row .send-chip.rt.fd{background:rgba(232,70,43,.14);border-color:rgba(232,70,43,.45)}
-  .send-row .send-chip.rt.fd:hover{background:#e8462b;color:#fff;border-color:#e8462b}
-  .send-row .send-chip.rt.af{background:rgba(255,153,0,.14);border-color:rgba(255,153,0,.45)}
-  .send-row .send-chip.rt.af:hover{background:#ff9900;color:#0f1111;border-color:#ff9900}
-  .send-row .send-chip.rt.wm{background:rgba(0,113,220,.14);border-color:rgba(0,113,220,.45)}
-  .send-row .send-chip.rt.wm:hover{background:#0071dc;color:#fff;border-color:#0071dc}
-  .send-row .send-chip.rt.ic{background:rgba(67,160,71,.14);border-color:rgba(67,160,71,.45)}
-  .send-row .send-chip.rt.ic:hover{background:#43a047;color:#fff;border-color:#43a047}
+  /* shopping-list bridges — three intentional tiers */
+  .send-stack{display:flex;flex-direction:column;gap:14px;margin-top:18px;font-family:'Helvetica Neue',Arial,sans-serif;width:100%}
+  .send-group{display:flex;flex-wrap:wrap;gap:7px;align-items:center;justify-content:center}
+  .send-lbl{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:#8a7c5c;width:100%;text-align:center;margin-bottom:4px}
+  .send-chip{font-size:12.5px;color:#f3ead6;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);padding:7px 13px;border-radius:999px;text-decoration:none;transition:.15s;white-space:nowrap;cursor:pointer;font-family:inherit}
+  .send-chip:hover{background:rgba(201,161,74,.16);border-color:#c9a14a;color:#e3c987}
+  .send-chip.primary{background:rgba(201,161,74,.18);border-color:rgba(201,161,74,.55);color:#fff5d4;font-weight:600;padding:9px 18px;font-size:13.5px}
+  .send-chip.primary:hover{background:rgba(201,161,74,.32);border-color:#e3c987}
+  .send-chip.order{background:rgba(67,160,71,.10);border-color:rgba(67,160,71,.34);color:#dcefd9}
+  .send-chip.order:hover{background:rgba(67,160,71,.22);border-color:#5dc863;color:#fff}
 
   .mc-cart{margin-top:18px;text-align:center}
 
@@ -819,7 +814,6 @@ function renderTodayMenu(){
     ${row('Side',side)}
     ${row('Dessert',des)}
     <div class="mb-actions">
-      <a class="btn cart-btn" href="/api/grocery?menu=today" target="_blank" rel="noopener">🛒 Get the ingredients</a>
       ${sendRowHTML('menu=today')}
       <a class="btn ghost" href="#browse">Browse the full menu</a>
       <a class="btn ghost" href="#calendar">Get it daily</a>
@@ -928,7 +922,6 @@ function openRecipe(i){
       ${r.pair?`<div class="mc-pair">${r.cal?r.pair:'To drink — '+r.pair}</div>`:''}
       ${side?`<div class="mc-serve">Serve with <b>${side}</b></div>`:''}
       <div class="mc-cart">
-        <a class="btn cart-btn" href="/api/grocery?recipe=${encodeURIComponent(slugify(r.title))}" target="_blank" rel="noopener">🛒 Get the ingredients</a>
         ${sendRowHTML('recipe=' + encodeURIComponent(slugify(r.title)))}
       </div>
     </div>
@@ -952,18 +945,25 @@ function rate(i,n){ setRating(i,n); renderStars(i);
 function sendRowHTML(qs){
   // qs is a query string like 'recipe=tuscan-steakhouse' or 'menu=today'
   const base = '/api/grocery?' + qs;
+  const list = '/api/grocery?' + qs + '&view=list';
   return `
-    <div class="send-row">
-      <div class="send-lbl">Or open list at</div>
-      <a class="send-chip rt fd" href="${base}&service=freshdirect" target="_blank" rel="noopener" title="FreshDirect — Long Island delivery">🥬 FreshDirect</a>
-      <a class="send-chip rt af" href="${base}&service=amazon" target="_blank" rel="noopener" title="Amazon Fresh — Prime delivery, most US metros">📦 Amazon Fresh</a>
-      <a class="send-chip rt wm" href="${base}&service=walmart" target="_blank" rel="noopener" title="Walmart — pickup + delivery nationwide">🛒 Walmart</a>
-      <a class="send-chip rt ic" href="${base}&service=instacart" target="_blank" rel="noopener" title="Instacart — multi-banner aggregator">🥕 Instacart</a>
-      <a class="send-chip" href="${base}&service=stopandshop" target="_blank" rel="noopener" title="Search Stop & Shop / Peapod (Long Island)">Stop &amp; Shop</a>
-      <a class="send-chip" href="${base}&service=shoprite" target="_blank" rel="noopener" title="Search ShopRite From Home (Long Island)">ShopRite</a>
-      <a class="send-chip bring" href="${base}&service=bring" target="_blank" rel="noopener" title="Send ingredients to your Bring! shopping list">Bring!</a>
-      <a class="send-chip" href="${base}&service=reminders" title="Open mail prefilled — long-press to add to Apple Reminders / Notes">Reminders / Notes</a>
-      <a class="send-chip" href="${base}&service=sms" title="Text the list to yourself">Text it</a>
+    <div class="send-stack">
+      <div class="send-group">
+        <div class="send-lbl">Send to your shopping list</div>
+        <a class="send-chip primary" href="${base}&service=bring" target="_blank" rel="noopener" title="One-tap import to your Bring! shopping list app (mobile)">🛒 Send to Bring!</a>
+      </div>
+      <div class="send-group">
+        <div class="send-lbl">Order now (Long Island delivery)</div>
+        <a class="send-chip order" href="${base}&service=amazon" target="_blank" rel="noopener" title="Pre-load shelf-stable staples into your Amazon Fresh cart">Amazon Fresh</a>
+        <a class="send-chip order" href="${base}&service=freshdirect" target="_blank" rel="noopener" title="Open FreshDirect search with tonight's ingredients">FreshDirect</a>
+        <a class="send-chip order" href="${base}&service=walmart" target="_blank" rel="noopener" title="Pre-load matching items into a Walmart Grocery cart">Walmart</a>
+      </div>
+      <div class="send-group">
+        <div class="send-lbl">Save the list</div>
+        <a class="send-chip" href="${base}&service=reminders" title="Email yourself — long-press on iOS to add to Reminders / Notes">Email / Reminders</a>
+        <a class="send-chip" href="${base}&service=sms" title="Text the list to yourself">Text it</a>
+        <a class="send-chip" href="${list}" target="_blank" rel="noopener" title="Open a printable checklist">Print list</a>
+      </div>
     </div>`;
 }
 
