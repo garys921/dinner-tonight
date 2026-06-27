@@ -52,6 +52,9 @@
   .btn:hover{background:var(--gold);transform:translateY(-1px)}
   .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
   .btn.ghost:hover{border-color:var(--gold-soft)}
+  .btn.cart-btn{background:#43a047;color:#fff;box-shadow:0 4px 14px rgba(67,160,71,.35)}
+  .btn.cart-btn:hover{background:#388e3c;transform:translateY(-1px)}
+  .mc-cart{margin-top:18px;text-align:center}
 
   .section{padding:34px 0 10px}
   .section h2{font-family:var(--serif);font-weight:normal;font-size:25px;letter-spacing:.02em;margin-bottom:4px}
@@ -799,7 +802,8 @@ function renderTodayMenu(){
     ${row('Side',side)}
     ${row('Dessert',des)}
     <div class="mb-actions">
-      <a class="btn" href="#browse">Browse the full menu</a>
+      <a class="btn cart-btn" href="/api/grocery?menu=today" target="_blank" rel="noopener">🛒 Order ingredients on Instacart</a>
+      <a class="btn ghost" href="#browse">Browse the full menu</a>
       <a class="btn ghost" href="#calendar">Get it daily</a>
     </div>`;
 }
@@ -879,6 +883,7 @@ function renderReco(){
   document.getElementById('recoGrid').innerHTML=scored.map(({r,i})=>cardHTML(r,i)).join('');
 }
 
+function slugify(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
 function openRecipe(i){
   const r=RECIPES[i], c=CATS[r.cat];
   const side=(r.course==='main'&&r.cat!=='mealprep')?suggestedSide(r):null;
@@ -904,6 +909,9 @@ function openRecipe(i){
       </div>
       ${r.pair?`<div class="mc-pair">${r.cal?r.pair:'To drink — '+r.pair}</div>`:''}
       ${side?`<div class="mc-serve">Serve with <b>${side}</b></div>`:''}
+      <div class="mc-cart">
+        <a class="btn cart-btn" href="/api/grocery?recipe=${encodeURIComponent(slugify(r.title))}" target="_blank" rel="noopener">🛒 Order ingredients on Instacart</a>
+      </div>
     </div>
     <div class="rate">
       <div class="lab">Tried it? Rate it — we'll tailor your suggestions</div>
