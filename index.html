@@ -943,9 +943,19 @@ function rate(i,n){ setRating(i,n); renderStars(i);
 }
 
 function sendRowHTML(qs){
-  // qs is a query string like 'recipe=tuscan-steakhouse' or 'menu=today'
-  const base = '/api/grocery?' + qs;
-  const list = '/api/grocery?' + qs + '&view=list';
+  // qs is a query string like 'recipe=tuscan-steakhouse' or 'menu=today'.
+  // For menu=today we append the user's local YYYY-MM-DD so the API resolves
+  // the same menu the homepage rendered (avoids the UTC-rollover mismatch).
+  function localDateISO(){
+    const d = new Date();
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return yyyy + '-' + mm + '-' + dd;
+  }
+  const dateQ = (qs === 'menu=today') ? ('&date=' + localDateISO()) : '';
+  const base = '/api/grocery?' + qs + dateQ;
+  const list = '/api/grocery?' + qs + dateQ + '&view=list';
   return `
     <div class="send-stack">
       <div class="send-group">

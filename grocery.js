@@ -198,6 +198,20 @@ export function findRecipeBySlug(slug){
 
 export { menuForDate, todaysMenu };
 
+// Parse a YYYY-MM-DD date string (sent by the homepage in the user's local
+// calendar day) and return the menu for that day. Solves the UTC-rollover
+// bug where the server thinks "today" is the next UTC day while the user
+// is still on the previous local day.
+export function menuForDateString(dateStr){
+  // Accept YYYY-MM-DD; create a UTC Date so the server's daySeed math
+  // (which uses UTC getters) hits the right slot.
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateStr || ''));
+  if (!m) return todaysMenu();
+  const d = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
+  return menuForDate(d);
+}
+
+
 // ─── Shopping-list-app bridges & Long Island grocery search builders ──────────
 // Added by shopping-list-bridges agent. None of these require auth or paid APIs.
 //
