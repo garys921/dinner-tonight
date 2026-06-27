@@ -775,7 +775,14 @@ function categoryPrefs(){
 function hasRatings(){ return Object.keys(ratings).length>0; }
 function starsMini(s){ return s?'★'.repeat(s)+'☆'.repeat(5-s):''; }
 
-function daySeed(){ const n=new Date(); return Math.floor(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())/86400000); }
+// daySeed: anchor on America/New_York calendar day so we render the same
+// menu the server (recipes.js) picked, even between ET-midnight and UTC-midnight.
+const _ET_FMT = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year:'numeric', month:'2-digit', day:'2-digit' });
+function daySeed(){
+  const parts = _ET_FMT.formatToParts(new Date());
+  const g = t => parts.find(p=>p.type===t).value;
+  return Math.floor(Date.UTC(Number(g('year')), Number(g('month'))-1, Number(g('day')))/86400000);
+}
 function fmtDate(){ return new Date().toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'}); }
 function byCourse(c){ return RECIPES.map((r,i)=>({r,i})).filter(x=>x.r.course===c); }
 function indexOfTitle(t){ return RECIPES.findIndex(r=>r.title===t); }
@@ -947,11 +954,11 @@ function sendRowHTML(qs){
   // For menu=today we append the user's local YYYY-MM-DD so the API resolves
   // the same menu the homepage rendered (avoids the UTC-rollover mismatch).
   function localDateISO(){
-    const d = new Date();
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return yyyy + '-' + mm + '-' + dd;
+    // ET-anchored YYYY-MM-DD so the chips always fetch the menu the
+    // homepage rendered (and the server's daySeed agrees with).
+    const parts = _ET_FMT.formatToParts(new Date());
+    const g = t => parts.find(p=>p.type===t).value;
+    return g('year') + '-' + g('month') + '-' + g('day');
   }
   const dateQ = (qs === 'menu=today') ? ('&date=' + localDateISO()) : '';
   const base = '/api/grocery?' + qs + dateQ;

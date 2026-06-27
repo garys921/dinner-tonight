@@ -17,8 +17,35 @@ const UNIT_MAP = {
   ml: 'milliliter', l: 'liter', liter: 'liter', litre: 'liter',
   pinch: 'pinch', dash: 'dash', clove: 'each', cloves: 'each',
   can: 'can', cans: 'can', package: 'package', pkg: 'package',
-  slice: 'each', slices: 'each', bunch: 'bunch'
+  slice: 'each', slices: 'each', bunch: 'bunch',
+  // Extra unit words the QA agent saw leaking into search queries
+  // ("Sprigs rosemary", "Scoops vanilla gelato", "Shots espresso", etc.)
+  sprig: 'each', sprigs: 'each',
+  scoop: 'each', scoops: 'each',
+  shot: 'each', shots: 'each',
+  piece: 'each', pieces: 'each',
+  head: 'each', heads: 'each',
+  stalk: 'each', stalks: 'each',
+  stick: 'each', sticks: 'each',
+  jar: 'each', jars: 'each',
+  bottle: 'each', bottles: 'each',
+  bag: 'each', bags: 'each',
+  box: 'each', boxes: 'each',
+  loaf: 'each', loaves: 'each',
+  sheet: 'each', sheets: 'each',
+  pint: 'each', pints: 'each', quart: 'each', quarts: 'each',
+  // Common typos / capitalized at start of string (we lowercase before lookup)
+  tbs: 'tablespoon', t: 'teaspoon'
 };
+// Same set as a tokenizer-safe stripper: when the *name* still begins with
+// a unit word (because the recipe omitted the count, e.g. "Sprigs rosemary",
+// "Scoops vanilla gelato"), drop the unit so the search box gets the noun.
+const LEADING_UNIT_RE = new RegExp(
+  '^(?:sprigs?|scoops?|shots?|slices?|cloves?|cups?|tbsp|tbs|tsp|teaspoons?|tablespoons?|' +
+  'pinch(?:es)?|dash(?:es)?|cans?|packages?|pkgs?|pieces?|heads?|stalks?|sticks?|' +
+  'jars?|bottles?|bags?|boxes?|loaves|loaf|sheets?|pints?|quarts?|bunch(?:es)?)\\s+',
+  'i'
+);
 
 const NOISE = /\b(thinly|finely|coarsely|roughly|freshly|fresh|cold|hot|warm|cooked|raw|optional|to taste|peeled|seeded|pitted|chopped|sliced|diced|minced|grated|shaved|crushed|halved|quartered|drained|rinsed|softened|melted|room temperature|large|small|medium|extra-firm|firm|ripe|whole|cut|cubed|torn|crusty)\b/gi;
 
@@ -41,11 +68,23 @@ function parseQty(token){
   return Number.isFinite(n) ? n : null;
 }
 
-export function parseIngredient(raw){
+// Internal: parse a SINGLE comma-free phrase. Returns one item or null.
+function parseOneIngredient(raw, originalDisplay){
   if (!raw) return null;
   let s = String(raw).trim();
-  if (/^optional/i.test(s)) return null;
-  s = s.replace(/,\s*(rinsed|drained|peeled|halved|chopped|sliced|diced|to taste|optional).*$/i, '');
+  if (!s) return null;
+  if (/^optional\b/i.test(s)) return null;
+
+  // Drop parenthetical asides BEFORE anything else — they create junk like
+  // "Sriracha ()" when the inner text gets stripped by other passes.
+  s = s.replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+
+  // Pure-modifier lines we don't want as ingredients.
+  if (/^(to taste|for serving|for garnish|optional|as needed)$/i.test(s)) return null;
+
+  // Strip trailing prep notes like "rinsed, drained, peeled" attached with a
+  // comma (the caller already splits real comma-joined ingredient lists).
+  s = s.replace(/,\s*(rinsed|drained|peeled|halved|chopped|sliced|diced|minced|to taste|optional|softened|melted|cubed|cooked|raw|seeded|pitted|crushed|torn|warmed|chilled|sifted|shredded|grated|thawed|uncooked|trimmed|deveined|quartered|julienned|cracked|ground|whisked|beaten|zested|skinless|boneless|toasted|roasted|smoked|patted dry)\b.*$/i, '');
 
   // Pull the leading quantity off first; the rest is unit? + name.
   const qm = s.match(/^(\d+\s+\d+\/\d+|\d+\/\d+|\d+(?:\.\d+)?(?:\s*-\s*\d+(?:\.\d+)?)?)\s+(.+)$/);
@@ -70,16 +109,57 @@ export function parseIngredient(raw){
     }
   }
 
+  // Even with no leading number, drop a stray unit word at the head of the
+  // name. Recipes like "Sprigs rosemary" / "Scoops vanilla gelato" used to
+  // leak the unit into the search query.
+  name = name.replace(LEADING_UNIT_RE, '');
+
   name = name.replace(NOISE, '').replace(/\s+/g, ' ').replace(/^\s*-\s*/, '').trim();
-  if (name.includes(',')) name = name.split(',')[0].trim();
+
+  // Filter junk that survives normalization.
+  if (!name) return null;
   if (isPantryStaple(name)) return null;
   if (name.length < 2) return null;
+  if (/^(and|or|plus|the)$/i.test(name)) return null;
 
   return {
     name: name.replace(/^\w/, c => c.toUpperCase()),
-    display_text: raw,
+    display_text: originalDisplay || raw,
     measurements: quantity ? [{ quantity, unit: unit || 'each' }] : [{ quantity: 1, unit: 'each' }]
   };
+}
+
+// Public entry point. Returns an ARRAY of zero or more items, because a
+// single raw line like "Parsley, scallion, basil" expands into three.
+// Callers flatten the array.
+export function parseIngredient(raw){
+  if (!raw) return [];
+  const text = String(raw).trim();
+  if (!text) return [];
+
+  // Detect "comma-joined herb / aromatic list" — e.g. "Ginger, garlic, sesame oil"
+  // or "Parsley, scallion, basil". Heuristic: every comma-separated chunk is
+  // short and has no leading number and no embedded unit phrase. Otherwise
+  // we treat the comma as a prep separator ("1 cup flour, sifted") and keep
+  // the original behavior.
+  const chunks = text.split(',').map(x => x.trim()).filter(Boolean);
+  const looksLikeList = chunks.length >= 2 && chunks.every(c =>
+    !/^\d/.test(c) &&
+    c.split(/\s+/).length <= 3 &&
+    !/\b(cup|cups|tsp|tbsp|teaspoon|tablespoon|oz|ounce|lb|pound|gram|kg|ml|liter|can|jar|bottle|package|pkg|bag|box|stick|pint|quart|pinch|dash)\b/i.test(c)
+  );
+
+  if (looksLikeList){
+    const out = [];
+    for (const c of chunks){
+      const item = parseOneIngredient(c, raw);
+      if (item) out.push(item);
+    }
+    return out;
+  }
+
+  const single = parseOneIngredient(text, raw);
+  return single ? [single] : [];
 }
 
 function mergeIngredients(items){
@@ -101,7 +181,14 @@ function mergeIngredients(items){
 }
 
 export function ingredientsForRecipe(r){
-  return (r.ing || []).map(parseIngredient).filter(Boolean);
+  const out = [];
+  for (const line of (r.ing || [])){
+    const items = parseIngredient(line);
+    if (!items) continue;
+    if (Array.isArray(items)) out.push(...items);
+    else out.push(items);
+  }
+  return out;
 }
 
 export function ingredientsForMenu(m){
@@ -198,17 +285,14 @@ export function findRecipeBySlug(slug){
 
 export { menuForDate, todaysMenu };
 
-// Parse a YYYY-MM-DD date string (sent by the homepage in the user's local
-// calendar day) and return the menu for that day. Solves the UTC-rollover
-// bug where the server thinks "today" is the next UTC day while the user
-// is still on the previous local day.
+// Parse a YYYY-MM-DD date string and return the menu for that ET calendar
+// day. Used by all standalone endpoints so the chips fetch the SAME menu
+// the homepage rendered, even between ET-midnight and UTC-midnight.
+import { menuForYMD } from './recipes.js';
 export function menuForDateString(dateStr){
-  // Accept YYYY-MM-DD; create a UTC Date so the server's daySeed math
-  // (which uses UTC getters) hits the right slot.
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateStr || ''));
   if (!m) return todaysMenu();
-  const d = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
-  return menuForDate(d);
+  return menuForYMD({ year: Number(m[1]), month: Number(m[2]), day: Number(m[3]) });
 }
 
 
@@ -274,17 +358,27 @@ export function freshDirectSearchURL(ingredients){
   return 'https://www.freshdirect.com/search?search=' + encodeURIComponent(q);
 }
 
+// Stop & Shop / Peapod: their multi-item product-search silently drops items
+// past ~6 tokens. We still expose the bulk URL for the chip-row, but the
+// recommended UX is the per-ingredient list page (api/stop-and-shop.js).
 export function stopAndShopSearchURL(ingredients){
-  // Stop & Shop / Peapod use this product-search path; for multi-item queries
-  // the user lands on a results page they can shop from.
-  const q = ingredients.map(i => i.name).slice(0, 6).join(' ');
+  const q = ingredients.map(i => i.name).slice(0, 3).join(' ');
   return 'https://stopandshop.com/product-search/' + encodeURIComponent(q);
 }
+export function stopAndShopItemSearchURL(name){
+  return 'https://stopandshop.com/product-search/' + encodeURIComponent(String(name || ''));
+}
 
+// ShopRite From Home: same story — truncates silently. Keep bulk for the
+// chip-row, expose per-item for the surgical list page.
 export function shopRiteSearchURL(ingredients){
-  const q = ingredients.map(i => i.name).slice(0, 6).join(' ');
+  const q = ingredients.map(i => i.name).slice(0, 3).join(' ');
   return 'https://www.shoprite.com/sm/planning/rsid/3000/results?q='
     + encodeURIComponent(q);
+}
+export function shopRiteItemSearchURL(name){
+  return 'https://www.shoprite.com/sm/planning/rsid/3000/results?q='
+    + encodeURIComponent(String(name || ''));
 }
 
 // ─── Amazon Fresh & Walmart search URLs (added 2026-06-26 per user request) ──

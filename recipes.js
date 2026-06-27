@@ -444,12 +444,66 @@ const RECIPES = [
    pair:"~390 cal · 22g protein"}
 ];
 
-function daySeed(d=new Date()){return Math.floor(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate())/86400000);}
+// ─── Day anchoring (America/New_York) ─────────────────────────────────────
+// The site lives on Eastern Time. Anchoring every "what is tonight's menu?"
+// lookup on the ET calendar day keeps the homepage, the grocery chips, the
+// daily-email cron, and the ICS feed all agreeing on the same dish, even
+// during the ~4-hour window each evening between ET midnight and UTC midnight.
+const _ET_TZ = 'America/New_York';
+const _etFmt = new Intl.DateTimeFormat('en-US', {
+  timeZone: _ET_TZ, year: 'numeric', month: '2-digit', day: '2-digit'
+});
+function etYMD(d=new Date()){
+  const parts = _etFmt.formatToParts(d);
+  const g = t => parts.find(p => p.type === t).value;
+  return { year: Number(g('year')), month: Number(g('month')), day: Number(g('day')) };
+}
+function _daysFromYMD(o){
+  // Day-of-epoch from a Y/M/D bag. We intentionally use UTC math here — the
+  // YMD values came from the ET formatter, so the result is a stable integer
+  // that's identical for every instant within a given ET calendar day.
+  return Math.floor(Date.UTC(o.year, o.month - 1, o.day) / 86400000);
+}
+function daySeed(d=new Date()){ return _daysFromYMD(etYMD(d)); }
+// Lookup by an explicit YMD object (used by ICS to walk a 21-day window
+// without UTC-midnight off-by-one bugs across DST boundaries).
+function daySeedFromYMD(o){ return _daysFromYMD(o); }
+
 function byCourse(c){return RECIPES.filter(r=>r.course===c);}
 function isFishy(r){return r.cat==="seafood"||/salmon|shrimp|fish|cod|tuna|scallop/i.test(r.title);}
-function pickForDate(course,d=new Date()){let l=byCourse(course);if(course==="main")l=l.filter(r=>r.cat!=="mealprep");const pool=[];l.forEach(r=>{const w=isFishy(r)?1:2;for(let k=0;k<w;k++)pool.push(r);});return pool[daySeed(d)%pool.length];}
-function menuForDate(d=new Date()){return {appetizer:pickForDate("appetizer",d),main:pickForDate("main",d),side:pickForDate("side",d),dessert:pickForDate("dessert",d)};}
+function _pickFromSeed(course, seed){
+  let l = byCourse(course);
+  if (course === 'main') l = l.filter(r => r.cat !== 'mealprep');
+  const pool = [];
+  l.forEach(r => { const w = isFishy(r) ? 1 : 2; for (let k = 0; k < w; k++) pool.push(r); });
+  return pool[((seed % pool.length) + pool.length) % pool.length];
+}
+function pickForDate(course, d=new Date()){ return _pickFromSeed(course, daySeed(d)); }
+function pickForYMD(course, ymd){ return _pickFromSeed(course, _daysFromYMD(ymd)); }
+function menuForDate(d=new Date()){
+  return {
+    appetizer: pickForDate('appetizer', d),
+    main:      pickForDate('main', d),
+    side:      pickForDate('side', d),
+    dessert:   pickForDate('dessert', d)
+  };
+}
+function menuForYMD(ymd){
+  return {
+    appetizer: pickForYMD('appetizer', ymd),
+    main:      pickForYMD('main', ymd),
+    side:      pickForYMD('side', ymd),
+    dessert:   pickForYMD('dessert', ymd)
+  };
+}
 function todaysMenu(){return menuForDate(new Date());}
 function recipeForDate(d=new Date()){return pickForDate("main",d);}
 
-export { CATS, COURSES, RECIPES, daySeed, byCourse, isFishy, pickForDate, menuForDate, todaysMenu, recipeForDate };
+export {
+  CATS, COURSES, RECIPES,
+  daySeed, daySeedFromYMD, etYMD,
+  byCourse, isFishy,
+  pickForDate, pickForYMD,
+  menuForDate, menuForYMD,
+  todaysMenu, recipeForDate
+};
