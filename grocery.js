@@ -197,3 +197,78 @@ export function findRecipeBySlug(slug){
 }
 
 export { menuForDate, todaysMenu };
+
+// ─── Shopping-list-app bridges & Long Island grocery search builders ──────────
+// Added by shopping-list-bridges agent. None of these require auth or paid APIs.
+//
+// Categories:
+//   "list"  → sends ingredients to a shopping-list app (Bring!, Apple Reminders, plain copy)
+//   "order" → opens a Long Island grocery service search/cart (FreshDirect, Stop & Shop, ShopRite)
+
+// Build a plain-text ingredient list, one per line (used by Reminders/Notes/copy/email).
+export function ingredientsAsLines(ingredients){
+  return ingredients.map(it => {
+    const m = it.measurements && it.measurements[0];
+    const q = m && m.quantity ? (Math.round(m.quantity * 100) / 100) : '';
+    const u = m && m.unit && m.unit !== 'each' ? ' ' + m.unit : '';
+    return ((q ? q + u + ' ' : '') + it.name).trim();
+  });
+}
+
+// Bring! deeplink — Bring's server fetches our recipe-card URL, parses the
+// JSON-LD Recipe, and adds the ingredients on the user's device.
+// Docs: https://sites.google.com/getbring.com/bring-import-dev-guide/web-to-app-integration
+export function bringDeeplinkURL(recipeCardUrl, opts){
+  const baseQty = (opts && opts.baseQuantity) || 2;
+  const reqQty = (opts && opts.requestedQuantity) || baseQty;
+  return 'https://api.getbring.com/rest/bringrecipes/deeplink'
+    + '?url=' + encodeURIComponent(recipeCardUrl)
+    + '&source=web'
+    + '&baseQuantity=' + baseQty
+    + '&requestedQuantity=' + reqQty;
+}
+
+// Apple Reminders / iOS Reminders — there's no public x-apple-reminderkit:// URL
+// scheme that takes a list of items, so the best universal trick is mailto: with
+// the list pre-formatted; on iOS the user can long-press the body and "Add to
+// Reminders". For Apple Notes / Reminders we also expose a dedicated /view=list
+// page (already in api/grocery.js) the user can save.
+
+// Generic mailto bridge — works for Reminders, Notes, AnyList, OurGroceries,
+// Paprika (all support sharing a plain-text list via mail/share-sheet).
+export function mailtoListURL(title, ingredients){
+  const subject = (title || 'Shopping list') + ' — Dinner Tonight';
+  const body = ingredientsAsLines(ingredients).join('\n');
+  return 'mailto:?subject=' + encodeURIComponent(subject)
+    + '&body=' + encodeURIComponent(body);
+}
+
+// SMS bridge — same idea, lands directly in iMessage so user can long-press to
+// add to Reminders or forward to themselves.
+export function smsListURL(title, ingredients){
+  const body = (title ? title + ':\n' : '') + ingredientsAsLines(ingredients).join('\n');
+  return 'sms:?body=' + encodeURIComponent(body);
+}
+
+// ─── Long Island grocery search URLs ─────────────────────────────────────────
+// All three deliver to Nassau & Suffolk counties. No public cart-add API exists
+// for small sites; the best we can do without an account is open the retailer's
+// product search for the combined ingredient query.
+
+export function freshDirectSearchURL(ingredients){
+  const q = ingredients.map(i => i.name).slice(0, 8).join(' ');
+  return 'https://www.freshdirect.com/search?search=' + encodeURIComponent(q);
+}
+
+export function stopAndShopSearchURL(ingredients){
+  // Stop & Shop / Peapod use this product-search path; for multi-item queries
+  // the user lands on a results page they can shop from.
+  const q = ingredients.map(i => i.name).slice(0, 6).join(' ');
+  return 'https://stopandshop.com/product-search/' + encodeURIComponent(q);
+}
+
+export function shopRiteSearchURL(ingredients){
+  const q = ingredients.map(i => i.name).slice(0, 6).join(' ');
+  return 'https://www.shoprite.com/sm/planning/rsid/3000/results?q='
+    + encodeURIComponent(q);
+}

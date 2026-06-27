@@ -54,6 +54,14 @@
   .btn.ghost:hover{border-color:var(--gold-soft)}
   .btn.cart-btn{background:#43a047;color:#fff;box-shadow:0 4px 14px rgba(67,160,71,.35)}
   .btn.cart-btn:hover{background:#388e3c;transform:translateY(-1px)}
+
+  /* shopping-list bridges (Bring!, Reminders, LI grocers) */
+  .send-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin-top:10px;font-family:'Helvetica Neue',Arial,sans-serif}
+  .send-row .send-lbl{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#8a7c5c;width:100%;text-align:center;margin-bottom:2px}
+  .send-row .send-chip{font-size:12px;color:#f3ead6;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);padding:6px 11px;border-radius:999px;text-decoration:none;transition:.15s;white-space:nowrap}
+  .send-row .send-chip:hover{background:rgba(201,161,74,.18);border-color:#c9a14a;color:#e3c987}
+  .send-row .send-chip.bring{background:rgba(201,161,74,.14);border-color:rgba(201,161,74,.45)}
+
   .mc-cart{margin-top:18px;text-align:center}
 
   .section{padding:34px 0 10px}
@@ -803,6 +811,7 @@ function renderTodayMenu(){
     ${row('Dessert',des)}
     <div class="mb-actions">
       <a class="btn cart-btn" href="/api/grocery?menu=today" target="_blank" rel="noopener">🛒 Order ingredients on Instacart</a>
+      ${sendRowHTML('menu=today')}
       <a class="btn ghost" href="#browse">Browse the full menu</a>
       <a class="btn ghost" href="#calendar">Get it daily</a>
     </div>`;
@@ -911,6 +920,7 @@ function openRecipe(i){
       ${side?`<div class="mc-serve">Serve with <b>${side}</b></div>`:''}
       <div class="mc-cart">
         <a class="btn cart-btn" href="/api/grocery?recipe=${encodeURIComponent(slugify(r.title))}" target="_blank" rel="noopener">🛒 Order ingredients on Instacart</a>
+        ${sendRowHTML('recipe=' + encodeURIComponent(slugify(r.title)))}
       </div>
     </div>
     <div class="rate">
@@ -929,6 +939,22 @@ function renderStars(i){
 function rate(i,n){ setRating(i,n); renderStars(i);
   try{ fetch('/api/rate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:RECIPES[i].title,stars:n})}); }catch(e){}
 }
+
+function sendRowHTML(qs){
+  // qs is a query string like 'recipe=tuscan-steakhouse' or 'menu=today'
+  const base = '/api/grocery?' + qs;
+  return `
+    <div class="send-row">
+      <div class="send-lbl">Or send list to</div>
+      <a class="send-chip bring" href="${base}&service=bring" target="_blank" rel="noopener" title="Send ingredients to your Bring! shopping list">Bring!</a>
+      <a class="send-chip" href="${base}&service=reminders" title="Open mail prefilled — long-press to add to Apple Reminders / Notes">Reminders / Notes</a>
+      <a class="send-chip" href="${base}&service=sms" title="Text the list to yourself">Text it</a>
+      <a class="send-chip" href="${base}&service=freshdirect" target="_blank" rel="noopener" title="Search FreshDirect (Long Island delivery)">FreshDirect</a>
+      <a class="send-chip" href="${base}&service=stopandshop" target="_blank" rel="noopener" title="Search Stop & Shop / Peapod (Long Island)">Stop &amp; Shop</a>
+      <a class="send-chip" href="${base}&service=shoprite" target="_blank" rel="noopener" title="Search ShopRite From Home (Long Island)">ShopRite</a>
+    </div>`;
+}
+
 function closeModal(){ overlay.classList.remove('open'); document.body.style.overflow=''; }
 overlay.addEventListener('click',e=>{ if(e.target===overlay) closeModal(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
