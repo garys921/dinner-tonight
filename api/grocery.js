@@ -10,7 +10,9 @@
 //   ?service=freshdirect → 302 to FreshDirect search for the ingredients (LI delivery)
 //   ?service=stopandshop → 302 to Stop & Shop / Peapod search (LI delivery)
 //   ?service=shoprite    → 302 to ShopRite From Home search (LI delivery)
-//   ?service=walmart     → 302 to Walmart cart-prefill URL (items pre-staged)
+//   ?service=amazon      → 302 to Amazon Fresh / Whole Foods search (Prime nationwide)
+//   ?service=walmart     → 302 to Walmart REAL cart-prefill (items pre-staged via affil.walmart.com)
+//   ?service=instacart   → 302 to Instacart bulk search (multi-banner fallback)
 // Each service also supports &format=json to return {url} without redirecting.
 
 import { buildWalmartCart } from '../walmart.js';
@@ -20,7 +22,10 @@ import {
   ingredientsForRecipe, ingredientsForMenu,
   createInstacartRecipePage, instacartSearchURL,
   bringDeeplinkURL, mailtoListURL, smsListURL,
-  freshDirectSearchURL, stopAndShopSearchURL, shopRiteSearchURL
+  freshDirectSearchURL, stopAndShopSearchURL, shopRiteSearchURL,
+  amazonFreshSearchURL, walmartSearchURL,
+  amazonFreshItemSearchURL, walmartItemSearchURL,
+  instacartItemSearchURL, freshDirectItemSearchURL
 } from '../grocery.js';
 
 function escapeHtml(s){
@@ -31,24 +36,36 @@ function renderListPage(title, ingredients, instacartUrl, site, bridges){
   const rows = ingredients.map(it => {
     const m = it.measurements && it.measurements[0];
     const qty = m ? (Math.round(m.quantity * 100) / 100) + (m.unit && m.unit !== 'each' ? ' ' + m.unit : '') : '';
-    const search = 'https://www.instacart.com/store/s?k=' + encodeURIComponent(it.name);
+    const fd = freshDirectItemSearchURL(it.name);
+    const af = amazonFreshItemSearchURL(it.name);
+    const wm = walmartItemSearchURL(it.name);
+    const ic = instacartItemSearchURL(it.name);
     return `<li>
       <label><input type="checkbox" checked>
         <span class="qty">${escapeHtml(qty)}</span>
         <span class="name">${escapeHtml(it.name)}</span>
       </label>
-      <a class="find" href="${search}" target="_blank" rel="noopener">Find →</a>
+      <span class="find-row">
+        <a class="find fd" href="${fd}" target="_blank" rel="noopener" title="Find on FreshDirect">FD</a>
+        <a class="find amzn" href="${af}" target="_blank" rel="noopener" title="Find on Amazon Fresh">AF</a>
+        <a class="find wmt" href="${wm}" target="_blank" rel="noopener" title="Find on Walmart">WM</a>
+        <a class="find ic" href="${ic}" target="_blank" rel="noopener" title="Find on Instacart">IC</a>
+      </span>
     </li>`;
   }).join('');
   const bridgeBtns = bridges ? `
     <div class="bridges">
-      <div class="bridge-label">Send list to</div>
+      <div class="bridge-label">Search & shop at</div>
+      <a class="chip retailer fd-c" href="${bridges.freshdirect}" target="_blank" rel="noopener" title="Long Island delivery">🥬 FreshDirect</a>
+      <a class="chip retailer amzn-c" href="${bridges.amazon}" target="_blank" rel="noopener" title="Prime delivery — most US metros">📦 Amazon Fresh</a>
+      <a class="chip retailer wmt-c" href="${bridges.walmart}" target="_blank" rel="noopener" title="Pickup + delivery nationwide">🛒 Walmart</a>
+      <a class="chip retailer ic-c" href="${bridges.instacart}" target="_blank" rel="noopener" title="Multi-banner aggregator">🥕 Instacart</a>
+      <a class="chip retailer ss-c" href="${bridges.stopandshop}" target="_blank" rel="noopener" title="Long Island">Stop &amp; Shop</a>
+      <a class="chip retailer sr-c" href="${bridges.shoprite}" target="_blank" rel="noopener" title="Long Island">ShopRite</a>
+      <div class="bridge-label" style="margin-top:14px">Or send list to</div>
       <a class="chip" href="${bridges.bring}" target="_blank" rel="noopener">Bring!</a>
       <a class="chip" href="${bridges.reminders}">Reminders / email</a>
       <a class="chip" href="${bridges.sms}">Text it to me</a>
-      <a class="chip" href="${bridges.freshdirect}" target="_blank" rel="noopener">FreshDirect</a>
-      <a class="chip" href="${bridges.stopandshop}" target="_blank" rel="noopener">Stop &amp; Shop</a>
-      <a class="chip" href="${bridges.shoprite}" target="_blank" rel="noopener">ShopRite</a>
     </div>` : '';
   return `<!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -80,6 +97,23 @@ function renderListPage(title, ingredients, instacartUrl, site, bridges){
   .bridge-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#8a7c5c;width:100%;margin-bottom:4px}
   .chip{font-size:12.5px;color:#f3ead6;background:#2b2618;border:1px solid #3a3527;padding:7px 12px;border-radius:999px;text-decoration:none;transition:.15s}
   .chip:hover{background:#3a3527;border-color:#c9a14a;color:#e3c987}
+  .chip.retailer{font-weight:600}
+  .chip.fd-c{background:rgba(232,70,43,.12);border-color:rgba(232,70,43,.45);color:#f3ead6}
+  .chip.fd-c:hover{background:#e8462b;color:#fff;border-color:#e8462b}
+  .chip.amzn-c{background:rgba(255,153,0,.12);border-color:rgba(255,153,0,.45);color:#f3ead6}
+  .chip.amzn-c:hover{background:#ff9900;color:#0f1111;border-color:#ff9900}
+  .chip.wmt-c{background:rgba(0,113,220,.14);border-color:rgba(0,113,220,.45);color:#f3ead6}
+  .chip.wmt-c:hover{background:#0071dc;color:#fff;border-color:#0071dc}
+  .chip.ic-c{background:rgba(67,160,71,.14);border-color:rgba(67,160,71,.45);color:#f3ead6}
+  .chip.ic-c:hover{background:#43a047;color:#fff;border-color:#43a047}
+  .chip.ss-c:hover{background:#cc0000;color:#fff;border-color:#cc0000}
+  .chip.sr-c:hover{background:#dd0000;color:#fff;border-color:#dd0000}
+  .find-row{display:flex;gap:4px;flex-shrink:0}
+  .find-row .find{font-size:10px;font-weight:600;letter-spacing:.04em;padding:5px 7px;min-width:30px;text-align:center;border-radius:6px}
+  .find-row .find.fd:hover{background:#e8462b;color:#fff;border-color:#e8462b}
+  .find-row .find.amzn:hover{background:#ff9900;color:#0f1111;border-color:#ff9900}
+  .find-row .find.wmt:hover{background:#0071dc;color:#fff;border-color:#0071dc}
+  .find-row .find.ic:hover{background:#43a047;color:#fff;border-color:#43a047}
   .note{color:#8a7c5c;font-size:12px;margin-top:14px;text-align:center;font-style:italic}
 </style>
 </head><body>
@@ -87,13 +121,13 @@ function renderListPage(title, ingredients, instacartUrl, site, bridges){
   <a class="back" href="${site}">← Back to Dinner Tonight</a>
   <div class="eyebrow">Shopping list</div>
   <h1>${escapeHtml(title)}</h1>
-  <div class="sub">Check off what you already have. Tap "Find →" to search any item on Instacart.</div>
+  <div class="sub">Pick a delivery service below, or tap a per-item pill (FD/AF/WM/IC) to find one ingredient.</div>
   <div class="card">
     <ul>${rows}</ul>
     ${bridgeBtns}
   </div>
   <div class="actions">
-    <a class="btn" href="${instacartUrl}" target="_blank" rel="noopener">Order all on Instacart</a>
+    <a class="btn" href="${bridges.freshdirect}" target="_blank" rel="noopener">🥬 Send list to FreshDirect (Long Island)</a>
     <button class="btn ghost" onclick="copyList()">Copy list</button>
     <button class="btn ghost" onclick="window.print()">Print</button>
   </div>
@@ -128,7 +162,9 @@ function bridgesFor(site, slug, wantMenu, title, ingredients){
     freshdirect: freshDirectSearchURL(ingredients),
     stopandshop: stopAndShopSearchURL(ingredients),
     shoprite:    shopRiteSearchURL(ingredients),
-    walmart:     buildWalmartCart(ingredients).url
+    amazon:      amazonFreshSearchURL(ingredients),
+    walmart:     buildWalmartCart(ingredients).url,
+    instacart:   instacartSearchURL(ingredients)
   };
 }
 
@@ -140,7 +176,10 @@ function resolveService(service, bridges){
     case 'freshdirect': return bridges.freshdirect;
     case 'stopandshop': return bridges.stopandshop;
     case 'shoprite':    return bridges.shoprite;
+    case 'amazon':      return bridges.amazon;
+    case 'amazonfresh': return bridges.amazon;
     case 'walmart':     return bridges.walmart;
+    case 'instacart':   return bridges.instacart;
     default: return null;
   }
 }
@@ -176,7 +215,7 @@ export default async function handler(req, res){
       const target = resolveService(service, bridges);
       if (!target){
         return res.status(400).json({
-          ok:false, error:'Unknown service. Valid: bring|reminders|sms|freshdirect|stopandshop|shoprite|walmart'
+          ok:false, error:'Unknown service. Valid: bring|reminders|sms|freshdirect|stopandshop|shoprite|amazon|walmart|instacart'
         });
       }
       if (format === 'json'){
