@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dinner Tonight — Your daily dinner, decided</title>
-<meta name="description" content="A new full dinner menu every day — appetizer, main, side and dessert — each with the recipe. Browse by course or cuisine.">
+<meta name="description" content="A new full dinner menu every day — appetizer, main, side and dessert. Tap the button and tonight’s ingredients drop right into your Walmart cart.">
 <meta name="theme-color" content="#16140f">
 <link rel="canonical" href="https://dinner-tonight-daily.vercel.app/">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='6'%20fill='%2316140f'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='6.5'%20fill='%23c9a14a'/%3E%3Ctext%20x='16'%20y='21'%20font-family='Georgia,serif'%20font-size='10'%20text-anchor='middle'%20fill='%23221d10'%3ED%3C/text%3E%3C/svg%3E">
@@ -12,14 +12,14 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Dinner Tonight">
 <meta property="og:title" content="Dinner Tonight — Your daily dinner, decided">
-<meta property="og:description" content="A new four-course menu every evening — appetizer, main, side and dessert. Recipes, shopping list, one tap to order.">
+<meta property="og:description" content="A new four-course menu every evening — recipes plus one-tap Walmart cart-load for pickup or delivery.">
 <meta property="og:url" content="https://dinner-tonight-daily.vercel.app/">
 <meta property="og:image" content="https://dinner-tonight-daily.vercel.app/og.svg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Dinner Tonight — Your daily dinner, decided">
-<meta name="twitter:description" content="A new four-course menu every evening — the recipes, the shopping list, one tap to order.">
+<meta name="twitter:description" content="A new four-course menu every evening — recipes plus one-tap Walmart cart-load.">
 <meta name="twitter:image" content="https://dinner-tonight-daily.vercel.app/og.svg">
 <style>
   :root{
@@ -1020,27 +1020,30 @@ function sendRowHTML(qs){
     const g = t => parts.find(p=>p.type===t).value;
     return g('year') + '-' + g('month') + '-' + g('day');
   }
-  const dateQ = (qs === 'menu=today') ? ('&date=' + localDateISO()) : '';
-  const list = '/api/grocery?' + qs + dateQ;
-  const bring = '/api/grocery?' + qs + dateQ + '&service=bring';
-  const rem   = '/api/grocery?' + qs + dateQ + '&service=reminders';
-  const sms   = '/api/grocery?' + qs + dateQ + '&service=sms';
+  const dateQ  = (qs === 'menu=today') ? ('&date=' + localDateISO()) : '';
+  // Walmart is the single primary CTA — /api/store?service=walmart 302s to a
+  // real affil.walmart.com/cart/buynow URL with every matched ingredient
+  // pre-staged. One tap, every item drops into the user's Walmart cart for
+  // pickup or delivery on Long Island. No store picker, no choice.
+  const walmart = '/api/store?service=walmart&' + qs + dateQ;
+  const list    = '/api/grocery?' + qs + dateQ + '&view=list';
+  const rem     = '/api/grocery?' + qs + dateQ + '&service=reminders';
+  const sms     = '/api/grocery?' + qs + dateQ + '&service=sms';
   return `
     <div class="order-stack">
-      <a class="cta-primary" href="${list}" target="_blank" rel="noopener" title="Tonight's ingredients, ready to order from your store">
+      <a class="cta-primary" href="${walmart}" target="_blank" rel="noopener" title="Drop tonight's ingredients straight into your Walmart cart — pickup or delivery on Long Island">
         <span class="cta-icon">🛒</span>
-        <span class="cta-label">Order ingredients</span>
-        <span class="cta-sub">Pick your store on the next page</span>
-      </a>
-      <a class="cta-secondary" href="${bring}" target="_blank" rel="noopener" title="Send the list to Bring! (mobile shopping-list app)">
-        Save to my list (Bring!)
+        <span class="cta-label">Order ingredients on Walmart</span>
+        <span class="cta-sub">Every item pre-loaded — pickup or delivery</span>
       </a>
       <div class="cta-tertiary">
-        <a href="${list}" target="_blank" rel="noopener">Print</a>
+        <a href="${list}" target="_blank" rel="noopener" title="Open a printable list">Print</a>
         <span class="dot-sep">·</span>
-        <a href="${rem}">Email me</a>
+        <a href="${list}" target="_blank" rel="noopener" title="Open the list to copy">Copy</a>
         <span class="dot-sep">·</span>
-        <a href="${sms}">Text it</a>
+        <a href="${sms}" title="Text the list to yourself">Text</a>
+        <span class="dot-sep">·</span>
+        <a href="${rem}" title="Email the list to yourself">Email</a>
       </div>
     </div>`;
 }

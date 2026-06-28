@@ -1,6 +1,7 @@
 // Build the daily FULL-MENU email (Appetizer, Main, Side, Dessert).
-// Upgraded by email-upgrade agent: big "Get the groceries" CTA, per-store chips,
-// per-dish star ratings, calendar feed link, preserved Resend unsubscribe footer.
+// Simplified: single big "Order ingredients on Walmart" CTA (one-tap
+// affil.walmart.com cart-load), per-dish star ratings, calendar feed link,
+// preserved Resend unsubscribe footer.
 import { CATS, todaysMenu } from './recipes.js';
 
 // ---------- helpers ----------
@@ -91,9 +92,7 @@ function courseBlock(label, r, site){
     '<tr><td style="padding:6px 32px 18px">',
       '<table role="presentation" cellpadding="0" cellspacing="0" border="0">',
         '<tr><td>',
-          chip('&#x1F6D2; Order on Instacart', site + '/api/grocery?recipe=' + encodeURIComponent(slug)),
-          chip('Send to Bring!', site + '/api/grocery?recipe=' + encodeURIComponent(slug) + '&service=bring'),
-          chip('Walmart cart', site + '/api/grocery?recipe=' + encodeURIComponent(slug) + '&service=walmart'),
+          chip('&#x1F6D2; Order ingredients on Walmart', site + '/api/store?service=walmart&recipe=' + encodeURIComponent(slug)),
         '</td></tr>',
       '</table>',
     '</td></tr>'
@@ -106,7 +105,7 @@ export function buildEmail(_ignored, site){
   var m = todaysMenu();
   var dateLine = todayLine();
   var fullListUrl = site + '/api/grocery?menu=today&view=list';
-  var fullInstacartUrl = site + '/api/grocery?menu=today';
+  var walmartCartUrl = site + '/api/store?service=walmart&menu=today';
   var calendarUrl = site + '/api/calendar.ics';
 
   var blocks = [
@@ -141,22 +140,12 @@ export function buildEmail(_ignored, site){
           '<div style="color:#b08d3f;margin:14px 0 2px;font-size:14px">&#10022; &#10022; &#10022;</div>',
         '</td></tr>',
 
-        // PRIMARY CTAs
+        // PRIMARY CTA — Walmart only. One tap, every matched ingredient
+        // pre-loaded into the cart via affil.walmart.com/cart/buynow.
         '<tr><td style="padding:14px 32px 4px;text-align:center">',
-          '<div style="margin-bottom:12px">' + bigCTA('&#x1F6D2; Get the groceries', fullListUrl) + '</div>',
+          '<div style="margin-bottom:12px">' + bigCTA('&#x1F6D2; Order ingredients on Walmart', walmartCartUrl) + '</div>',
+          '<div style="font-family:Georgia,serif;font-style:italic;color:#7c6a44;font-size:12.5px;margin-bottom:10px">Tap the button and tonight\'s ingredients drop right into your Walmart cart for pickup or delivery.</div>',
           '<div style="margin-bottom:6px">' + ghostCTAdark('See the full menu page', site + '/') + '</div>',
-        '</td></tr>',
-
-        // STORE CHIPS
-        '<tr><td style="padding:18px 32px 6px;text-align:center">',
-          '<div style="font-family:\'Helvetica Neue\',Arial,sans-serif;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:#9a7d3c;margin-bottom:8px">Send the whole list to</div>',
-          '<div>',
-            chip('Bring!', fullInstacartUrl + '&service=bring'),
-            chip('Walmart', fullInstacartUrl + '&service=walmart'),
-            chip('FreshDirect', fullInstacartUrl + '&service=freshdirect'),
-            chip('Stop &amp; Shop', fullInstacartUrl + '&service=stopandshop'),
-            chip('ShopRite', fullInstacartUrl + '&service=shoprite'),
-          '</div>',
         '</td></tr>',
 
         // COURSE CARDS
@@ -187,8 +176,8 @@ export function buildEmail(_ignored, site){
   var text =
     'TONIGHT\'S MENU — ' + dateLine + '\n' +
     'Four courses for two.\n\n' +
-    'Get the full grocery list:  ' + fullListUrl + '\n' +
-    'Order on Instacart:         ' + fullInstacartUrl + '\n' +
+    'Order ingredients on Walmart: ' + walmartCartUrl + '\n' +
+    'Printable shopping list:      ' + fullListUrl + '\n' +
     'Add to calendar:            ' + calendarUrl + '\n' +
     'View on the web:            ' + site + '/\n\n' +
     [['Appetizer', m.appetizer], ['Main Course', m.main], ['Side', m.side], ['Dessert', m.dessert]]
