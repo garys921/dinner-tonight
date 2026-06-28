@@ -474,8 +474,13 @@ function isFishy(r){return r.cat==="seafood"||/salmon|shrimp|fish|cod|tuna|scall
 function _pickFromSeed(course, seed){
   let l = byCourse(course);
   if (course === 'main') l = l.filter(r => r.cat !== 'mealprep');
-  const pool = [];
-  l.forEach(r => { const w = isFishy(r) ? 1 : 2; for (let k = 0; k < w; k++) pool.push(r); });
+  // INTERLEAVED weighted pool: pass 1 includes every recipe, pass 2 only non-fishy.
+  // Preserves the original 2x / 1x weight distribution (non-fishy / fishy) while
+  // ensuring seed+1 (the next ET calendar day) ALWAYS lands on a different recipe.
+  // The previous layout [A,A,B,B,C,C] placed weighted duplicates consecutively,
+  // so seed+1 re-picked the same recipe ~43% of the time — visible to users as
+  // "tonight's dinner hasn't changed from yesterday".
+  const pool = [...l, ...l.filter(r => !isFishy(r))];
   return pool[((seed % pool.length) + pool.length) % pool.length];
 }
 function pickForDate(course, d=new Date()){ return _pickFromSeed(course, daySeed(d)); }

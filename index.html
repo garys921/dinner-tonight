@@ -843,9 +843,13 @@ function isFishy(r){ return r.cat==='seafood' || /salmon|shrimp|fish|cod|tuna|sc
 function dailyPick(course, offset=0){
   let list = byCourse(course);
   if(course==='main') list = list.filter(x=>x.r.cat!=='mealprep');
-  const pool=[];
-  list.forEach(x=>{ const w=isFishy(x.r)?1:2; for(let k=0;k<w;k++) pool.push(x); });
-  return pool[(daySeed()+offset)%pool.length];
+  // INTERLEAVED weighted pool: pass 1 = every recipe, pass 2 = non-fishy only.
+  // Preserves the original 2x / 1x weight distribution while ensuring that
+  // seed+1 (the next ET calendar day) always lands on a different recipe.
+  // The old layout [A,A,B,B,C,C] placed weighted duplicates consecutively,
+  // making "tonight's dish == last night's dish" happen ~43% of the time.
+  const pool = [...list, ...list.filter(x=>!isFishy(x.r))];
+  return pool[((daySeed()+offset)%pool.length + pool.length) % pool.length];
 }
 
 function setFootMeta(){
