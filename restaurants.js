@@ -1,10 +1,7 @@
-// Restaurant copycat recipes — Long Island local-spots section (backend mirror).
-//
-// Flattened to ONE entry per (restaurant, dish) so every dish on a restaurant
-// card resolves for the grocery integration (/api/store, /api/grocery), looked
-// up via ?restaurant=<slug>. Slug derives from "<name> <dishTitle>".
-//
-// Keep this in lock-step with the RESTAURANTS array in index.html.
+// Restaurant + recipe-collection copycats (backend mirror).
+// Flattened to ONE entry per (card, dish) so every dish resolves for the grocery
+// integration (/api/store, /api/grocery), looked up via ?restaurant=<slug>.
+// Keep in lock-step with the RESTAURANTS array in index.html.
 
 export const RESTAURANTS = [
   {
@@ -482,12 +479,143 @@ export const RESTAURANTS = [
       "Split and toast the rolls; lay the gouda on the warm bottom so it starts to melt.",
       "Stack the egg and bacon, close the sandwich, and press in the warm pan 1 min to melt the cheese."
     ]
+  },
+  {
+    "name": "Hummus",
+    "town": "High-protein dips & bowls",
+    "cat": "Fit recipes",
+    "dishTitle": "Classic Hummus",
+    "ing": [
+      "1 can (15 oz) chickpeas, drained (save the liquid)",
+      "1/4 cup tahini",
+      "2 tbsp lemon juice",
+      "1 clove garlic",
+      "3 tbsp olive oil",
+      "1/2 tsp ground cumin",
+      "1/2 tsp salt",
+      "2–3 tbsp ice water or reserved chickpea liquid",
+      "Paprika + olive oil to finish"
+    ],
+    "steps": [
+      "Blend the tahini and lemon juice alone for 1 min until pale and whipped.",
+      "Add the garlic, olive oil, cumin and salt; blend.",
+      "Add the chickpeas and blend, drizzling in ice water until silky-smooth.",
+      "Spread in a bowl, swirl the top, and finish with olive oil and a dusting of paprika."
+    ]
+  },
+  {
+    "name": "Hummus",
+    "town": "High-protein dips & bowls",
+    "cat": "Fit recipes",
+    "dishTitle": "Roasted Red Pepper Hummus",
+    "ing": [
+      "1 can chickpeas, drained",
+      "1/2 cup roasted red peppers, patted dry",
+      "1/4 cup tahini",
+      "2 tbsp lemon juice",
+      "1 clove garlic",
+      "2 tbsp olive oil",
+      "1/2 tsp smoked paprika",
+      "1/2 tsp salt"
+    ],
+    "steps": [
+      "Blend the tahini and lemon until whipped.",
+      "Add the roasted peppers, garlic, olive oil, smoked paprika and salt; blend smooth.",
+      "Add the chickpeas and blend, loosening with a little water as needed.",
+      "Finish with a swirl of olive oil and an extra pinch of smoked paprika."
+    ]
+  },
+  {
+    "name": "Hummus",
+    "town": "High-protein dips & bowls",
+    "cat": "Fit recipes",
+    "dishTitle": "Roasted Garlic Hummus",
+    "ing": [
+      "1 head garlic",
+      "1 can chickpeas, drained",
+      "1/4 cup tahini",
+      "2 tbsp lemon juice",
+      "3 tbsp olive oil",
+      "1/2 tsp salt",
+      "Ice water to loosen"
+    ],
+    "steps": [
+      "Drizzle the garlic head with oil, wrap in foil, and roast at 400°F for 35–40 min until soft; squeeze out the cloves.",
+      "Blend the tahini and lemon until pale.",
+      "Add the roasted garlic, olive oil and salt; blend.",
+      "Add the chickpeas and blend with ice water until creamy; finish with olive oil."
+    ]
+  },
+  {
+    "name": "Hummus",
+    "town": "High-protein dips & bowls",
+    "cat": "Fit recipes",
+    "dishTitle": "Spicy Sriracha Hummus",
+    "ing": [
+      "1 can chickpeas, drained",
+      "1/4 cup tahini",
+      "2 tbsp lemon juice",
+      "2–3 tbsp sriracha",
+      "1 clove garlic",
+      "2 tbsp olive oil",
+      "1/2 tsp cumin",
+      "1/2 tsp salt"
+    ],
+    "steps": [
+      "Blend the tahini and lemon until whipped.",
+      "Add the sriracha, garlic, olive oil, cumin and salt; blend.",
+      "Add the chickpeas and blend smooth, loosening with water.",
+      "Swirl extra sriracha on top with a drizzle of olive oil."
+    ]
+  },
+  {
+    "name": "Hummus",
+    "town": "High-protein dips & bowls",
+    "cat": "Fit recipes",
+    "dishTitle": "Avocado Hummus",
+    "ing": [
+      "1 can chickpeas, drained",
+      "1 ripe avocado",
+      "3 tbsp tahini",
+      "2 tbsp lime juice",
+      "1 clove garlic",
+      "2 tbsp olive oil",
+      "1/4 cup cilantro",
+      "1/2 tsp salt"
+    ],
+    "steps": [
+      "Blend the tahini and lime until pale.",
+      "Add the avocado, garlic, cilantro, olive oil and salt; blend.",
+      "Add the chickpeas and blend until smooth.",
+      "Serve right away with a squeeze of lime (press wrap onto the surface if storing)."
+    ]
+  },
+  {
+    "name": "Hummus",
+    "town": "High-protein dips & bowls",
+    "cat": "Fit recipes",
+    "dishTitle": "Edamame Hummus",
+    "ing": [
+      "1.5 cups shelled edamame, cooked",
+      "1/2 cup chickpeas, drained",
+      "3 tbsp tahini",
+      "2 tbsp lemon juice",
+      "1 clove garlic",
+      "3 tbsp olive oil",
+      "1/4 tsp cumin",
+      "1/2 tsp salt",
+      "Ice water to loosen"
+    ],
+    "steps": [
+      "Blend the edamame, tahini and lemon until broken down.",
+      "Add the chickpeas, garlic, olive oil, cumin and salt; blend.",
+      "Drizzle in ice water and blend until smooth and bright.",
+      "Finish with olive oil and a scatter of whole edamame."
+    ]
   }
 ];
 
-function restaurantSlugifyLocal(s){
-  return String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-}
-export function restaurantSlug(r){ return restaurantSlugifyLocal((r.name || '') + ' ' + (r.dishTitle || '')); }
+function restaurantSlugifyLocal(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+export function restaurantSlug(r){ return restaurantSlugifyLocal((r.name||'')+' '+(r.dishTitle||'')); }
 export function findRestaurantBySlug(slug){ if(!slug) return null; const t=restaurantSlugifyLocal(slug); return RESTAURANTS.find(r=>restaurantSlug(r)===t)||null; }
-export function restaurantAsRecipe(r){ return { title: r.name + ' — ' + r.dishTitle, ing: r.ing||[], steps: r.steps||[], serves: 2, time: '45 min' }; }
+export function restaurantAsRecipe(r){ return { title: r.name+' — '+r.dishTitle, ing: r.ing||[], steps: r.steps||[], serves: 2, time: '45 min' }; }

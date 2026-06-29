@@ -306,7 +306,7 @@
     <div class="mp-banner" style="border-left-color:#b07d3e">
       <div class="eyebrow" style="margin-bottom:8px">Dining Out · Long Island</div>
       <h2 style="margin-bottom:6px">Local Long Island spots</h2>
-      <div class="sub" style="margin-bottom:0">Not in the mood to cook? Real Long Island institutions — plus a café favorite — and the dishes to make at home. Tap any dish for the recipe.</div>
+      <div class="sub" style="margin-bottom:0">Not in the mood to cook? Real Long Island institutions — plus café and fit-hummus favorites — and the dishes to make at home. Tap any dish for the recipe.</div>
     </div>
     <div class="grid" id="liGrid"></div>
   </section>
@@ -1770,6 +1770,26 @@ const RESTAURANTS=[
     {dishTitle:"Bacon, Gouda & Egg Sandwich",tagline:"The Starbucks breakfast classic — smoky gouda, bacon and a folded egg on a toasted artisan roll.",
      ing:["2 ciabatta or artisan rolls","2 eggs","2 slices smoked gouda","4 slices bacon","1 tbsp butter","Salt, pepper"],
      steps:["Cook the bacon until crisp; drain.","Whisk the eggs with salt and pepper; cook in a small buttered pan (or ring mold) into two folded rounds.","Split and toast the rolls; lay the gouda on the warm bottom so it starts to melt.","Stack the egg and bacon, close the sandwich, and press in the warm pan 1 min to melt the cheese."]}
+  ]},
+  {name:"Hummus",town:"High-protein dips & bowls",cat:"Fit recipes",kind:"collection",dishes:[
+    {dishTitle:"Classic Hummus",tagline:"The original — creamy whipped chickpea hummus with tahini, lemon and garlic. ~100 cal · 4g protein per serving.",
+     ing:["1 can (15 oz) chickpeas, drained (save the liquid)","1/4 cup tahini","2 tbsp lemon juice","1 clove garlic","3 tbsp olive oil","1/2 tsp ground cumin","1/2 tsp salt","2–3 tbsp ice water or reserved chickpea liquid","Paprika + olive oil to finish"],
+     steps:["Blend the tahini and lemon juice alone for 1 min until pale and whipped.","Add the garlic, olive oil, cumin and salt; blend.","Add the chickpeas and blend, drizzling in ice water until silky-smooth.","Spread in a bowl, swirl the top, and finish with olive oil and a dusting of paprika."]},
+    {dishTitle:"Roasted Red Pepper Hummus",tagline:"Smoky-sweet with roasted red peppers blended in. ~110 cal · 4g protein per serving.",
+     ing:["1 can chickpeas, drained","1/2 cup roasted red peppers, patted dry","1/4 cup tahini","2 tbsp lemon juice","1 clove garlic","2 tbsp olive oil","1/2 tsp smoked paprika","1/2 tsp salt"],
+     steps:["Blend the tahini and lemon until whipped.","Add the roasted peppers, garlic, olive oil, smoked paprika and salt; blend smooth.","Add the chickpeas and blend, loosening with a little water as needed.","Finish with a swirl of olive oil and an extra pinch of smoked paprika."]},
+    {dishTitle:"Roasted Garlic Hummus",tagline:"Mellow, sweet roasted garlic folded all the way through. ~105 cal · 4g protein per serving.",
+     ing:["1 head garlic","1 can chickpeas, drained","1/4 cup tahini","2 tbsp lemon juice","3 tbsp olive oil","1/2 tsp salt","Ice water to loosen"],
+     steps:["Drizzle the garlic head with oil, wrap in foil, and roast at 400°F for 35–40 min until soft; squeeze out the cloves.","Blend the tahini and lemon until pale.","Add the roasted garlic, olive oil and salt; blend.","Add the chickpeas and blend with ice water until creamy; finish with olive oil."]},
+    {dishTitle:"Spicy Sriracha Hummus",tagline:"Creamy with a clean sriracha kick. ~105 cal · 4g protein per serving.",
+     ing:["1 can chickpeas, drained","1/4 cup tahini","2 tbsp lemon juice","2–3 tbsp sriracha","1 clove garlic","2 tbsp olive oil","1/2 tsp cumin","1/2 tsp salt"],
+     steps:["Blend the tahini and lemon until whipped.","Add the sriracha, garlic, olive oil, cumin and salt; blend.","Add the chickpeas and blend smooth, loosening with water.","Swirl extra sriracha on top with a drizzle of olive oil."]},
+    {dishTitle:"Avocado Hummus",tagline:"Hummus meets guac — extra creamy, fresh and green. ~120 cal · 4g protein per serving.",
+     ing:["1 can chickpeas, drained","1 ripe avocado","3 tbsp tahini","2 tbsp lime juice","1 clove garlic","2 tbsp olive oil","1/4 cup cilantro","1/2 tsp salt"],
+     steps:["Blend the tahini and lime until pale.","Add the avocado, garlic, cilantro, olive oil and salt; blend.","Add the chickpeas and blend until smooth.","Serve right away with a squeeze of lime (press wrap onto the surface if storing)."]},
+    {dishTitle:"Edamame Hummus",tagline:"Bright green and extra high-protein from edamame. ~130 cal · 7g protein per serving.",
+     ing:["1.5 cups shelled edamame, cooked","1/2 cup chickpeas, drained","3 tbsp tahini","2 tbsp lemon juice","1 clove garlic","3 tbsp olive oil","1/4 tsp cumin","1/2 tsp salt","Ice water to loosen"],
+     steps:["Blend the edamame, tahini and lemon until broken down.","Add the chickpeas, garlic, olive oil, cumin and salt; blend.","Drizzle in ice water and blend until smooth and bright.","Finish with olive oil and a scatter of whole edamame."]}
   ]}
 ];
 function mapUrl(r){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(r.name+' '+r.town+' NY'); }
@@ -1782,9 +1802,9 @@ function openRestaurantDish(ri,di){
   const qs='restaurant=' + encodeURIComponent(restaurantSlug(r,d));
   modal.innerHTML=`<button class="close" onclick="closeModal()">×</button>
     <div class="menu-card">
-      <div class="mc-top"><div class="mc-orn">&#10022;</div><div class="mc-cat">Copycat Recipe · ${r.name}</div></div>
+      <div class="mc-top"><div class="mc-orn">&#10022;</div><div class="mc-cat">${r.kind==='collection'?'Fit Recipe':'Copycat Recipe · '+r.name}</div></div>
       <div class="mc-title">${d.dishTitle}</div>
-      <div class="mc-it">Inspired by ${r.name} · ${r.town}</div>
+      <div class="mc-it">${r.kind==='collection'? r.cat+' · '+r.town : 'Inspired by '+r.name+' · '+r.town}</div>
       <div class="mc-rule"><span>✦</span></div>
       <div class="mc-desc">${d.tagline}</div>
       <div class="mc-rule"><span>✦</span></div>
@@ -1795,7 +1815,7 @@ function openRestaurantDish(ri,di){
       <div class="mc-cart">
         ${sendRowHTML(qs)}
       </div>
-      <div class="mc-pair"><a href="${mapUrl(r)}" target="_blank" rel="noopener" style="color:#8a6d2e">Or get the original — ${r.name} on the map →</a></div>
+      ${r.kind==='collection'?'':`<div class="mc-pair"><a href="${mapUrl(r)}" target="_blank" rel="noopener" style="color:#8a6d2e">Or get the original — ${r.name} on the map →</a></div>`}
     </div>`;
   overlay.classList.add('open'); document.body.style.overflow='hidden';
 }
