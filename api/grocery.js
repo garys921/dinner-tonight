@@ -16,6 +16,7 @@
 // Each service also supports &format=json to return {url} without redirecting.
 
 import { buildWalmartCart } from '../walmart.js';
+import { findRestaurantBySlug, restaurantAsRecipe } from '../restaurants.js';
 import { buildAmazonPlan, amazonFreshBulkSearchURL } from '../amazon.js';
 import {
   todaysMenu, menuForDateString, findRecipeBySlug,
@@ -216,7 +217,7 @@ function recipeCardUrl(site, slug, wantMenu, dateStr){
   return site + '/api/recipe-card?menu=today' + dq;
 }
 
-function bridgesFor(site, slug, wantMenu, title, ingredients, dateStr){
+function bridgesFor(site, slug, wantMenu, title, ingredients, dateStr, restaurantSlug){
   return {
     bring:       bringDeeplinkURL(recipeCardUrl(site, slug, wantMenu, dateStr)),
     reminders:   mailtoListURL(title, ingredients),
@@ -229,6 +230,7 @@ function bridgesFor(site, slug, wantMenu, title, ingredients, dateStr){
       // something went wrong" and wipes the cart). Redirect to our own
       // landing page which fans out to per-ingredient Amazon search tabs.
       const dq = dateStr ? ('&date=' + encodeURIComponent(dateStr)) : '';
+      if (restaurantSlug) return site + '/api/amazon-cart?restaurant=' + encodeURIComponent(restaurantSlug);
       if (slug) return site + '/api/amazon-cart?recipe=' + encodeURIComponent(slug);
       return site + '/api/amazon-cart?menu=today' + dq;
     })(),
@@ -265,8 +267,18 @@ export default async function handler(req, res){
     const view = (q.view || '').toString().toLowerCase();
     const service = (q.service || '').toString().toLowerCase();
 
+    const restaurantSlug = (q.restaurant || '').toString();
     let title, ingredients, payload;
-    if (slug){
+    if (restaurantSlug){
+      // Long Island restaurant copycat — looked up from restaurants.js
+      // (not the main recipes.js catalog).
+      const raw = findRestaurantBySlug(restaurantSlug);
+      if (!raw) return res.status(404).json({ ok:false, error:'Restaurant not found' });
+      const r = restaurantAsRecipe(raw);
+      title = r.title;
+      ingredients = ingredientsForRecipe(r);
+      payload = payloadForRecipe(r, site);
+    } else if (slug){
       const r = findRecipeBySlug(slug);
       if (!r) return res.status(404).json({ ok:false, error:'Recipe not found' });
       title = r.title;
@@ -280,7 +292,7 @@ export default async function handler(req, res){
       payload = payloadForMenu(m, site);
     }
 
-    const bridges = bridgesFor(site, slug, wantMenu, title, ingredients, (q.date || '').toString());
+    const bridges = bridgesFor(site, slug, wantMenu, title, ingredients, (q.date || '').toString(), restaurantSlug);
 
     // service= bridge mode: short-circuit and redirect (or return JSON URL)
     if (service){
