@@ -2,11 +2,13 @@
 
 A four-course menu picked fresh every day, with recipes, calendar feed, daily email, community ratings, and **one-click grocery ordering** via Instacart.
 
+The catalog covers **200 recipes** across Italian, steakhouse, seafood, comfort, sandwiches and meal-prep categories — including Mexican, Greek/Mediterranean, Thai, Japanese, Indian, Chinese, BBQ/Southern, French bistro, Spanish, Middle Eastern, Vietnamese, Korean and Caribbean cuisines, plus brunch, soups, salads, vegetarian mains, sheet-pan/slow-cooker/one-pot weeknights, seasonal grilling and holiday dishes (Thanksgiving, Christmas, Easter, Passover, Hanukkah, July 4th, Memorial Day).
+
 ## What's in here
 
 ```
 index.html           the website (wired to the APIs)
-recipes.js           84 recipes + the daily-pick logic (single source of truth)
+recipes.js           200 recipes + the daily-pick logic (single source of truth)
 ics.js               builds the rolling calendar feed
 email.js             builds the daily email (HTML + text)
 grocery.js           ingredient parser + Instacart link builder

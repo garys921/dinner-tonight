@@ -35,7 +35,7 @@ Every grocery integration shipped to `main` and deployed:
 - **Calendar feed** — `/dinner.ics` via `api/calendar.js`, rolling 21-day
 - **Community star ratings** — `api/rate.js` GET/POST
 
-Source-of-truth recipes: `recipes.js` (84 recipes + daily-pick logic).
+Source-of-truth recipes: `recipes.js` (**200 recipes** + daily-pick logic). Catalog covers Italian, steakhouse, seafood, comfort, sandwiches and meal-prep, with dishes spanning Mexican, Greek/Mediterranean, Thai, Japanese, Indian, Chinese, BBQ/Southern, French bistro, Spanish, Middle Eastern, Vietnamese, Korean and Caribbean cuisines, plus brunch, soups, salads, vegetarian mains, sheet-pan/slow-cooker/one-pot weeknights, seasonal grilling, and holiday dishes (Thanksgiving, Christmas, Easter, Passover, Hanukkah, July 4th, Memorial Day). Expanded from 84 → 200 in commit `5e649e5` (2026-06-28).
 
 ---
 
