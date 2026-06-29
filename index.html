@@ -140,6 +140,11 @@
   .li-card h4{font-family:var(--serif);font-weight:normal;font-size:18px;color:var(--ink);margin:7px 0 5px}
   .li-card .it{color:var(--muted);font-size:13px;font-style:italic;margin-bottom:10px;flex:1}
   .li-card .li-go{color:var(--gold-soft);font-size:12px}
+  .li-card .li-dishes{display:flex;flex-direction:column;margin-top:4px}
+  .li-dish{text-align:left;background:transparent;border:0;border-top:1px solid var(--line);padding:10px 0 8px;color:var(--ink);font-family:var(--serif);font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;transition:color .14s}
+  .li-dish:first-child{border-top:0;padding-top:4px}
+  .li-dish .li-dish-go{color:var(--gold-soft);font-size:12px;flex:none}
+  .li-dish:hover{color:var(--gold-soft)}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px}
   .card{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:0 0 14px 14px;cursor:pointer;transition:.18s;display:flex;flex-direction:column}
@@ -301,7 +306,7 @@
     <div class="mp-banner" style="border-left-color:#b07d3e">
       <div class="eyebrow" style="margin-bottom:8px">Dining Out · Long Island</div>
       <h2 style="margin-bottom:6px">Local Long Island spots</h2>
-      <div class="sub" style="margin-bottom:0">Not in the mood to cook? Real Long Island institutions — and the dish to order at each. Tap a card for the map.</div>
+      <div class="sub" style="margin-bottom:0">Not in the mood to cook? Real Long Island institutions — plus a café favorite — and the dishes to make at home. Tap any dish for the recipe.</div>
     </div>
     <div class="grid" id="liGrid"></div>
   </section>
@@ -1381,41 +1386,6 @@ const RECIPES = [
    ing:["4 egg whites","1 cup sugar","1 tsp cornstarch","1 tsp white wine vinegar","1 tsp vanilla","1.5 cups cream","2 tbsp powdered sugar","2 cups mixed berries","Mint"],
    steps:["Heat oven to 275°F. Whip whites to soft peaks; add sugar gradually; whip stiff.","Fold in cornstarch, vinegar and vanilla; pile onto parchment in a disc; bake 1 hr; cool in oven.","Whip cream with powdered sugar.","Top pavlova with cream, berries and mint."],
    pair:"A Moscato or Prosecco."},
-  {course:"main",cat:"comfort",emoji:"🌯",title:"Starbucks-Style Feta & Spinach Egg White Wrap",it:"Copycat brunch wrap",time:"15 min",serves:"1",level:"Easy",cal:290,protein:"20g",
-   desc:"Copycat of the Starbucks favorite — wholesome, protein-packed egg whites with baby spinach, crumbled feta and sun-dried tomatoes folded into a warm spinach wrap. Ready in 15 minutes.",
-   ing:["1 cup egg whites","2 cups baby spinach","1/4 cup crumbled feta cheese","2 tbsp sun-dried tomatoes, chopped","1 spinach tortilla","1 tsp olive oil","1/4 tsp garlic powder","Salt, pepper"],
-   steps:["Heat 1 tsp olive oil in a nonstick skillet; add the baby spinach and a pinch of salt and wilt 1 min; push to one side.","Pour egg whites into the pan and scramble gently 2–3 min until just set; season with garlic powder, salt and pepper.","Sprinkle feta and chopped sun-dried tomatoes over the eggs and fold the spinach in.","Warm the spinach tortilla 15 sec; pile the filling in the center, fold the sides over the top and bottom, then toast seam-side down in the dry skillet 1–2 min for the signature golden seal."],
-   pair:"~290 cal · 20g protein · pairs with coffee or fresh-squeezed OJ"},
-  {course:"main",cat:"steakhouse",emoji:"🧀",title:"Robke's-Style Skirt Steak Mac & Cheese",it:"Long Island steakhouse comfort",time:"40 min",serves:"4",level:"Medium",cal:780,protein:"42g",
-   desc:"Inspired by the Long Island Robke's classic — a hearty creamy three-cheese mac topped with seared sliced skirt steak and caramelized onions. Pure North Shore comfort.",
-   ing:["1.5 lb skirt steak","12 oz elbow macaroni","4 tbsp butter","1/4 cup flour","3 cups whole milk","2 cups sharp cheddar, shredded","1 cup gruyere, shredded","1 onion, sliced","4 strips bacon, chopped","2 tbsp olive oil","Salt, pepper, paprika"],
-   steps:["Season skirt steak with salt, pepper and paprika; sear in olive oil 3 min per side; rest 8 min and slice thinly across the grain.","In the same pan, cook bacon until crisp; remove. Soften sliced onion in the bacon fat 10 min until deeply caramelized.","Boil elbow macaroni until al dente; drain. Melt butter in a saucepan, whisk in flour 1 min, then milk; simmer until thickened. Off heat, stir in cheddar and gruyere.","Toss pasta with cheese sauce; pile into bowls, top with sliced skirt steak, caramelized onions and bacon crumble; finish with cracked pepper."],
-   pair:"~780 cal · 42g protein · a bold Cabernet"},
-  {course:"main",cat:"italian",emoji:"🍝",title:"Robke's-Style Chicken Cutlet Penne",it:"Italian-American pasta",time:"35 min",serves:"4",level:"Medium",cal:680,protein:"46g",
-   desc:"A Long Island Italian-American classic in the Robke's spirit: golden breaded chicken cutlets sliced over penne in a garlicky white-wine sauce with spinach and sun-dried tomatoes.",
-   ing:["2 chicken breasts, pounded thin","1 cup breadcrumbs","1/2 cup parmesan, grated","2 eggs","1/2 cup flour","12 oz penne","1/4 cup olive oil","4 cloves garlic, sliced","1/3 cup sun-dried tomatoes, chopped","1/2 cup dry white wine","4 cups baby spinach","Fresh basil","Salt, pepper, red pepper flakes"],
-   steps:["Whisk eggs in one dish; mix breadcrumbs with half the parmesan in another. Dredge cutlets in flour, then egg, then the crumb mix.","Pan-fry cutlets in 3 tbsp olive oil 3–4 min per side until deeply golden; rest on a rack.","Boil penne until al dente; reserve 1/2 cup pasta water.","In a wide skillet, warm the remaining oil with garlic, red pepper flakes and sun-dried tomatoes 1 min. Add wine, simmer 1 min, then spinach to wilt. Toss in penne with a splash of pasta water and the rest of the parmesan.","Slice cutlets across the grain; pile over the penne; finish with basil."],
-   pair:"~680 cal · 46g protein · a Pinot Grigio"},
-  {course:"main",cat:"sandwich",emoji:"🥪",title:"Robke's-Style Chicken Parm Hero",it:"LI deli classic",time:"30 min",serves:"2",level:"Easy",
-   desc:"The Long Island chicken parm hero done Robke's-style — crisp breaded cutlets, plenty of marinara and bubbling mozzarella on a toasted hero roll.",
-   ing:["2 chicken breasts, pounded thin","1/2 cup flour","2 eggs","1 cup breadcrumbs","1/3 cup parmesan, grated","2 cups marinara","1.5 cups shredded mozzarella","2 hoagie rolls","3 tbsp olive oil","Fresh basil"],
-   steps:["Dredge cutlets in flour, egg, then breadcrumbs mixed with parmesan.","Pan-fry in olive oil 3–4 min per side until golden.","Heat oven to 425°F. Split the hoagie rolls; toast lightly. Spoon marinara on the bottom; lay in a cutlet, top with more marinara and mozzarella.","Bake 8 min until cheese bubbles; finish with torn basil."],
-   pair:"A pale ale or Chianti."},
-  {course:"appetizer",cat:"seafood",emoji:"🦪",title:"Robke's-Style Stuffed Long Island Clams",it:"Clams oreganata",time:"30 min",serves:"4",level:"Medium",
-   desc:"Long Island littleneck clams baked under a garlicky parmesan-breadcrumb topping — a Robke's-style oreganata.",
-   ing:["24 littleneck clams, on the half shell","1.5 cups breadcrumbs","1/2 cup parmesan, grated","4 cloves garlic, minced","1/4 cup parsley, chopped","2 tsp oregano","1/3 cup olive oil","2 tbsp lemon juice","1/2 tsp red pepper flakes","Lemon wedges","Salt, pepper"],
-   steps:["Heat oven to 425°F.","Stir breadcrumbs, parmesan, garlic, parsley, oregano, lemon juice, red pepper flakes and olive oil into a moist crumb.","Pile a generous spoonful onto each clam on the half shell; arrange on a sheet pan.","Bake 10–12 min until the clams are just cooked and the topping is golden; serve with lemon wedges."],
-   pair:"A crisp Pinot Grigio."},
-  {course:"main",cat:"italian",emoji:"🍆",title:"Robke's-Style Eggplant Rollatini",it:"Italian-American rolled eggplant",time:"1 hr",serves:"4",level:"Medium",
-   desc:"Breaded eggplant slices rolled around a herby ricotta filling, baked in marinara under melted mozzarella — Robke's-inspired Italian comfort.",
-   ing:["2 large eggplant, sliced lengthwise 1/4-inch thick","1 cup flour","3 eggs","2 cups breadcrumbs","1/3 cup parmesan, grated","2 cups ricotta","1 egg","2 cups shredded mozzarella","1/4 cup parsley, chopped","3 cups marinara","Olive oil","Fresh basil","Salt, pepper"],
-   steps:["Salt eggplant slices 15 min; pat dry. Dredge in flour, egg, then breadcrumbs mixed with half the parmesan.","Pan-fry in olive oil until golden on both sides; drain.","Stir ricotta with 1 egg, parsley, half the mozzarella, the rest of the parmesan, salt and pepper.","Spoon filling on each slice; roll up. Spread 1 cup marinara in a baking dish, arrange rolls seam-side down, top with remaining marinara and mozzarella.","Bake at 400°F 25 min until bubbly; finish with basil."],
-   pair:"A Chianti."},
-  {course:"main",cat:"italian",emoji:"🦐",title:"Robke's-Style Penne Vodka with Shrimp",it:"Blush sauce, LI-style",time:"30 min",serves:"4",level:"Easy",cal:640,protein:"36g",
-   desc:"A Robke's-style take on Long Island's beloved penne vodka — silky tomato-cream sauce with shrimp and a splash of vodka over penne. (Sub Italian sausage for a heartier version.)",
-   ing:["12 oz penne","1.5 lb shrimp, peeled","3 tbsp olive oil","4 cloves garlic, sliced","1/2 tsp red pepper flakes","3 tbsp tomato paste","1/3 cup vodka","1 cup cream","1/3 cup parmesan, grated","Fresh basil","Salt, pepper","Optional: 8 oz italian sausage, browned, instead of shrimp"],
-   steps:["Boil penne until al dente; reserve 1/2 cup pasta water.","Sauté shrimp in 1 tbsp olive oil 1–2 min per side; remove.","In the same pan, warm the rest of the oil with garlic and red pepper flakes; stir in tomato paste 2 min.","Add vodka; simmer 1 min. Add cream and parmesan; simmer until silky. Return shrimp; toss in penne with pasta water as needed.","Finish with basil and cracked pepper."],
-   pair:"~640 cal · 36g protein · a chilled rosé"}
 ];
 
 /* ---------------- LOGIC ---------------- */
@@ -1703,71 +1673,124 @@ document.getElementById('suForm').addEventListener('submit',async e=>{
 })();
 
 const RESTAURANTS=[
-  {name:"Robke's",town:"Northport",cat:"Italian-American",dishTitle:"Pork Chop Martini",tagline:"Robke's signature — thin, crispy breaded pork chops crowned with a tangy cherry-pepper and arugula salad.",
-   ing:["2 thin-cut pork chops, pounded thin","1 cup breadcrumbs + 1/2 cup grated Parmesan","2 eggs, beaten","Flour for dredging","2 cups arugula","Chopped cherry peppers + a splash of their vinegar","Olive oil, lemon, salt"],
-   steps:["Dredge the pounded chops in flour, then egg, then the Parmesan breadcrumbs.","Fry in olive oil until golden and cooked through; drain.","Toss arugula with cherry peppers, a splash of the vinegar, olive oil and lemon.","Pile the peppery salad on the hot chops and serve."]},
-  {name:"Luca",town:"Stony Brook",cat:"Italian",dishTitle:"Penne alla Vodka",tagline:"Luca's outstanding blush vodka sauce over fresh pasta.",
-   ing:["1 lb penne (fresh if you can)","1/4 cup tomato paste","1 onion, minced","3 cloves garlic","1/4 cup vodka","3/4 cup heavy cream","Parmesan, basil, chili flakes","Olive oil"],
-   steps:["Sauté onion and garlic in olive oil; add tomato paste and cook until brick-red.","Deglaze with vodka and cook off the alcohol.","Stir in cream and simmer to a blush sauce.","Toss with cooked pasta, Parmesan and basil; loosen with pasta water."]},
-  {name:"Ixchel Mexican Cuisine",town:"East Setauket",cat:"Mexican",dishTitle:"Birria Tacos",tagline:"Rich, chili-braised beef tacos with consommé for dipping — a Three Village favorite.",
-   ing:["2 lb chuck roast","3 dried guajillo + 2 ancho chiles","2 tomatoes, 1 onion, 4 garlic cloves","Cumin, oregano, bay, a small cinnamon stick","2 cups beef broth","Corn tortillas","Oaxaca or Jack cheese, cilantro, onion, lime"],
-   steps:["Toast and soak the chiles; blend with tomato, onion, garlic and spices.","Braise the beef in the chile sauce + broth until it shreds, ~3 hours.","Shred the beef; skim the red consommé into a bowl.","Dip tortillas in the fat, fill with beef and cheese, crisp on a griddle, and serve with consommé."]},
-  {name:"Elaine's",town:"East Setauket",cat:"Italian",dishTitle:"Linguine Carbonara",tagline:"Elaine's most-requested pasta — silky egg-and-pecorino carbonara with crisp guanciale.",
-   ing:["1 lb linguine","4 oz guanciale or pancetta, diced","3 egg yolks + 1 whole egg","3/4 cup grated Pecorino Romano","Lots of black pepper","Salt"],
-   steps:["Crisp the guanciale; reserve the rendered fat.","Whisk yolks, egg, Pecorino and black pepper.","Cook linguine; toss with the guanciale off the heat.","Add a splash of pasta water, then the egg mixture, tossing fast into a silky sauce."]},
-  {name:"Maria's",town:"Nesconset",cat:"Mexican & Latin",dishTitle:"Tampiqueña al Mar",tagline:"Maria's showstopper — grilled skirt steak topped with shrimp, scallops and calamari in chipotle cream.",
-   ing:["1 lb skirt steak","1/2 lb shrimp","1/2 lb sea scallops","1/4 lb calamari","2 chipotles in adobo","1/2 cup cream","1 onion, 2 garlic cloves","Lime, cilantro, salt"],
-   steps:["Season and grill the skirt steak to medium-rare; rest and slice.","Sauté onion and garlic; blend with chipotle and cream into a sauce.","Sear the shrimp, scallops and calamari, then simmer in the chipotle cream.","Spoon the seafood over the steak; finish with lime and cilantro."]},
-  {name:"Peter Luger Steak House",town:"Great Neck",cat:"Steakhouse",dishTitle:"Dry-Aged Porterhouse",tagline:"A steakhouse porterhouse you can pull off at home — high heat, butter and the famous-style sauce.",
-   ing:["1 porterhouse, 1.5–2 in thick","Kosher salt & coarse pepper","2 tbsp butter, melted","Sauce: ketchup, Worcestershire, prepared horseradish, brown sugar, splash of vinegar"],
-   steps:["Salt the steak and rest at room temp 45 min; pat very dry.","Heat the broiler (or cast iron) screaming hot.","Sear/broil ~4 min per side for medium-rare (130–135°F); rest 8 min.","Brush with melted butter, slice off the bone, serve with the whisked sauce."]},
-  {name:"Bigelow's New England Fried Clams",town:"Rockville Centre",cat:"Seafood",dishTitle:"New England Fried Clams",tagline:"Sweet whole clams in a light, crisp cornmeal crust.",
-   ing:["1 lb shucked whole clams","1 cup buttermilk","1 cup corn flour (fine cornmeal)","1/2 cup flour","Salt, pepper, paprika","Neutral oil for frying","Lemon & tartar sauce"],
-   steps:["Soak clams in buttermilk 15 min.","Mix corn flour, flour and seasoning.","Heat oil to 375°F.","Dredge and fry clams 1–2 min until golden; drain. Serve with lemon and tartar."]},
-  {name:"Zorn's of Bethpage",town:"Bethpage",cat:"Comfort",dishTitle:"Buttermilk Fried Chicken",tagline:"Juicy buttermilk-brined chicken with a craggy golden crust.",
-   ing:["8 pieces chicken","2 cups buttermilk","1 tbsp hot sauce","2 cups flour","Paprika, garlic powder, salt, pepper","Oil for frying"],
-   steps:["Brine chicken in buttermilk + hot sauce 2+ hours.","Dredge in seasoned flour, pressing to coat.","Fry at 325–350°F 12–15 min, turning, until 165°F.","Rest on a rack and salt right away."]},
-  {name:"All American Hamburger Drive-In",town:"Massapequa",cat:"Burgers",dishTitle:"Smash Cheeseburger & Shake",tagline:"A thin, crispy-edged smash burger and a thick strawberry shake.",
-   ing:["1/2 lb ground beef (80/20)","2 potato buns","2 slices American cheese","Salt, pepper","Pickles, onion, ketchup, mustard","Shake: vanilla ice cream, milk, frozen strawberries"],
-   steps:["Form loose beef balls; smash hard on a screaming-hot griddle.","Season, flip at 2 min, add cheese.","Toast buns; build with pickles, onion and sauce.","Blend ice cream, milk and strawberries for the shake."]},
-  {name:"Limani",town:"Roslyn",cat:"Mediterranean",dishTitle:"Grilled Octopus",tagline:"Tender, charred octopus with lemon, oregano and olive oil.",
-   ing:["1 octopus (~2 lb), cleaned","1 onion, bay leaf, peppercorns","1/4 cup olive oil","1 lemon","Dried oregano","Salt, pepper"],
-   steps:["Simmer octopus with onion, bay and peppercorns 45–60 min until tender; cool.","Cut into tentacles; toss with olive oil.","Grill over high heat until charred, 2–3 min per side.","Finish with lemon, oregano, salt and olive oil."]},
-  {name:"La Parma",town:"Williston Park",cat:"Italian",dishTitle:"Chicken Scarpariello",tagline:"Family-style chicken and sausage with sweet peppers in a tangy garlic-vinegar sauce.",
-   ing:["2 lb chicken pieces","2 Italian sausages","1 bell pepper + a few cherry peppers","4 cloves garlic","1/2 cup white wine","1/2 cup chicken stock","2 tbsp vinegar, rosemary"],
-   steps:["Brown chicken and sausage; set aside.","Sauté garlic and peppers.","Deglaze with wine, vinegar and stock; add rosemary.","Return the meat; simmer until cooked and saucy."]},
-  {name:"The Lobster Roll — LUNCH",town:"Amagansett",cat:"Seafood",dishTitle:"Classic Cold Lobster Roll",tagline:"Chilled lobster lightly dressed in lemon mayo on a buttery split-top bun.",
-   ing:["1 lb cooked lobster meat","3 tbsp mayo","1 tbsp lemon juice","1 stalk celery, minced","Chives, salt, pepper","2 split-top buns","Butter"],
-   steps:["Toss lobster with mayo, lemon, celery, chives, salt and pepper.","Butter and griddle the buns until golden.","Pile in the lobster salad.","Top with extra chives; serve cold."]},
-  {name:"Umberto's",town:"New Hyde Park",cat:"Pizza",dishTitle:"Grandma Pizza",tagline:"Thin, square, crispy-bottomed pizza with garlic, crushed tomato and mozzarella.",
-   ing:["1 lb pizza dough","2 tbsp olive oil","2 cups low-moisture mozzarella","1 cup crushed tomatoes","2 cloves garlic","Oregano, basil, Parmesan"],
-   steps:["Stretch dough into an oiled sheet pan; rest 20 min.","Top with mozzarella, then spoon over crushed tomato mixed with garlic.","Bake at 500°F 15–18 min until the bottom is crisp.","Finish with oregano, basil and Parmesan."]},
-  {name:"Maureen's Kitchen",town:"Smithtown",cat:"Breakfast",dishTitle:"The Big Diner Breakfast",tagline:"The full plate — eggs, crispy home fries, bacon and fluffy pancakes.",
-   ing:["4 eggs","4 strips bacon","2 potatoes, diced","Butter","Pancakes: flour, milk, egg, baking powder, sugar","Maple syrup"],
-   steps:["Crisp the bacon; fry the home fries in the drippings until golden.","Whisk pancake batter; cook on a buttered griddle.","Fry the eggs to your liking.","Plate it all with butter and syrup."]},
-  {name:"The Clam Bar at Napeague",town:"Amagansett",cat:"Seafood",dishTitle:"Warm Buttered Lobster Roll",tagline:"Connecticut-style — warm lobster tossed in lemon butter on a toasted bun.",
-   ing:["1 lb cooked lobster meat","4 tbsp butter","1 tbsp lemon juice","Chives, flaky salt","2 split-top buns"],
-   steps:["Warm the lobster gently in melted butter with lemon.","Butter and griddle the buns.","Fill with the warm buttered lobster.","Finish with chives and flaky salt."]}
+  {name:"Robke's",town:"Northport",cat:"Italian-American",dishes:[
+    {dishTitle:"Baked Chicken Cutlet with Penne Vodka",tagline:"A Robke's Town Favorite — a crispy baked breaded chicken cutlet over penne in a silky vodka blush sauce.",
+     ing:["2 chicken breasts, pounded thin","1/2 cup flour","2 eggs, beaten","1 cup seasoned breadcrumbs","1/2 cup grated Parmesan","12 oz penne","3 tbsp olive oil","3 tbsp butter","4 cloves garlic, minced","3 tbsp tomato paste","1/3 cup vodka","1 cup heavy cream","1/2 cup crushed tomatoes","1/2 tsp red pepper flakes","Fresh basil","Salt, pepper"],
+     steps:["Heat oven to 425°F. Dredge the cutlets in flour, then egg, then breadcrumbs mixed with half the Parmesan.","Brown the cutlets in olive oil 2 min per side, then finish on a rack in the oven 10–12 min until cooked through and crisp.","Boil the penne until al dente; reserve 1/2 cup pasta water.","Make the vodka sauce: melt butter with the garlic and red pepper flakes; stir in tomato paste 2 min; add vodka and simmer 1 min; add crushed tomatoes and cream and simmer to a blush sauce.","Toss the penne in the sauce with the remaining Parmesan, loosening with pasta water. Plate the penne, slice a baked cutlet over the top, and finish with basil."]},
+    {dishTitle:"Skirt Steak Mac & Cheese",tagline:"Robke's Gourmet Mac & Cheese meets their famous sliced steak — a creamy three-cheese mac topped with seared skirt steak and caramelized onions.",
+     ing:["1.5 lb skirt steak","12 oz elbow macaroni","4 tbsp butter","1/4 cup flour","3 cups whole milk","2 cups sharp cheddar, shredded","1 cup gruyere, shredded","1 onion, sliced","4 strips bacon, chopped","2 tbsp olive oil","Salt, pepper, paprika"],
+     steps:["Season the skirt steak with salt, pepper and paprika; sear in olive oil 3 min per side; rest 8 min and slice thinly across the grain.","In the same pan, cook the bacon until crisp; remove. Soften the sliced onion in the bacon fat 10 min until deeply caramelized.","Boil the elbow macaroni until al dente; drain. Melt the butter in a saucepan, whisk in the flour 1 min, then the milk; simmer until thickened. Off heat, stir in the cheddar and gruyere.","Toss the pasta with the cheese sauce; pile into bowls, top with the sliced skirt steak, caramelized onions and bacon crumble; finish with cracked pepper."]},
+    {dishTitle:"Pork Chops with Cherry Peppers",tagline:"Robke's signature — crispy breaded pork chops crowned with a tangy cherry-pepper and arugula salad.",
+     ing:["2 thin-cut pork chops, pounded thin","1 cup breadcrumbs + 1/2 cup grated Parmesan","2 eggs, beaten","Flour for dredging","2 cups arugula","Chopped cherry peppers + a splash of their vinegar","Olive oil, lemon, salt"],
+     steps:["Dredge the pounded chops in flour, then egg, then the Parmesan breadcrumbs.","Fry in olive oil until golden and cooked through; drain.","Toss the arugula with cherry peppers, a splash of the vinegar, olive oil and lemon.","Pile the peppery salad on the hot chops and serve."]},
+    {dishTitle:"The \"Finger Tip\" — Sliced Steak & Potatoes",tagline:"Robke's famous sliced steak and potatoes — seared, sliced thin and piled over crispy garlic potatoes.",
+     ing:["1.5 lb skirt or shell steak","1.5 lb baby potatoes, halved","3 tbsp olive oil","3 cloves garlic, minced","2 tbsp butter","1 tsp rosemary, chopped","Salt, coarse pepper","Optional: chopped cherry peppers"],
+     steps:["Roast the halved potatoes tossed in olive oil, salt and pepper at 425°F for 25–30 min until crisp; toss with the garlic and rosemary for the last 5 min.","Season the steak well and rest at room temp 30 min; pat dry.","Sear in a screaming-hot pan 3–4 min per side for medium-rare; rest 8 min, then slice thin across the grain.","Pile the sliced steak over the potatoes, spoon over the resting juices and butter, and finish with coarse pepper (and cherry peppers if you like)."]},
+    {dishTitle:"Fried Mozzarella",tagline:"The Robke's appetizer — golden breaded fresh mozzarella with marinara for dipping.",
+     ing:["1 lb fresh mozzarella, cut into thick sticks","1 cup flour","3 eggs, beaten","2 cups seasoned breadcrumbs","1/2 cup grated Parmesan","Oil for frying","2 cups marinara, warmed","Fresh basil"],
+     steps:["Freeze the mozzarella sticks 20 min so they hold their shape.","Dredge each in flour, then egg, then breadcrumbs mixed with the Parmesan — then dip in egg and crumbs again for a sturdy double coat.","Heat oil to 360°F; fry in batches 1–2 min until golden, turning once; drain.","Serve hot with warm marinara and torn basil."]},
+    {dishTitle:"Eggplant Rollatini",tagline:"A Robke's dinner appetizer — breaded eggplant rolled around herby ricotta, baked in marinara under melted mozzarella.",
+     ing:["2 large eggplant, sliced lengthwise 1/4-inch thick","1 cup flour","3 eggs","2 cups breadcrumbs","1/3 cup parmesan, grated","2 cups ricotta","1 egg","2 cups shredded mozzarella","1/4 cup parsley, chopped","3 cups marinara","Olive oil","Fresh basil","Salt, pepper"],
+     steps:["Salt the eggplant slices 15 min; pat dry. Dredge in flour, egg, then breadcrumbs mixed with half the parmesan.","Pan-fry in olive oil until golden on both sides; drain.","Stir the ricotta with 1 egg, parsley, half the mozzarella, the rest of the parmesan, salt and pepper.","Spoon filling on each slice; roll up. Spread 1 cup marinara in a baking dish, arrange the rolls seam-side down, top with the remaining marinara and mozzarella.","Bake at 400°F for 25 min until bubbly; finish with basil."]}
+  ]},
+  {name:"Luca",town:"Stony Brook",cat:"Italian",dishes:[
+    {dishTitle:"Penne alla Vodka",tagline:"Luca's outstanding blush vodka sauce over fresh pasta.",
+     ing:["1 lb penne (fresh if you can)","1/4 cup tomato paste","1 onion, minced","3 cloves garlic","1/4 cup vodka","3/4 cup heavy cream","Parmesan, basil, chili flakes","Olive oil"],
+     steps:["Sauté onion and garlic in olive oil; add tomato paste and cook until brick-red.","Deglaze with vodka and cook off the alcohol.","Stir in cream and simmer to a blush sauce.","Toss with cooked pasta, Parmesan and basil; loosen with pasta water."]}
+  ]},
+  {name:"Ixchel Mexican Cuisine",town:"East Setauket",cat:"Mexican",dishes:[
+    {dishTitle:"Birria Tacos",tagline:"Rich, chili-braised beef tacos with consommé for dipping — a Three Village favorite.",
+     ing:["2 lb chuck roast","3 dried guajillo + 2 ancho chiles","2 tomatoes, 1 onion, 4 garlic cloves","Cumin, oregano, bay, a small cinnamon stick","2 cups beef broth","Corn tortillas","Oaxaca or Jack cheese, cilantro, onion, lime"],
+     steps:["Toast and soak the chiles; blend with tomato, onion, garlic and spices.","Braise the beef in the chile sauce + broth until it shreds, ~3 hours.","Shred the beef; skim the red consommé into a bowl.","Dip tortillas in the fat, fill with beef and cheese, crisp on a griddle, and serve with consommé."]}
+  ]},
+  {name:"Elaine's",town:"East Setauket",cat:"Italian",dishes:[
+    {dishTitle:"Linguine Carbonara",tagline:"Elaine's most-requested pasta — silky egg-and-pecorino carbonara with crisp guanciale.",
+     ing:["1 lb linguine","4 oz guanciale or pancetta, diced","3 egg yolks + 1 whole egg","3/4 cup grated Pecorino Romano","Lots of black pepper","Salt"],
+     steps:["Crisp the guanciale; reserve the rendered fat.","Whisk yolks, egg, Pecorino and black pepper.","Cook linguine; toss with the guanciale off the heat.","Add a splash of pasta water, then the egg mixture, tossing fast into a silky sauce."]}
+  ]},
+  {name:"Maria's",town:"Nesconset",cat:"Mexican & Latin",dishes:[
+    {dishTitle:"Tampiqueña al Mar",tagline:"Maria's showstopper — grilled skirt steak topped with shrimp, scallops and calamari in chipotle cream.",
+     ing:["1 lb skirt steak","1/2 lb shrimp","1/2 lb sea scallops","1/4 lb calamari","2 chipotles in adobo","1/2 cup cream","1 onion, 2 garlic cloves","Lime, cilantro, salt"],
+     steps:["Season and grill the skirt steak to medium-rare; rest and slice.","Sauté onion and garlic; blend with chipotle and cream into a sauce.","Sear the shrimp, scallops and calamari, then simmer in the chipotle cream.","Spoon the seafood over the steak; finish with lime and cilantro."]}
+  ]},
+  {name:"Peter Luger Steak House",town:"Great Neck",cat:"Steakhouse",dishes:[
+    {dishTitle:"Dry-Aged Porterhouse",tagline:"A steakhouse porterhouse you can pull off at home — high heat, butter and the famous-style sauce.",
+     ing:["1 porterhouse, 1.5–2 in thick","Kosher salt & coarse pepper","2 tbsp butter, melted","Sauce: ketchup, Worcestershire, prepared horseradish, brown sugar, splash of vinegar"],
+     steps:["Salt the steak and rest at room temp 45 min; pat very dry.","Heat the broiler (or cast iron) screaming hot.","Sear/broil ~4 min per side for medium-rare (130–135°F); rest 8 min.","Brush with melted butter, slice off the bone, serve with the whisked sauce."]}
+  ]},
+  {name:"Bigelow's New England Fried Clams",town:"Rockville Centre",cat:"Seafood",dishes:[
+    {dishTitle:"New England Fried Clams",tagline:"Sweet whole clams in a light, crisp cornmeal crust.",
+     ing:["1 lb shucked whole clams","1 cup buttermilk","1 cup corn flour (fine cornmeal)","1/2 cup flour","Salt, pepper, paprika","Neutral oil for frying","Lemon & tartar sauce"],
+     steps:["Soak clams in buttermilk 15 min.","Mix corn flour, flour and seasoning.","Heat oil to 375°F.","Dredge and fry clams 1–2 min until golden; drain. Serve with lemon and tartar."]}
+  ]},
+  {name:"Zorn's of Bethpage",town:"Bethpage",cat:"Comfort",dishes:[
+    {dishTitle:"Buttermilk Fried Chicken",tagline:"Juicy buttermilk-brined chicken with a craggy golden crust.",
+     ing:["8 pieces chicken","2 cups buttermilk","1 tbsp hot sauce","2 cups flour","Paprika, garlic powder, salt, pepper","Oil for frying"],
+     steps:["Brine chicken in buttermilk + hot sauce 2+ hours.","Dredge in seasoned flour, pressing to coat.","Fry at 325–350°F 12–15 min, turning, until 165°F.","Rest on a rack and salt right away."]}
+  ]},
+  {name:"All American Hamburger Drive-In",town:"Massapequa",cat:"Burgers",dishes:[
+    {dishTitle:"Smash Cheeseburger & Shake",tagline:"A thin, crispy-edged smash burger and a thick strawberry shake.",
+     ing:["1/2 lb ground beef (80/20)","2 potato buns","2 slices American cheese","Salt, pepper","Pickles, onion, ketchup, mustard","Shake: vanilla ice cream, milk, frozen strawberries"],
+     steps:["Form loose beef balls; smash hard on a screaming-hot griddle.","Season, flip at 2 min, add cheese.","Toast buns; build with pickles, onion and sauce.","Blend ice cream, milk and strawberries for the shake."]}
+  ]},
+  {name:"Limani",town:"Roslyn",cat:"Mediterranean",dishes:[
+    {dishTitle:"Grilled Octopus",tagline:"Tender, charred octopus with lemon, oregano and olive oil.",
+     ing:["1 octopus (~2 lb), cleaned","1 onion, bay leaf, peppercorns","1/4 cup olive oil","1 lemon","Dried oregano","Salt, pepper"],
+     steps:["Simmer octopus with onion, bay and peppercorns 45–60 min until tender; cool.","Cut into tentacles; toss with olive oil.","Grill over high heat until charred, 2–3 min per side.","Finish with lemon, oregano, salt and olive oil."]}
+  ]},
+  {name:"La Parma",town:"Williston Park",cat:"Italian",dishes:[
+    {dishTitle:"Chicken Scarpariello",tagline:"Family-style chicken and sausage with sweet peppers in a tangy garlic-vinegar sauce.",
+     ing:["2 lb chicken pieces","2 Italian sausages","1 bell pepper + a few cherry peppers","4 cloves garlic","1/2 cup white wine","1/2 cup chicken stock","2 tbsp vinegar, rosemary"],
+     steps:["Brown chicken and sausage; set aside.","Sauté garlic and peppers.","Deglaze with wine, vinegar and stock; add rosemary.","Return the meat; simmer until cooked and saucy."]}
+  ]},
+  {name:"The Lobster Roll — LUNCH",town:"Amagansett",cat:"Seafood",dishes:[
+    {dishTitle:"Classic Cold Lobster Roll",tagline:"Chilled lobster lightly dressed in lemon mayo on a buttery split-top bun.",
+     ing:["1 lb cooked lobster meat","3 tbsp mayo","1 tbsp lemon juice","1 stalk celery, minced","Chives, salt, pepper","2 split-top buns","Butter"],
+     steps:["Toss lobster with mayo, lemon, celery, chives, salt and pepper.","Butter and griddle the buns until golden.","Pile in the lobster salad.","Top with extra chives; serve cold."]}
+  ]},
+  {name:"Umberto's",town:"New Hyde Park",cat:"Pizza",dishes:[
+    {dishTitle:"Grandma Pizza",tagline:"Thin, square, crispy-bottomed pizza with garlic, crushed tomato and mozzarella.",
+     ing:["1 lb pizza dough","2 tbsp olive oil","2 cups low-moisture mozzarella","1 cup crushed tomatoes","2 cloves garlic","Oregano, basil, Parmesan"],
+     steps:["Stretch dough into an oiled sheet pan; rest 20 min.","Top with mozzarella, then spoon over crushed tomato mixed with garlic.","Bake at 500°F 15–18 min until the bottom is crisp.","Finish with oregano, basil and Parmesan."]}
+  ]},
+  {name:"Maureen's Kitchen",town:"Smithtown",cat:"Breakfast",dishes:[
+    {dishTitle:"The Big Diner Breakfast",tagline:"The full plate — eggs, crispy home fries, bacon and fluffy pancakes.",
+     ing:["4 eggs","4 strips bacon","2 potatoes, diced","Butter","Pancakes: flour, milk, egg, baking powder, sugar","Maple syrup"],
+     steps:["Crisp the bacon; fry the home fries in the drippings until golden.","Whisk pancake batter; cook on a buttered griddle.","Fry the eggs to your liking.","Plate it all with butter and syrup."]}
+  ]},
+  {name:"The Clam Bar at Napeague",town:"Amagansett",cat:"Seafood",dishes:[
+    {dishTitle:"Warm Buttered Lobster Roll",tagline:"Connecticut-style — warm lobster tossed in lemon butter on a toasted bun.",
+     ing:["1 lb cooked lobster meat","4 tbsp butter","1 tbsp lemon juice","Chives, flaky salt","2 split-top buns"],
+     steps:["Warm the lobster gently in melted butter with lemon.","Butter and griddle the buns.","Fill with the warm buttered lobster.","Finish with chives and flaky salt."]}
+  ]},
+  {name:"Starbucks",town:"Café favorite",cat:"Coffee Shop",dishes:[
+    {dishTitle:"Spinach, Feta & Egg White Wrap",tagline:"Copycat of the Starbucks favorite — protein-packed egg whites with spinach, feta and sun-dried tomatoes in a toasted spinach wrap.",
+     ing:["1 cup egg whites","2 cups baby spinach","1/4 cup crumbled feta cheese","2 tbsp sun-dried tomatoes, chopped","1 spinach tortilla","1 tsp olive oil","1/4 tsp garlic powder","Salt, pepper"],
+     steps:["Heat 1 tsp olive oil in a nonstick skillet; add the baby spinach and a pinch of salt and wilt 1 min; push to one side.","Pour the egg whites into the pan and scramble gently 2–3 min until just set; season with garlic powder, salt and pepper.","Sprinkle the feta and chopped sun-dried tomatoes over the eggs and fold the spinach in.","Warm the spinach tortilla 15 sec; pile the filling in the center, fold the sides over the top and bottom, then toast seam-side down in the dry skillet 1–2 min for the signature golden seal."]},
+    {dishTitle:"Bacon, Gouda & Egg Sandwich",tagline:"The Starbucks breakfast classic — smoky gouda, bacon and a folded egg on a toasted artisan roll.",
+     ing:["2 ciabatta or artisan rolls","2 eggs","2 slices smoked gouda","4 slices bacon","1 tbsp butter","Salt, pepper"],
+     steps:["Cook the bacon until crisp; drain.","Whisk the eggs with salt and pepper; cook in a small buttered pan (or ring mold) into two folded rounds.","Split and toast the rolls; lay the gouda on the warm bottom so it starts to melt.","Stack the egg and bacon, close the sandwich, and press in the warm pan 1 min to melt the cheese."]}
+  ]}
 ];
 function mapUrl(r){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(r.name+' '+r.town+' NY'); }
+function restaurantSlug(r,d){ return slugify(r.name + ' ' + d.dishTitle); }
 function renderRestaurants(){
-  document.getElementById('liGrid').innerHTML=RESTAURANTS.map((r,i)=>`<div class="li-card" onclick="openRestaurant(${i})"><div class="cat">${r.cat} · ${r.town}</div><h4>${r.name}</h4><div class="it">Make it at home: ${r.dishTitle}</div><div class="li-go">View recipe →</div></div>`).join('');
+  document.getElementById('liGrid').innerHTML=RESTAURANTS.map((r,ri)=>`<div class="li-card"><div class="cat">${r.cat} · ${r.town}</div><h4>${r.name}</h4><div class="li-dishes">${r.dishes.map((d,di)=>`<button type="button" class="li-dish" onclick="openRestaurantDish(${ri},${di})"><span class="li-dish-name">${d.dishTitle}</span><span class="li-dish-go">→</span></button>`).join('')}</div></div>`).join('');
 }
-function restaurantSlug(r){ return slugify(r.name + ' ' + r.dishTitle); }
-function openRestaurant(i){
-  const r=RESTAURANTS[i];
-  const qs='restaurant=' + encodeURIComponent(restaurantSlug(r));
+function openRestaurantDish(ri,di){
+  const r=RESTAURANTS[ri], d=r.dishes[di];
+  const qs='restaurant=' + encodeURIComponent(restaurantSlug(r,d));
   modal.innerHTML=`<button class="close" onclick="closeModal()">×</button>
     <div class="menu-card">
-      <div class="mc-top"><div class="mc-orn">&#10022;</div><div class="mc-cat">Copycat Recipe · ${r.cat}</div></div>
-      <div class="mc-title">${r.dishTitle}</div>
+      <div class="mc-top"><div class="mc-orn">&#10022;</div><div class="mc-cat">Copycat Recipe · ${r.name}</div></div>
+      <div class="mc-title">${d.dishTitle}</div>
       <div class="mc-it">Inspired by ${r.name} · ${r.town}</div>
       <div class="mc-rule"><span>✦</span></div>
-      <div class="mc-desc">${r.tagline}</div>
+      <div class="mc-desc">${d.tagline}</div>
       <div class="mc-rule"><span>✦</span></div>
       <div class="mc-cols">
-        <div><h5>The Plate</h5><ul>${r.ing.map(x=>`<li>${x}</li>`).join('')}</ul></div>
-        <div><h5>Preparation</h5><ol>${r.steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>
+        <div><h5>The Plate</h5><ul>${d.ing.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div><h5>Preparation</h5><ol>${d.steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>
       </div>
       <div class="mc-cart">
         ${sendRowHTML(qs)}
@@ -1776,7 +1799,6 @@ function openRestaurant(i){
     </div>`;
   overlay.classList.add('open'); document.body.style.overflow='hidden';
 }
-
 renderTodayMenu(); setFootMeta(); renderCravings(); renderMealPrep(); renderRestaurants(); renderReco();
 </script>
 </body>
