@@ -33,6 +33,7 @@ import {
   coverageStats
 } from '../amazon.js';
 import { buildWalmartCart, walmartSearchURL } from '../walmart.js';
+import { findRestaurantBySlug, restaurantAsRecipe } from '../restaurants.js';
 
 function escapeHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -199,6 +200,15 @@ const GENERIC_STORES = {
 // -------------------- Main handler --------------------
 
 function resolveTitleAndIngredients(q){
+  // Long Island restaurant copycat recipes live in restaurants.js, not the
+  // main recipes.js catalog. They reach this endpoint via ?restaurant=<slug>.
+  const restaurantSlug = (q.restaurant || '').toString();
+  if (restaurantSlug){
+    const raw = findRestaurantBySlug(restaurantSlug);
+    if (!raw) return { error: 'Restaurant not found' };
+    const r = restaurantAsRecipe(raw);
+    return { title: r.title, ingredients: ingredientsForRecipe(r) };
+  }
   const slug = (q.recipe || '').toString();
   if (slug){
     const r = findRecipeBySlug(slug);
