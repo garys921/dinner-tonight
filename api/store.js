@@ -209,6 +209,23 @@ function resolveTitleAndIngredients(q){
     const r = restaurantAsRecipe(raw);
     return { title: r.title, ingredients: ingredientsForRecipe(r) };
   }
+  // Meal plan: ?recipes=slug1,slug2,... -> one combined, de-duplicated cart.
+  const recipesParam = (q.recipes || '').toString();
+  if (recipesParam){
+    const slugs = recipesParam.split(',').map(s => s.trim()).filter(Boolean);
+    let all = []; const titles = [];
+    for (const sl of slugs){
+      const r = findRecipeBySlug(sl);
+      if (r){ titles.push(r.title); all = all.concat(ingredientsForRecipe(r)); }
+    }
+    if (!all.length) return { error: 'No recipes found' };
+    const seen = new Set(); const merged = [];
+    for (const it of all){
+      const k = ((it && it.name) || '').toLowerCase().trim();
+      if (k && !seen.has(k)){ seen.add(k); merged.push(it); }
+    }
+    return { title: 'Meal plan — ' + titles.length + ' recipes', ingredients: merged };
+  }
   const slug = (q.recipe || '').toString();
   if (slug){
     const r = findRecipeBySlug(slug);
