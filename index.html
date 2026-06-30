@@ -24,13 +24,14 @@
 <meta name="twitter:title" content="Dinner Tonight — Your daily dinner, decided">
 <meta name="twitter:description" content="A new four-course menu every evening — recipes plus one-tap Walmart cart-load.">
 <meta name="twitter:image" content="https://dinner-tonight-daily.vercel.app/og.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#241f17; --panel:#2f2819; --card:#39321f; --ink:#f9f2e2; --muted:#c7bd9f;
-    --gold:#d9b35e; --gold-soft:#f1daa6; --line:#4c4330; --accent:#9aa766;
-    --shadow:0 16px 44px rgba(0,0,0,.36);
-    --serif:'Georgia','Times New Roman',serif;
-    --sans:'Helvetica Neue',Arial,sans-serif;
+    --bg:#1b1a21; --panel:#26242e; --card:#2a2833; --ink:#f4f1f7; --muted:#a8a2b4;
+    --gold:#ff7a4d; --gold-soft:#ff9c78; --line:#393644; --accent:#36c98e;
+    --shadow:0 14px 40px rgba(0,0,0,.40);
+    --serif:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    --sans:'Poppins',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -158,7 +159,7 @@
   .filter-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px auto 0}
   .fchip{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 15px;font-size:13px;font-family:var(--sans);cursor:pointer;transition:.15s;white-space:nowrap}
   .fchip:hover{border-color:var(--gold-soft);color:var(--ink)}
-  .fchip.on{background:var(--gold);border-color:var(--gold);color:#241d0f;font-weight:600}
+  .fchip.on{background:var(--gold);border-color:var(--gold);color:#ffffff;font-weight:600}
   #searchResults{margin-top:24px}
   .res-head{font-family:var(--serif);color:var(--gold-soft);font-size:15px;margin:0 0 16px;text-align:center}
   .no-res{color:var(--muted);text-align:center;padding:34px 12px;font-style:italic}
@@ -182,7 +183,7 @@
   .kitchen-tabs{display:flex;gap:10px;justify-content:center;margin:6px 0 22px}
   .ktab{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:9px 18px;font-size:14px;font-family:var(--sans);cursor:pointer;transition:.15s}
   .ktab:hover{border-color:var(--gold-soft);color:var(--ink)}
-  .ktab.on{background:var(--gold);border-color:var(--gold);color:#241d0f;font-weight:600}
+  .ktab.on{background:var(--gold);border-color:var(--gold);color:#ffffff;font-weight:600}
   .empty{text-align:center;color:var(--muted);font-style:italic;padding:36px 18px;border:1px dashed var(--line);border-radius:14px;max-width:540px;margin:0 auto}
   .plan-head{text-align:center;color:var(--gold-soft);font-family:var(--serif);margin:0 0 16px}
   .shoplist{max-width:640px;margin:26px auto 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow)}
@@ -202,7 +203,7 @@
   .scaler button{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--gold-soft);cursor:pointer;font-size:15px;line-height:1}
   .scaler button:hover{border-color:var(--gold-soft);color:var(--ink)}
   .scaler b{color:var(--ink);min-width:14px;text-align:center}
-  .cook-btn{display:block;width:100%;margin:16px 0 4px;background:var(--gold);border:0;color:#241d0f;font-family:var(--sans);font-weight:600;font-size:15px;padding:13px;border-radius:12px;cursor:pointer;transition:.15s}
+  .cook-btn{display:block;width:100%;margin:16px 0 4px;background:var(--gold);border:0;color:#ffffff;font-family:var(--sans);font-weight:600;font-size:15px;padding:13px;border-radius:12px;cursor:pointer;transition:.15s}
   .cook-btn:hover{background:var(--gold-soft)}
   .mc-swaps{margin-top:18px;background:rgba(0,0,0,.12);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
   .mc-swaps h5{margin:0 0 8px;color:var(--gold-soft);font-family:var(--sans);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
@@ -210,7 +211,7 @@
   .mc-swaps li{color:var(--muted);font-size:13.5px;margin:5px 0}
   .mc-swaps b{color:var(--ink)}
   .plan-week-wrap{text-align:center;margin:14px 0 6px}
-  .plan-week{background:var(--gold);border:0;color:#241d0f;font-family:var(--sans);font-weight:600;font-size:14px;padding:11px 20px;border-radius:999px;cursor:pointer;transition:.15s}
+  .plan-week{background:var(--gold);border:0;color:#ffffff;font-family:var(--sans);font-weight:600;font-size:14px;padding:11px 20px;border-radius:999px;cursor:pointer;transition:.15s}
   .plan-week:hover{background:var(--gold-soft)}
   .cook-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:none;overflow:auto}
   .cook-overlay.open{display:flex;align-items:center;justify-content:center}
@@ -226,17 +227,37 @@
   .cook-nav{display:flex;gap:14px;justify-content:center;margin-top:26px}
   .cook-nav button{background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:13px 26px;font-size:16px;font-family:var(--sans);cursor:pointer;transition:.15s}
   .cook-nav button:disabled{opacity:.35;cursor:default}
-  .cook-nav .cook-next,.cook-nav .cook-done{background:var(--gold);border-color:var(--gold);color:#241d0f;font-weight:600}
+  .cook-nav .cook-next,.cook-nav .cook-done{background:var(--gold);border-color:var(--gold);color:#ffffff;font-weight:600}
   .cook-nav button:not(:disabled):hover{border-color:var(--gold-soft)}
   /* theme toggle + light theme */
   .theme-toggle{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:12px;border-radius:999px;padding:7px 12px;cursor:pointer;font-family:var(--sans);transition:.15s}
   .theme-toggle:hover{color:var(--ink);border-color:var(--gold-soft)}
-  .theme-light{--bg:#f6f1e7;--panel:#fffdf8;--card:#fffefb;--ink:#2c2620;--muted:#7c715c;--gold:#a9792b;--gold-soft:#bb8c39;--line:#e7ddc8;--shadow:0 14px 40px rgba(80,60,30,.12)}
-  .theme-light header.site{background:rgba(247,241,231,.88)}
-  .theme-light .menu-board{background:linear-gradient(135deg,#fffdf8,#f1e7d3)}
-  .theme-light .signup-card{background:linear-gradient(135deg,#fffdf8,#f1e7d3)}
-  .theme-light .mp-banner{background:linear-gradient(135deg,rgba(93,138,106,.14),rgba(217,179,94,.12))}
-  .theme-light .save-btn,.theme-light .act-btn{background:rgba(0,0,0,.05)}
+  .theme-light{--bg:#fbf7f4;--panel:#ffffff;--card:#ffffff;--ink:#2a2433;--muted:#7d7689;--gold:#ff6a3d;--gold-soft:#ff8a63;--line:#efe7e1;--accent:#27b277;--shadow:0 10px 30px rgba(50,35,60,.08)}
+  .theme-light header.site{background:rgba(255,255,255,.9)}
+  .theme-light .menu-board{background:linear-gradient(135deg,#ffffff,#fff1ea)}
+  .theme-light .signup-card{background:linear-gradient(135deg,#fff7f3,#ffeede)}
+  .theme-light .mp-banner{background:linear-gradient(135deg,#e9f9f0,#fff2ea)}
+  .theme-light .save-btn,.theme-light .act-btn{background:rgba(0,0,0,.04)}
+  .theme-light .menu-card{background:#ffffff}
+  /* ===== bright / colorful / modern redesign ===== */
+  body{font-family:var(--sans)}
+  h1,h2,h3{font-weight:600;letter-spacing:-.01em}
+  .card,.li-card,.search-box,.pantry,.shoplist{border-radius:18px}
+  .card,.li-card{box-shadow:var(--shadow);transition:transform .16s ease,box-shadow .16s ease}
+  .card:hover,.li-card:hover{transform:translateY(-3px);box-shadow:0 16px 38px rgba(50,35,60,.13)}
+  .li-card{border-top:3px solid var(--gold)}
+  .cat{font-weight:700;letter-spacing:.04em}
+  .cta-primary{background:var(--gold)!important;color:#fff!important;border:0!important;border-radius:16px!important;box-shadow:0 8px 22px rgba(255,106,61,.30)!important}
+  .cta-primary:hover{filter:brightness(1.04)}
+  .cook-btn,.plan-week,.pantry-add{border-radius:999px}
+  .fchip.on,.ktab.on,.cook-btn,.plan-week,.cook-nav .cook-next,.cook-nav .cook-done,.pantry-add{color:#fff}
+  .fchip{border-radius:999px;font-weight:500}
+  .badge{border:1px solid var(--line);border-radius:999px;padding:2px 9px;font-size:10.5px;font-weight:600;letter-spacing:.02em}
+  .b-veg{background:#e6f6ec;color:#1c844a;border-color:#bfe9d0}
+  .b-gf{background:#e9f1fe;color:#2360c4;border-color:#c8dcfb}
+  .b-hp{background:#f3ecfe;color:#7a40d4;border-color:#decefb}
+  .b-quick{background:#fff3e0;color:#c0710e;border-color:#ffdca8}
+  .ctile{border-radius:14px}
   /* cook with what you have */
   .pantry{max-width:680px;margin:22px auto 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
   .pantry-head{font-family:var(--serif);color:var(--ink);font-size:17px;text-align:center}
@@ -244,7 +265,7 @@
   .pantry-box{display:flex;gap:8px}
   .pantry-box input{flex:1;min-width:0;background:transparent;border:1px solid var(--line);border-radius:10px;padding:11px 14px;color:var(--ink);font-family:var(--sans);font-size:15px;outline:none}
   .pantry-box input:focus{border-color:var(--gold-soft)}
-  .pantry-add{background:var(--gold);border:0;color:#241d0f;font-weight:600;font-family:var(--sans);border-radius:10px;padding:0 18px;cursor:pointer}
+  .pantry-add{background:var(--gold);border:0;color:#ffffff;font-weight:600;font-family:var(--sans);border-radius:10px;padding:0 18px;cursor:pointer}
   .pantry-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
   .pchip{display:inline-flex;align-items:center;gap:7px;background:rgba(123,191,106,.16);border:1px solid #7bbf6a;color:var(--ink);border-radius:999px;padding:5px 8px 5px 13px;font-size:13px}
   .pchip button{background:transparent;border:0;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:0}
@@ -1999,11 +2020,15 @@ function addPantry(){
 }
 function removePantry(v){ pantry=pantry.filter(x=>x!==v); renderPantry(); }
 function clearPantry(){ pantry=[]; renderPantry(); }
+function _stem(w){ w=String(w).toLowerCase().replace(/[^a-z]/g,''); if(w.length>4&&w.endsWith('ies')) return w.slice(0,-3)+'y'; if(w.length>4&&w.endsWith('es')) return w.slice(0,-2); if(w.length>3&&w.endsWith('s')) return w.slice(0,-1); return w; }
+function _userStems(item){ return String(item).toLowerCase().split(/[^a-z]+/).filter(w=>w.length>2).map(_stem); }
+function _lineMatchesUser(line, stems){ const lw=line.split(/[^a-z]+/).filter(w=>w.length>2).map(_stem); return stems.some(u=> lw.includes(u) || (u.length>=4 && (lw.some(w=>w.includes(u)||u.includes(w)) || line.includes(u)))); }
 function pantryRank(){
+  const pStems=pantry.map(p=>_userStems(p)).filter(s=>s.length);
   const scored=RECIPES.map((r,i)=>{
     const ingLc=(r.ing||[]).map(x=>String(x).toLowerCase());
-    let have=0; pantry.forEach(p=>{ if(ingLc.some(l=>l.includes(p))) have++; });
-    let need=0; ingLc.forEach(l=>{ const mine=pantry.some(p=>l.includes(p)); const staple=PANTRY_STAPLES.some(s=>l.includes(s)); if(!mine&&!staple) need++; });
+    let have=0; pStems.forEach(s=>{ if(ingLc.some(l=>_lineMatchesUser(l,s))) have++; });
+    let need=0; ingLc.forEach(l=>{ const mine=pStems.some(s=>_lineMatchesUser(l,s)); const staple=PANTRY_STAPLES.some(s=>l.includes(s)); if(!mine&&!staple) need++; });
     return {r,i,have,need};
   }).filter(x=>x.have>0);
   scored.sort((a,b)=> b.have-a.have || a.need-b.need);
@@ -2065,7 +2090,7 @@ function cardHTML(r,i){
       <button class="act-btn save-btn ${isSaved(i)?'on':''}" onclick="toggleSave(${i},event)" title="Save to cookbook" aria-label="Save">♥</button>
     </div>
     <div class="info">
-      <div class="cat">${c.label}</div>
+      <div class="cat" style="color:${c.color}">${c.label}</div>
       <h4>${r.title}</h4>
       <div class="it">${r.it}</div>
       <div class="small">${r.time} · ${r.level} · serves ${r.serves}</div>${macro}${dietBadges(r)?`<div class="badges">${dietBadges(r)}</div>`:''}${mine}
@@ -2238,11 +2263,11 @@ function swapsFor(r){
 /* ---------- Dietary badges (for cards) ---------- */
 function dietBadges(r){
   const t=dietTags(r), out=[];
-  if(t.includes('vegan')) out.push('Vegan'); else if(t.includes('vegetarian')) out.push('Veg');
-  if(t.includes('glutenfree')) out.push('GF');
-  if(t.includes('highprotein')) out.push('High-protein');
-  if(out.length<3 && t.includes('quick')) out.push('≤30m');
-  return out.slice(0,3).map(b=>`<span class="badge">${b}</span>`).join('');
+  if(t.includes('vegan')) out.push(['Vegan','b-veg']); else if(t.includes('vegetarian')) out.push(['Veg','b-veg']);
+  if(t.includes('glutenfree')) out.push(['GF','b-gf']);
+  if(t.includes('highprotein')) out.push(['High-protein','b-hp']);
+  if(out.length<3 && t.includes('quick')) out.push(['≤30m','b-quick']);
+  return out.slice(0,3).map(b=>`<span class="badge ${b[1]}">${b[0]}</span>`).join('');
 }
 
 /* ---------- Serving scaler ---------- */
@@ -2339,7 +2364,7 @@ function openRecipe(i){
   modal.innerHTML=`
     <button class="close" onclick="closeModal()">×</button>
     <div class="menu-card">
-      <div class="mc-top"><div class="mc-orn">&#10022;</div><div class="mc-cat">${COURSES[r.course]} · ${c.label}</div></div>
+      <div class="mc-top"><div class="mc-orn">&#10022;</div><div class="mc-cat" style="color:${c.color}">${COURSES[r.course]} · ${c.label}</div></div>
       <div class="mc-title">${r.title}</div>
       <div class="mc-it">${r.it}</div>
       <div class="mc-rule"><span>✦</span></div>
