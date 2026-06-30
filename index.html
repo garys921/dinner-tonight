@@ -237,6 +237,24 @@
   .theme-light .signup-card{background:linear-gradient(135deg,#fffdf8,#f1e7d3)}
   .theme-light .mp-banner{background:linear-gradient(135deg,rgba(93,138,106,.14),rgba(217,179,94,.12))}
   .theme-light .save-btn,.theme-light .act-btn{background:rgba(0,0,0,.05)}
+  /* cook with what you have */
+  .pantry{max-width:680px;margin:22px auto 0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
+  .pantry-head{font-family:var(--serif);color:var(--ink);font-size:17px;text-align:center}
+  .pantry-sub{color:var(--muted);font-size:13px;text-align:center;margin:4px 0 14px}
+  .pantry-box{display:flex;gap:8px}
+  .pantry-box input{flex:1;min-width:0;background:transparent;border:1px solid var(--line);border-radius:10px;padding:11px 14px;color:var(--ink);font-family:var(--sans);font-size:15px;outline:none}
+  .pantry-box input:focus{border-color:var(--gold-soft)}
+  .pantry-add{background:var(--gold);border:0;color:#241d0f;font-weight:600;font-family:var(--sans);border-radius:10px;padding:0 18px;cursor:pointer}
+  .pantry-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;align-items:center}
+  .pchip{display:inline-flex;align-items:center;gap:7px;background:rgba(123,191,106,.16);border:1px solid #7bbf6a;color:var(--ink);border-radius:999px;padding:5px 8px 5px 13px;font-size:13px}
+  .pchip button{background:transparent;border:0;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:0}
+  .pchip button:hover{color:#e0556b}
+  .pantry-clear{background:transparent;border:0;color:var(--gold-soft);font-size:12px;cursor:pointer;margin-left:4px}
+  #pantryResults{margin-top:10px}
+  .pres-head{text-align:center;font-family:var(--serif);color:var(--ink);font-size:15px;margin:18px 0 14px}
+  .pmatch{display:flex;flex-direction:column}
+  .pmatch-info{text-align:center;font-size:12px;color:var(--gold-soft);margin:7px 0 0}
+  .pmatch-info b{color:var(--ink)}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px}
   .card{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:0 0 14px 14px;cursor:pointer;transition:.18s;display:flex;flex-direction:column}
@@ -390,6 +408,13 @@
         <input id="recipeSearch" type="search" placeholder="Try “chicken broccoli”, “vodka”, or a dish name…" oninput="runSearch()" autocomplete="off" spellcheck="false" aria-label="Search recipes">
       </div>
       <div class="filter-chips" id="filterChips"></div>
+    </div>
+    <div class="pantry" id="pantry">
+      <div class="pantry-head">🍳 Cook with what you have</div>
+      <div class="pantry-sub">Add the ingredients in your kitchen — we'll rank recipes by how many you already have.</div>
+      <div class="pantry-box"><input id="pantryInput" type="text" placeholder="Add an ingredient + Enter (e.g. chicken, rice, broccoli)" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter'){event.preventDefault();addPantry();}"><button type="button" class="pantry-add" onclick="addPantry()">Add</button></div>
+      <div class="pantry-chips" id="pantryChips"></div>
+      <div id="pantryResults"></div>
     </div>
     <div id="searchResults" style="display:none"></div>
     <div class="browse-or" id="browseOr">Or pick a craving</div>
@@ -1964,6 +1989,37 @@ function recipeMatches(r,q){
   return q.toLowerCase().split(/[,\s]+/).filter(Boolean).every(term=>hay.includes(term));
 }
 function setFilter(k){ activeFilter=k; runSearch(); }
+/* ---------- Cook with what you have ---------- */
+const PANTRY_STAPLES=['salt','pepper','water',' oil','olive oil','cooking spray','to taste'];
+let pantry=[];
+function addPantry(){
+  const inp=document.getElementById('pantryInput'); if(!inp) return;
+  String(inp.value||'').split(',').forEach(p=>{ const v=p.trim().toLowerCase(); if(v&&v.length<40&&!pantry.includes(v)) pantry.push(v); });
+  inp.value=''; trackEvent('feature','pantry'); renderPantry();
+}
+function removePantry(v){ pantry=pantry.filter(x=>x!==v); renderPantry(); }
+function clearPantry(){ pantry=[]; renderPantry(); }
+function pantryRank(){
+  const scored=RECIPES.map((r,i)=>{
+    const ingLc=(r.ing||[]).map(x=>String(x).toLowerCase());
+    let have=0; pantry.forEach(p=>{ if(ingLc.some(l=>l.includes(p))) have++; });
+    let need=0; ingLc.forEach(l=>{ const mine=pantry.some(p=>l.includes(p)); const staple=PANTRY_STAPLES.some(s=>l.includes(s)); if(!mine&&!staple) need++; });
+    return {r,i,have,need};
+  }).filter(x=>x.have>0);
+  scored.sort((a,b)=> b.have-a.have || a.need-b.need);
+  return scored.slice(0,30);
+}
+function renderPantry(){
+  const chips=document.getElementById('pantryChips'), res=document.getElementById('pantryResults'); if(!chips||!res) return;
+  chips.innerHTML=pantry.map(v=>`<span class="pchip">${v}<button type="button" onclick="removePantry('${v.replace(/'/g,"\\'")}')" aria-label="Remove">×</button></span>`).join('') + (pantry.length?`<button class="pantry-clear" type="button" onclick="clearPantry()">Clear all</button>`:'');
+  const cv=document.getElementById('cravingView'), bo=document.getElementById('browseOr');
+  const searching=(document.getElementById('recipeSearch')&&document.getElementById('recipeSearch').value.trim())||(activeFilter&&activeFilter!=='all');
+  if(!pantry.length){ res.innerHTML=''; if(!searching){ if(cv)cv.style.display=''; if(bo)bo.style.display=''; } return; }
+  if(cv)cv.style.display='none'; if(bo)bo.style.display='none';
+  const list=pantryRank();
+  if(!list.length){ res.innerHTML=`<div class="no-res">No recipes use those yet — try a common ingredient like chicken, rice, eggs, beans or tomatoes.</div>`; return; }
+  res.innerHTML=`<div class="pres-head">${list.length} recipe${list.length>1?'s':''} you can make right now</div><div class="grid">`+list.map(({r,i,have,need})=>`<div class="pmatch">${cardHTML(r,i)}<div class="pmatch-info">Uses <b>${have}</b> of your ingredient${have>1?'s':''}${need?` · ~${need} more to buy`:' · nothing else to buy!'}</div></div>`).join('')+`</div>`;
+}
 /* ---------- Theme toggle + privacy-light analytics ---------- */
 function toggleTheme(){ const el=document.documentElement; const light=el.classList.toggle('theme-light'); try{localStorage.setItem('dt_theme', light?'light':'dark');}catch(e){} const b=document.getElementById('themeToggle'); if(b) b.textContent=light?'☾ Dark':'☀ Light'; }
 function syncThemeBtn(){ const b=document.getElementById('themeToggle'); if(b) b.textContent=document.documentElement.classList.contains('theme-light')?'☾ Dark':'☀ Light'; }
