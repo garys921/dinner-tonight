@@ -23,9 +23,9 @@
 <meta name="twitter:image" content="https://dinner-tonight-daily.vercel.app/og.svg">
 <style>
   :root{
-    --bg:#16140f; --panel:#1f1c15; --card:#232017; --ink:#f3ead6; --muted:#b3a98f;
-    --gold:#c9a14a; --gold-soft:#e3c987; --line:#3a3527; --accent:#7f8a52;
-    --shadow:0 18px 50px rgba(0,0,0,.45);
+    --bg:#241f17; --panel:#2f2819; --card:#39321f; --ink:#f9f2e2; --muted:#c7bd9f;
+    --gold:#d9b35e; --gold-soft:#f1daa6; --line:#4c4330; --accent:#9aa766;
+    --shadow:0 16px 44px rgba(0,0,0,.36);
     --serif:'Georgia','Times New Roman',serif;
     --sans:'Helvetica Neue',Arial,sans-serif;
   }
@@ -145,6 +145,29 @@
   .li-dish:first-child{border-top:0;padding-top:4px}
   .li-dish .li-dish-go{color:var(--gold-soft);font-size:12px;flex:none}
   .li-dish:hover{color:var(--gold-soft)}
+  /* search + filters */
+  .search-wrap{max-width:680px;margin:8px auto 2px}
+  .search-box{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;box-shadow:var(--shadow)}
+  .search-box:focus-within{border-color:var(--gold-soft)}
+  .search-ico{color:var(--gold);font-size:20px;line-height:1}
+  #recipeSearch{flex:1;background:transparent;border:0;outline:0;color:var(--ink);font-family:var(--sans);font-size:16px;min-width:0}
+  #recipeSearch::placeholder{color:var(--muted)}
+  .filter-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px auto 0}
+  .fchip{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 15px;font-size:13px;font-family:var(--sans);cursor:pointer;transition:.15s;white-space:nowrap}
+  .fchip:hover{border-color:var(--gold-soft);color:var(--ink)}
+  .fchip.on{background:var(--gold);border-color:var(--gold);color:#241d0f;font-weight:600}
+  #searchResults{margin-top:24px}
+  .res-head{font-family:var(--serif);color:var(--gold-soft);font-size:15px;margin:0 0 16px;text-align:center}
+  .no-res{color:var(--muted);text-align:center;padding:34px 12px;font-style:italic}
+  .browse-or{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin:34px 0 18px}
+  .card{position:relative}
+  .save-btn{position:absolute;top:10px;right:10px;z-index:2;background:rgba(0,0,0,.16);border:1px solid var(--line);color:var(--muted);width:32px;height:32px;border-radius:50%;font-size:15px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+  .save-btn:hover{color:var(--gold-soft);border-color:var(--gold-soft)}
+  .save-btn.on{color:#e0556b;border-color:#e0556b;background:rgba(224,85,107,.14)}
+  .mc-saverow{text-align:center;margin-top:16px}
+  .mc-save{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:9px 20px;font-size:13px;font-family:var(--sans);cursor:pointer;transition:.15s}
+  .mc-save:hover{border-color:var(--gold-soft);color:var(--ink)}
+  .mc-save.on{color:#e0556b;border-color:#e0556b;background:rgba(224,85,107,.1)}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px}
   .card{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:0 0 14px 14px;cursor:pointer;transition:.18s;display:flex;flex-direction:column}
@@ -288,8 +311,17 @@
   </section>
 
   <section class="section" id="browse">
-    <h2>What are you craving?</h2>
-    <div class="sub">Pick a craving to see the dishes — each comes with the full recipe and a suggested side.</div>
+    <h2>Find any recipe</h2>
+    <div class="sub">Search by name — or type the ingredients you have and we'll show what you can make.</div>
+    <div class="search-wrap">
+      <div class="search-box">
+        <span class="search-ico">⌕</span>
+        <input id="recipeSearch" type="search" placeholder="Try “chicken broccoli”, “vodka”, or a dish name…" oninput="runSearch()" autocomplete="off" spellcheck="false" aria-label="Search recipes">
+      </div>
+      <div class="filter-chips" id="filterChips"></div>
+    </div>
+    <div id="searchResults" style="display:none"></div>
+    <div class="browse-or" id="browseOr">Or pick a craving</div>
     <div id="cravingView"></div>
   </section>
 
@@ -1489,11 +1521,70 @@ function renderTodayMenu(){
     </div>`;
 }
 
+/* ---------- Saved / cookbook ---------- */
+const SAVE_KEY='dt_saved';
+function loadSaved(){ try{return new Set(JSON.parse(localStorage.getItem(SAVE_KEY))||[])}catch(e){return new Set()} }
+let saved=loadSaved();
+let modalOpenIndex=null;
+function isSaved(i){ return saved.has(RECIPES[i].title); }
+function toggleSave(i,ev){ if(ev&&ev.stopPropagation)ev.stopPropagation();
+  const t=RECIPES[i].title; if(saved.has(t)) saved.delete(t); else saved.add(t);
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify([...saved]))}catch(e){}
+  const mh=document.getElementById('modalHeart'); if(mh&&modalOpenIndex===i) mh.classList.toggle('on',isSaved(i));
+  if(typeof runSearch==='function') runSearch();
+}
+
+/* ---------- Diet / time tags (heuristic) ---------- */
+function dietTags(r){
+  const all=((r.title||'')+' '+(r.it||'')+' '+(r.desc||'')+' '+(r.ing||[]).join(' ')).toLowerCase();
+  const meat=/(chicken|beef|pork|bacon|sausage|turkey|lamb|prosciutto|pancetta|guanciale|\bham\b|veal|steak|meatball|salami|pepperoni|anchov|duck|chorizo|gelatin)/;
+  const seafood=/(shrimp|salmon|cod|tuna|\bfish\b|scallop|crab|lobster|clam|calamari|squid|octopus|oyster|mussel|prawn)/;
+  const animal=/(egg|cheese|butter|cream|milk|yogurt|honey|parmesan|mozzarella|ricotta|feta|gruyere|mascarpone|pecorino|ghee|custard)/;
+  const gluten=/(flour|bread|breadcrumb|panko|pasta|penne|rigatoni|spaghetti|linguine|noodle|tortilla|\bbun\b|\broll\b|hero|dough|cracker|couscous|barley|orzo|gnocchi|pita|wrap|pretzel|cereal|soy sauce|\bbeer\b|cake|cookie|biscuit|pancake|waffle|brioche|ciabatta|baguette|hoagie|pizza|farro|bulgur)/;
+  const tags=[]; const m=meat.test(all), s=seafood.test(all);
+  if(!m&&!s) tags.push('vegetarian');
+  if(!m&&!s&&!animal.test(all)) tags.push('vegan');
+  if(!gluten.test(all)) tags.push('glutenfree');
+  const pg=r.protein?parseInt(r.protein,10):0;
+  if(pg>=25||r.cat==='mealprep') tags.push('highprotein');
+  const mins=parseInt(r.time,10)||999; if(mins<=30) tags.push('quick');
+  return tags;
+}
+
+/* ---------- Universal search + filters ---------- */
+const FILTERS=[['all','All'],['quick','≤30 min'],['vegetarian','Vegetarian'],['vegan','Vegan'],['glutenfree','Gluten-Free'],['highprotein','High-Protein'],['saved','♥ Saved']];
+let activeFilter='all';
+function recipeMatches(r,q){
+  if(!q) return true;
+  const hay=((r.title||'')+' '+(r.it||'')+' '+((CATS[r.cat]&&CATS[r.cat].label)||'')+' '+(r.cat||'')+' '+(r.desc||'')+' '+(r.ing||[]).join(' ')).toLowerCase();
+  return q.toLowerCase().split(/[,\s]+/).filter(Boolean).every(term=>hay.includes(term));
+}
+function setFilter(k){ activeFilter=k; runSearch(); }
+function renderFilterChips(){
+  const host=document.getElementById('filterChips'); if(!host) return;
+  host.innerHTML=FILTERS.map(([k,label])=>{ const lab=(k==='saved')?`♥ Saved${saved.size?` (${saved.size})`:''}`:label; return `<button class="fchip ${activeFilter===k?'on':''}" onclick="setFilter('${k}')">${lab}</button>`; }).join('');
+}
+function runSearch(){
+  renderFilterChips();
+  const inp=document.getElementById('recipeSearch'); const q=inp?inp.value.trim():'';
+  const f=activeFilter; const active=!!q||(f&&f!=='all');
+  const cv=document.getElementById('cravingView'); const res=document.getElementById('searchResults');
+  if(!res) return;
+  if(!active){ res.style.display='none'; res.innerHTML=''; if(cv)cv.style.display=''; return; }
+  if(cv)cv.style.display='none'; res.style.display='';
+  let list=RECIPES.map((r,i)=>({r,i})).filter(({r})=>recipeMatches(r,q));
+  if(f==='saved') list=list.filter(({i})=>isSaved(i));
+  else if(f&&f!=='all') list=list.filter(({r})=>dietTags(r).includes(f));
+  if(list.length===0){ res.innerHTML=`<div class="no-res">No recipes match${q?` "<b>${q}</b>"`:' that filter'}. Try fewer words, or different ingredients.</div>`; return; }
+  res.innerHTML=`<div class="res-head">${list.length} recipe${list.length>1?'s':''}${q?` for “${q}”`:''}</div><div class="grid">${list.map(({r,i})=>cardHTML(r,i)).join('')}</div>`;
+}
+
 function cardHTML(r,i){
   const c=CATS[r.cat];
   const macro=r.cal?`<div class="macro"><span>${r.cal} cal</span>${r.protein?`<span>${r.protein} protein</span>`:''}</div>`:'';
   const mine=getRating(i)?`<div class="stars-mini">${starsMini(getRating(i))}</div>`:'';
   return `<div class="card" onclick="openRecipe(${i})">
+    <button class="save-btn ${isSaved(i)?'on':''}" onclick="toggleSave(${i},event)" title="Save to your cookbook" aria-label="Save">♥</button>
     <div class="info">
       <div class="cat">${c.label}</div>
       <h4>${r.title}</h4>
@@ -1566,6 +1657,7 @@ function renderReco(){
 
 function slugify(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
 function openRecipe(i){
+  modalOpenIndex=i;
   const r=RECIPES[i], c=CATS[r.cat];
   const side=(r.course==='main'&&r.cat!=='mealprep')?suggestedSide(r):null;
   modal.innerHTML=`
@@ -1593,6 +1685,7 @@ function openRecipe(i){
       <div class="mc-cart">
         ${sendRowHTML('recipe=' + encodeURIComponent(slugify(r.title)))}
       </div>
+      <div class="mc-saverow"><button class="mc-save ${isSaved(i)?'on':''}" id="modalHeart" onclick="toggleSave(${i},event)">♥ Save to cookbook</button></div>
     </div>
     <div class="rate">
       <div class="lab">Tried it? Rate it — we'll tailor your suggestions</div>
@@ -1859,7 +1952,7 @@ function openRestaurantDish(ri,di){
     </div>`;
   overlay.classList.add('open'); document.body.style.overflow='hidden';
 }
-renderTodayMenu(); setFootMeta(); renderCravings(); renderMealPrep(); renderRestaurants(); renderReco();
+renderTodayMenu(); setFootMeta(); renderFilterChips(); renderCravings(); renderMealPrep(); renderRestaurants(); renderReco();
 </script>
 </body>
 </html>
