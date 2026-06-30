@@ -1568,10 +1568,10 @@ function runSearch(){
   renderFilterChips();
   const inp=document.getElementById('recipeSearch'); const q=inp?inp.value.trim():'';
   const f=activeFilter; const active=!!q||(f&&f!=='all');
-  const cv=document.getElementById('cravingView'); const res=document.getElementById('searchResults');
+  const cv=document.getElementById('cravingView'); const res=document.getElementById('searchResults'); const bo=document.getElementById('browseOr');
   if(!res) return;
-  if(!active){ res.style.display='none'; res.innerHTML=''; if(cv)cv.style.display=''; return; }
-  if(cv)cv.style.display='none'; res.style.display='';
+  if(!active){ res.style.display='none'; res.innerHTML=''; if(cv)cv.style.display=''; if(bo)bo.style.display=''; return; }
+  if(cv)cv.style.display='none'; if(bo)bo.style.display='none'; res.style.display='';
   let list=RECIPES.map((r,i)=>({r,i})).filter(({r})=>recipeMatches(r,q));
   if(f==='saved') list=list.filter(({i})=>isSaved(i));
   else if(f&&f!=='all') list=list.filter(({r})=>dietTags(r).includes(f));
