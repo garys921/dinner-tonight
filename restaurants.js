@@ -439,6 +439,179 @@ export const RESTAURANTS = [
     ]
   },
   {
+    "name": "Se-Port Deli",
+    "town": "East Setauket",
+    "cat": "Deli",
+    "dishTitle": "The Snider Hero",
+    "ing": [
+      "1 long hero roll",
+      "1 cup chicken salad",
+      "4 slices bacon, cooked crisp",
+      "1/2 cup shredded mozzarella",
+      "2 tbsp honey mustard",
+      "Lettuce & tomato",
+      "Garlic butter for the roll"
+    ],
+    "steps": [
+      "Split the hero, spread the cut sides with garlic butter and toast until golden.",
+      "Pile on the chicken salad and top with the crisp bacon.",
+      "Cover with the mozzarella and melt under the broiler 1–2 min.",
+      "Drizzle with honey mustard, add lettuce and tomato, and close the hero."
+    ]
+  },
+  {
+    "name": "Tara Inn",
+    "town": "Port Jefferson",
+    "cat": "Pub & Burgers",
+    "dishTitle": "The Famous Bar Burger",
+    "ing": [
+      "1/4 lb ground beef (80/20) per burger",
+      "Soft potato burger buns",
+      "American cheese",
+      "Salt, pepper",
+      "Butter for the buns",
+      "Pickles, onion, ketchup, mustard"
+    ],
+    "steps": [
+      "Loosely form thin patties; season with salt and pepper.",
+      "Griddle hard on high heat 2 min per side for crispy edges; add cheese to melt.",
+      "Butter and toast the buns on the griddle.",
+      "Build with pickles, onion and your sauces — keep it simple and classic."
+    ]
+  },
+  {
+    "name": "Crazy Beans",
+    "town": "Stony Brook",
+    "cat": "Brunch",
+    "dishTitle": "Pancake Quesadilla",
+    "ing": [
+      "1 cup pancake batter",
+      "2 tbsp shredded cheddar",
+      "2 strips bacon, cooked and chopped (or sausage)",
+      "1 egg, scrambled",
+      "Butter",
+      "Powdered sugar",
+      "Maple syrup for serving"
+    ],
+    "steps": [
+      "Pour the pancake batter into a buttered nonstick pan to make one large pancake; cook until the bubbles set.",
+      "On one half, scatter the cheddar, bacon and scrambled egg.",
+      "Fold the pancake over like a quesadilla; press and cook until the cheese melts and both sides are golden.",
+      "Cut into wedges, dust with powdered sugar and serve with warm maple syrup."
+    ]
+  },
+  {
+    "name": "Pasta Pasta",
+    "town": "Port Jefferson",
+    "cat": "Italian",
+    "dishTitle": "Squid-Ink Lobster Ravioli",
+    "ing": [
+      "1 package lobster ravioli (squid-ink if you can find it)",
+      "1 cup cooked lobster meat, chopped",
+      "2 tbsp butter",
+      "2 cloves garlic, minced",
+      "1/4 cup white wine",
+      "3/4 cup cream",
+      "1/2 cup crushed tomatoes",
+      "Pinch chili flakes",
+      "Fresh chives, salt, pepper"
+    ],
+    "steps": [
+      "Boil the ravioli gently until they float; drain.",
+      "Melt the butter with the garlic and chili flakes; add the white wine and reduce 1 min.",
+      "Stir in the crushed tomatoes and cream; simmer to a light blush sauce.",
+      "Warm the lobster in the sauce, fold in the ravioli, and finish with chives."
+    ]
+  },
+  {
+    "name": "Eddie's Pizza",
+    "town": "New Hyde Park",
+    "cat": "Pizza",
+    "dishTitle": "Thin-Crust Bar Pie",
+    "ing": [
+      "1 (10-inch) thin pizza shell or 8 oz dough",
+      "1/3 cup pizza sauce",
+      "1 cup low-moisture mozzarella",
+      "2 tbsp grated Parmesan",
+      "Olive oil",
+      "Oregano",
+      "Optional: thin-sliced pepperoni"
+    ],
+    "steps": [
+      "Heat the oven as hot as it goes (500°F+) with a pizza stone or steel inside.",
+      "Stretch the dough super thin into a 10-inch round; brush the rim with olive oil.",
+      "Top almost edge-to-edge with a thin layer of sauce, then the mozzarella and Parmesan.",
+      "Bake 8–10 min until the crust is crackery and browned; finish with oregano and cut into squares."
+    ]
+  },
+  {
+    "name": "Thomas's Ham & Eggery",
+    "town": "Carle Place",
+    "cat": "Breakfast",
+    "dishTitle": "Lemon Ricotta Pancakes",
+    "ing": [
+      "1 cup flour",
+      "1 tbsp sugar",
+      "1 tsp baking powder",
+      "1/2 tsp salt",
+      "3/4 cup ricotta",
+      "3/4 cup milk",
+      "2 eggs, separated",
+      "Zest of 1 lemon + 1 tbsp juice",
+      "Butter",
+      "Powdered sugar & syrup"
+    ],
+    "steps": [
+      "Whisk the flour, sugar, baking powder and salt.",
+      "In another bowl, mix the ricotta, milk, egg yolks, lemon zest and juice; stir into the dry ingredients.",
+      "Whip the egg whites to soft peaks and fold them in for fluffiness.",
+      "Cook on a buttered griddle until golden; dust with powdered sugar and serve with syrup."
+    ]
+  },
+  {
+    "name": "The Cull House",
+    "town": "Sayville",
+    "cat": "Seafood",
+    "dishTitle": "Baked Clams",
+    "ing": [
+      "18 littleneck clams on the half shell",
+      "1.5 cups breadcrumbs",
+      "1/2 cup grated Parmesan",
+      "4 cloves garlic, minced",
+      "1/4 cup parsley, chopped",
+      "2 tsp oregano",
+      "1/3 cup olive oil",
+      "2 tbsp lemon juice",
+      "Pinch chili flakes",
+      "Lemon wedges"
+    ],
+    "steps": [
+      "Heat the oven to 425°F.",
+      "Mix the breadcrumbs, Parmesan, garlic, parsley, oregano, lemon juice, chili and olive oil into a moist crumb.",
+      "Top each clam with a generous spoonful and set on a sheet pan.",
+      "Bake 10–12 min until golden and the clams are just cooked; serve with lemon."
+    ]
+  },
+  {
+    "name": "Ralph's Famous Italian Ices",
+    "town": "Long Island",
+    "cat": "Italian Ices",
+    "dishTitle": "Cherry Italian Ice",
+    "ing": [
+      "2 cups water",
+      "3/4 cup sugar",
+      "2 cups pitted cherries (fresh or frozen)",
+      "1 tbsp lemon juice",
+      "Pinch of salt"
+    ],
+    "steps": [
+      "Make a simple syrup: heat the water and sugar until dissolved, then cool.",
+      "Blend the cherries with the syrup, lemon juice and salt until smooth.",
+      "Pour into a shallow pan and freeze, scraping with a fork every 30 min for 3–4 hours until fluffy and granular.",
+      "Scoop into cups (or churn in an ice-cream maker for an ultra-smooth ice)."
+    ]
+  },
+  {
     "name": "Starbucks",
     "town": "Café favorite",
     "cat": "Coffee Shop",
