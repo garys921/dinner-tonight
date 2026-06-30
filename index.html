@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dinner Tonight — Your daily dinner, decided</title>
+<title>Dinner Tonight — Your daily dinner, decided | 330+ free recipes, meal planner & one-tap shopping</title>
+<meta name="keywords" content="dinner ideas, what to make for dinner, free recipes, meal planner, weekly meal plan, shopping list, recipe search, cook with what I have, vegan recipes, gluten-free recipes, high-protein meal prep, Long Island restaurants copycat">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Dinner Tonight","url":"https://dinner-tonight-daily.vercel.app/","description":"A new full dinner menu every day, 330+ free recipes you can search by name or by the ingredients you have, a weekly meal planner, and one-tap shopping. No ads, no clutter.","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://dinner-tonight-daily.vercel.app/?q={search_term_string}"},"query-input":"required name=search_term_string"}}</script>
 <meta name="description" content="A new full dinner menu every day — appetizer, main, side and dessert. Tap the button and tonight’s ingredients drop right into your Walmart cart.">
 <meta name="theme-color" content="#16140f">
 <link rel="canonical" href="https://dinner-tonight-daily.vercel.app/">
@@ -192,6 +194,39 @@
   .mc-plan{margin-left:8px}
   .mc-plan.on{color:#7bbf6a;border-color:#7bbf6a;background:rgba(123,191,106,.1)}
   @media(max-width:560px){ .shop-ul{columns:1} }
+  /* badges, scaler, swaps, cook mode, weekly plan */
+  .badges{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .badge{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-soft);border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+  .scaler{display:inline-flex;align-items:center;gap:7px;font-family:var(--sans);font-size:12px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:normal;margin-left:8px}
+  .scaler button{width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--gold-soft);cursor:pointer;font-size:15px;line-height:1}
+  .scaler button:hover{border-color:var(--gold-soft);color:var(--ink)}
+  .scaler b{color:var(--ink);min-width:14px;text-align:center}
+  .cook-btn{display:block;width:100%;margin:16px 0 4px;background:var(--gold);border:0;color:#241d0f;font-family:var(--sans);font-weight:600;font-size:15px;padding:13px;border-radius:12px;cursor:pointer;transition:.15s}
+  .cook-btn:hover{background:var(--gold-soft)}
+  .mc-swaps{margin-top:18px;background:rgba(0,0,0,.12);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .mc-swaps h5{margin:0 0 8px;color:var(--gold-soft);font-family:var(--sans);font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+  .mc-swaps ul{margin:0;padding-left:18px}
+  .mc-swaps li{color:var(--muted);font-size:13.5px;margin:5px 0}
+  .mc-swaps b{color:var(--ink)}
+  .plan-week-wrap{text-align:center;margin:14px 0 6px}
+  .plan-week{background:var(--gold);border:0;color:#241d0f;font-family:var(--sans);font-weight:600;font-size:14px;padding:11px 20px;border-radius:999px;cursor:pointer;transition:.15s}
+  .plan-week:hover{background:var(--gold-soft)}
+  .cook-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:none;overflow:auto}
+  .cook-overlay.open{display:flex;align-items:center;justify-content:center}
+  .cook-card{max-width:640px;width:92%;padding:24px;text-align:center}
+  .cook-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .cook-name{font-family:var(--serif);color:var(--gold-soft);font-size:16px}
+  .cook-x{background:transparent;border:0;color:var(--muted);font-size:30px;line-height:1;cursor:pointer}
+  .cook-count{color:var(--muted);font-size:12px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:22px}
+  .cook-step{font-family:var(--serif);font-size:26px;line-height:1.5;color:var(--ink);min-height:160px;display:flex;align-items:center;justify-content:center}
+  .cook-timer{margin:22px 0}
+  .cook-timer button{background:transparent;border:1px solid var(--gold-soft);color:var(--gold-soft);border-radius:999px;padding:10px 20px;font-size:15px;font-family:var(--sans);cursor:pointer}
+  #timerDisp{font-family:var(--serif);font-size:26px;color:var(--ink);margin-left:12px}
+  .cook-nav{display:flex;gap:14px;justify-content:center;margin-top:26px}
+  .cook-nav button{background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:13px 26px;font-size:16px;font-family:var(--sans);cursor:pointer;transition:.15s}
+  .cook-nav button:disabled{opacity:.35;cursor:default}
+  .cook-nav .cook-next,.cook-nav .cook-done{background:var(--gold);border-color:var(--gold);color:#241d0f;font-weight:600}
+  .cook-nav button:not(:disabled):hover{border-color:var(--gold-soft)}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px}
   .card{background:var(--card);border:1px solid var(--line);border-top:2px solid var(--gold);border-radius:0 0 14px 14px;cursor:pointer;transition:.18s;display:flex;flex-direction:column}
@@ -405,6 +440,7 @@
 </main>
 
 <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<div class="cook-overlay" id="cookOverlay"><div class="cook-card" id="cookBody"></div></div>
 
 <footer>
   <div class="wrap">
@@ -1586,7 +1622,57 @@ const RECIPES = [
 {course:"side", cat:"comfort", emoji:"", title:"Creamed Corn with Chives", it:"Sweet, silky, summery", time:"25 min", serves:"4", level:"Easy", cal:220, protein:"6g", desc:"Fresh corn simmered in a light cream sauce with chives. A comforting side that tastes of late summer.", ing:["6 cups corn kernels","2 tbsp butter","1/2 cup heavy cream","2 tbsp cream cheese","2 cloves garlic, minced","1/4 cup chives, sliced","1/2 tsp sugar","salt and pepper","pinch nutmeg"], steps:["Saute corn in butter with garlic until tender.","Add cream and cream cheese; simmer until thick.","Season with sugar, salt, pepper, and nutmeg.","Stir in chives just before serving."], pair:"Gluten-free; pairs with grilled steak"},
 {course:"side", cat:"global", emoji:"", title:"Coconut Curried Cauliflower", it:"Golden, fragrant, plant-based", time:"30 min", serves:"4", level:"Easy", cal:190, protein:"6g", desc:"Cauliflower roasted then simmered in a fragrant coconut curry sauce. A warming, vegan side that nearly steals the show.", ing:["1 head cauliflower, florets","1 can coconut milk","2 tsp curry powder","1 tsp turmeric","1 onion, sliced","3 cloves garlic","1 tbsp ginger","1 tbsp coconut oil","fresh cilantro","1 lime, wedged"], steps:["Roast cauliflower at 425F for 18 minutes until golden.","Saute onion, garlic, and ginger in coconut oil; add curry and turmeric.","Pour in coconut milk and simmer 5 minutes.","Fold in cauliflower, top with cilantro and lime."], pair:"Vegan, gluten-free; pairs with rice or dal"},
 {course:"appetizer", cat:"global", emoji:"", title:"Pork & Chive Potstickers", it:"Crispy-bottomed dumplings", time:"45 min", serves:"4", level:"Medium", cal:320, protein:"18g", desc:"Juicy pork and chive dumplings pan-fried crisp on the bottom and steamed tender on top. A satisfying app worth the folding.", ing:["1/2 lb ground pork","1/4 cup chives, minced","1 tbsp soy sauce","1 tbsp sesame oil","1 tsp grated ginger","24 dumpling wrappers","2 tbsp oil","1/2 cup water","2 tbsp rice vinegar","1 tbsp chili oil"], steps:["Mix pork, chives, soy, sesame oil, and ginger.","Fill and pleat wrappers, sealing the edges.","Pan-fry flat-side down until golden, then add water and cover to steam.","Serve crisp-side up with vinegar and chili oil."], pair:"Soy-vinegar dipping sauce"},
-{course:"appetizer", cat:"seafood", emoji:"", title:"Tuna Tartare with Avocado", it:"Fresh, citrusy, elegant", time:"20 min", serves:"4", level:"Medium", cal:240, protein:"22g", desc:"Diced sushi-grade tuna tossed with sesame, citrus, and avocado, served with crisp chips. A refined, no-cook appetizer.", ing:["12 oz sushi-grade tuna, diced","1 avocado, diced","2 tbsp soy sauce","1 tbsp sesame oil","1 tsp sriracha","1 tsp lime juice","1 scallion, sliced","1 tsp sesame seeds","1/2 tsp grated ginger","wonton chips"], steps:["Whisk soy sauce, sesame oil, sriracha, lime, and ginger.","Gently toss tuna with the dressing.","Layer with avocado in a ring mold or spoon onto a plate.","Top with scallion and sesame; serve with wonton chips."], pair:"~240 cal, 22g protein; sake or green tea"}
+{course:"appetizer", cat:"seafood", emoji:"", title:"Tuna Tartare with Avocado", it:"Fresh, citrusy, elegant", time:"20 min", serves:"4", level:"Medium", cal:240, protein:"22g", desc:"Diced sushi-grade tuna tossed with sesame, citrus, and avocado, served with crisp chips. A refined, no-cook appetizer.", ing:["12 oz sushi-grade tuna, diced","1 avocado, diced","2 tbsp soy sauce","1 tbsp sesame oil","1 tsp sriracha","1 tsp lime juice","1 scallion, sliced","1 tsp sesame seeds","1/2 tsp grated ginger","wonton chips"], steps:["Whisk soy sauce, sesame oil, sriracha, lime, and ginger.","Gently toss tuna with the dressing.","Layer with avocado in a ring mold or spoon onto a plate.","Top with scallion and sesame; serve with wonton chips."], pair:"~240 cal, 22g protein; sake or green tea"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Buffalo Chicken Meal Prep Bowls","it":"Spicy shredded chicken & rice","time":"40 min","serves":"5 boxes","level":"Easy","cal":480,"protein":"42g","desc":"Tangy buffalo-glazed shredded chicken over rice with crunchy celery and a cool ranch drizzle. Reheats beautifully all week.","ing":["3 lb chicken breast","1 cup buffalo hot sauce","2 tbsp butter","2 cups brown rice","4 stalks celery","1 cup shredded carrot","1/2 cup light ranch","1 tsp garlic powder","1 tsp smoked paprika","Salt and pepper"],"steps":["Season and bake chicken at 400F for 25 minutes, then shred.","Toss shredded chicken with buffalo sauce and melted butter.","Cook brown rice according to package directions.","Slice celery and divide rice, chicken, celery, and carrot among 5 boxes.","Drizzle ranch over each before sealing and chilling."],"pair":"Cold and crisp lager"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Pesto Salmon Power Boxes","it":"Herby salmon & orzo prep","time":"35 min","serves":"4 boxes","level":"Easy","cal":540,"protein":"38g","desc":"Flaky basil-pesto salmon paired with lemony orzo and blistered cherry tomatoes. A bright, protein-rich lunch that holds up for days.","ing":["4 salmon fillets","1/3 cup basil pesto","2 cups orzo","2 cups cherry tomatoes","2 cups baby spinach","1 lemon","3 tbsp olive oil","2 cloves garlic","Salt and pepper","Red pepper flakes"],"steps":["Brush salmon with pesto and roast at 400F for 12 minutes.","Boil orzo until al dente, then toss with lemon juice and olive oil.","Roast cherry tomatoes with garlic until blistered.","Stir spinach into warm orzo to wilt slightly.","Divide orzo, salmon, and tomatoes among 4 boxes and chill."],"pair":"Chilled sauvignon blanc"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Tempeh Sesame Noodle Jars","it":"Cold sesame tempeh meal prep","time":"30 min","serves":"4 boxes","level":"Easy","cal":450,"protein":"31g","desc":"Pan-crisped tempeh tossed with sesame noodles, edamame, and shredded cabbage. A satisfying plant-based prep that travels well cold.","ing":["1 lb tempeh","12 oz rice noodles","2 cups shelled edamame","3 cups shredded cabbage","1/4 cup tahini","3 tbsp tamari","2 tbsp rice vinegar","1 tbsp maple syrup","2 tbsp sesame oil","2 tsp grated ginger"],"steps":["Cube tempeh and pan-fry in sesame oil until golden.","Cook rice noodles, rinse under cold water, and drain.","Whisk tahini, tamari, vinegar, maple, and ginger into a sauce.","Toss noodles, tempeh, edamame, and cabbage in the sauce.","Pack into 4 jars and refrigerate up to 4 days."],"pair":"Iced green tea"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Turkey Sweet Potato Skillet Prep","it":"Lean turkey hash boxes","time":"35 min","serves":"5 boxes","level":"Easy","cal":430,"protein":"36g","desc":"Lean ground turkey browned with diced sweet potato, peppers, and warm spices. A hearty, freezer-friendly batch that reheats in minutes.","ing":["2 lb ground turkey","3 cups diced sweet potato","2 bell peppers","1 yellow onion","2 tsp cumin","2 tsp chili powder","1 tsp smoked paprika","2 tbsp olive oil","2 cloves garlic","Salt and pepper"],"steps":["Saute sweet potato in olive oil until tender, about 10 minutes.","Add onion, peppers, and garlic and cook until soft.","Push veg aside, brown turkey, then combine.","Season with cumin, chili powder, and paprika.","Cool and divide among 5 boxes for the week."],"pair":"Sparkling lime water"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Shrimp Fajita Prep Bowls","it":"Smoky shrimp & cauliflower rice","time":"30 min","serves":"4 boxes","level":"Easy","cal":360,"protein":"34g","desc":"Smoky seared shrimp over cilantro-lime cauliflower rice with charred peppers and onions. A light, low-carb prep that stays juicy.","ing":["1.5 lb shrimp","2 bell peppers","1 red onion","4 cups cauliflower rice","2 tbsp fajita seasoning","2 tbsp olive oil","1 lime","1/4 cup chopped cilantro","2 cloves garlic","Salt and pepper"],"steps":["Toss shrimp with fajita seasoning and olive oil.","Sear peppers and onion until charred, then set aside.","Cook shrimp 2 minutes per side until pink.","Saute cauliflower rice with garlic, lime, and cilantro.","Divide rice, shrimp, and peppers among 4 boxes."],"pair":"Tangy margarita mocktail"},
+{"course":"main","cat":"mealprep","emoji":"","title":"BBQ Tofu Burrito Bowls","it":"Saucy tofu & black bean prep","time":"40 min","serves":"5 boxes","level":"Easy","cal":470,"protein":"30g","desc":"Crispy baked tofu glazed in smoky barbecue sauce over rice, black beans, and corn. A hearty vegan batch that fills you up.","ing":["2 blocks firm tofu","3/4 cup barbecue sauce","2 cups brown rice","2 cans black beans","2 cups corn","1 red onion","2 tbsp olive oil","1 tsp smoked paprika","1 tsp garlic powder","Salt and pepper"],"steps":["Press and cube tofu, then toss with cornstarch and bake at 425F for 25 minutes.","Glaze hot tofu with barbecue sauce.","Cook rice and warm the black beans with spices.","Char the corn and onion in a dry skillet.","Layer rice, beans, corn, and tofu into 5 boxes."],"pair":"Cold brew iced tea"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Chimichurri Steak Prep Boxes","it":"Herb steak & roasted potato","time":"40 min","serves":"4 boxes","level":"Medium","cal":520,"protein":"40g","desc":"Sliced seared flank steak with bright chimichurri, roasted baby potatoes, and green beans. A steakhouse-style prep that reheats gently.","ing":["1.5 lb flank steak","1.5 lb baby potatoes","1 lb green beans","1 cup parsley","1/3 cup olive oil","3 tbsp red wine vinegar","3 cloves garlic","1 tsp red pepper flakes","1 tsp oregano","Salt and pepper"],"steps":["Roast halved potatoes and green beans at 425F for 25 minutes.","Sear seasoned steak 4 minutes per side, then rest and slice.","Blend parsley, olive oil, vinegar, garlic, and oregano for chimichurri.","Divide potatoes, green beans, and steak among 4 boxes.","Spoon chimichurri over each before sealing."],"pair":"Bold malbec"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Curry Chickpea Lunch Jars","it":"Golden chickpea coconut prep","time":"35 min","serves":"5 boxes","level":"Easy","cal":420,"protein":"30g","desc":"Creamy coconut-curry chickpeas with spinach over fluffy basmati. A warming vegan batch loaded with plant protein and fiber.","ing":["3 cans chickpeas","2 cans coconut milk","3 cups basmati rice","4 cups baby spinach","3 tbsp curry powder","1 onion","3 cloves garlic","2 tbsp grated ginger","2 tbsp tomato paste","Salt and pepper"],"steps":["Saute onion, garlic, and ginger until fragrant.","Stir in curry powder and tomato paste for one minute.","Add chickpeas and coconut milk and simmer 15 minutes.","Fold in spinach until wilted.","Pack curry over rice into 5 jars and chill."],"pair":"Mango lassi"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Egg White Breakfast Prep Cups","it":"Veggie-loaded protein bites","time":"30 min","serves":"6 boxes","level":"Easy","cal":210,"protein":"24g","desc":"Fluffy baked egg white cups packed with turkey sausage, peppers, and spinach. Grab two for a fast, high-protein breakfast all week.","ing":["3 cups egg whites","8 oz turkey sausage","1 bell pepper","2 cups spinach","1/2 cup shredded cheese","1/4 cup diced onion","1 tsp garlic powder","1 tsp black pepper","Cooking spray","Salt"],"steps":["Brown turkey sausage and drain.","Whisk egg whites with garlic powder, salt, and pepper.","Divide sausage, peppers, spinach, and onion into a greased muffin tin.","Pour egg whites over and top with cheese.","Bake at 350F for 22 minutes, then pack two per box."],"pair":"Hot black coffee"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Peanut Tofu Meal Prep Bowls","it":"Saucy peanut tofu & rice","time":"40 min","serves":"5 boxes","level":"Easy","cal":490,"protein":"32g","desc":"Crispy tofu coated in a rich peanut sauce over jasmine rice with broccoli and carrots. A craveable plant-based prep that keeps well.","ing":["2 blocks firm tofu","1/2 cup peanut butter","3 tbsp tamari","2 tbsp maple syrup","1 lime","3 cups jasmine rice","4 cups broccoli florets","2 cups sliced carrot","2 tbsp sesame oil","2 cloves garlic"],"steps":["Press and cube tofu, then bake at 425F for 25 minutes.","Whisk peanut butter, tamari, maple, lime, and garlic into sauce.","Steam broccoli and carrots until tender-crisp.","Cook jasmine rice.","Toss tofu in peanut sauce and divide everything among 5 boxes."],"pair":"Coconut water"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Lemon Herb Chicken Quinoa Prep","it":"Bright chicken & quinoa boxes","time":"40 min","serves":"5 boxes","level":"Easy","cal":440,"protein":"41g","desc":"Juicy lemon-herb chicken thighs over fluffy quinoa with roasted zucchini and tomatoes. A Mediterranean-leaning prep that reheats clean.","ing":["2.5 lb chicken thighs","2 cups quinoa","2 zucchini","2 cups cherry tomatoes","2 lemons","3 tbsp olive oil","1 tbsp dried oregano","3 cloves garlic","1 tsp paprika","Salt and pepper"],"steps":["Marinate chicken in lemon juice, olive oil, oregano, and garlic.","Roast chicken at 425F for 25 minutes, then slice.","Cook quinoa in broth until fluffy.","Roast zucchini and tomatoes alongside the chicken.","Divide quinoa, chicken, and veg among 5 boxes."],"pair":"Sparkling lemon water"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Beef Barbacoa Burrito Wraps","it":"Make-ahead shredded beef wraps","time":"3 hr","serves":"6 boxes","level":"Medium","cal":520,"protein":"38g","desc":"Tender slow-cooked barbacoa beef rolled with rice, beans, and cheese into freezer-friendly wraps. Reheat one anytime for a hearty meal.","ing":["3 lb chuck roast","2 chipotles in adobo","3 cups cooked rice","2 cans pinto beans","1.5 cups shredded cheese","6 large tortillas","1 onion","4 cloves garlic","2 tsp cumin","2 cups beef broth"],"steps":["Sear roast, then slow-cook with chipotles, onion, garlic, and broth for 3 hours.","Shred the beef and reduce the liquid.","Warm rice and beans with cumin.","Fill tortillas with beef, rice, beans, and cheese, then roll tightly.","Wrap individually in foil and refrigerate or freeze."],"pair":"Cold Mexican cola"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Teriyaki Salmon Rice Bowls","it":"Glazed salmon & broccoli prep","time":"35 min","serves":"4 boxes","level":"Easy","cal":510,"protein":"39g","desc":"Sweet-savory teriyaki salmon over sushi rice with steamed broccoli and edamame. A glossy, satisfying batch that holds up four days.","ing":["4 salmon fillets","1/2 cup teriyaki sauce","3 cups sushi rice","4 cups broccoli","2 cups edamame","2 tbsp honey","1 tbsp grated ginger","2 cloves garlic","1 tbsp sesame seeds","2 scallions"],"steps":["Marinate salmon in teriyaki, honey, ginger, and garlic.","Bake salmon at 400F for 12 minutes, brushing with glaze.","Cook sushi rice and steam the broccoli.","Divide rice, broccoli, edamame, and salmon among 4 boxes.","Top with sesame seeds and sliced scallions."],"pair":"Cold jasmine tea"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Cajun Chicken Pasta Prep","it":"Spicy creamy chicken pasta","time":"35 min","serves":"5 boxes","level":"Easy","cal":560,"protein":"40g","desc":"Blackened cajun chicken tossed with penne in a light creamy sauce and bell peppers. A bold, comforting prep that reheats without drying out.","ing":["2.5 lb chicken breast","1 lb penne","2 bell peppers","1.5 cups light cream","1/2 cup parmesan","2 tbsp cajun seasoning","3 cloves garlic","2 tbsp olive oil","1 cup pasta water","Salt and pepper"],"steps":["Season chicken with cajun spice and sear, then slice.","Cook penne until al dente, reserving pasta water.","Saute peppers and garlic, then add cream and parmesan.","Loosen sauce with pasta water and toss with penne and chicken.","Cool and divide among 5 boxes."],"pair":"Chilled pinot grigio"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Mediterranean Lentil Meal Jars","it":"Hearty lentil & feta prep","time":"35 min","serves":"5 boxes","level":"Easy","cal":400,"protein":"30g","desc":"Earthy braised lentils layered with cucumber, tomato, and crumbled feta over a lemony dressing. A bright, fiber-rich prep eaten cold.","ing":["2 cups green lentils","1 cucumber","2 cups cherry tomatoes","3/4 cup crumbled feta","1/2 red onion","1/4 cup olive oil","2 lemons","2 tsp dried oregano","1/4 cup chopped parsley","Salt and pepper"],"steps":["Simmer lentils until tender, then drain and cool.","Dice cucumber, halve tomatoes, and thinly slice onion.","Whisk olive oil, lemon juice, oregano, salt, and pepper.","Toss lentils and vegetables in the dressing.","Layer into 5 jars and top with feta and parsley."],"pair":"Sparkling mineral water"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Ground Beef Taco Prep Bowls","it":"Seasoned beef & cilantro rice","time":"35 min","serves":"5 boxes","level":"Easy","cal":500,"protein":"37g","desc":"Seasoned ground beef over cilantro-lime rice with black beans, corn, and pico. A crowd-pleasing prep that comes together fast.","ing":["2 lb lean ground beef","3 cups cooked rice","2 cans black beans","2 cups corn","1 cup pico de gallo","2 tbsp taco seasoning","1 lime","1/4 cup cilantro","1 cup shredded cheese","Salt and pepper"],"steps":["Brown ground beef and stir in taco seasoning with a splash of water.","Toss rice with lime juice and chopped cilantro.","Warm the black beans and corn.","Divide rice, beef, beans, and corn among 5 boxes.","Top with pico and cheese before sealing."],"pair":"Cold lime soda"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Harissa Chickpea Sheet-Pan Prep","it":"Spiced chickpea & veg batch","time":"40 min","serves":"5 boxes","level":"Easy","cal":410,"protein":"30g","desc":"Smoky harissa-roasted chickpeas, cauliflower, and red onion over couscous with a tahini drizzle. A vibrant vegan sheet-pan batch.","ing":["3 cans chickpeas","1 head cauliflower","1 red onion","2 cups couscous","3 tbsp harissa paste","1/4 cup tahini","3 tbsp olive oil","1 lemon","2 cloves garlic","Salt and pepper"],"steps":["Toss chickpeas, cauliflower, and onion with harissa and olive oil.","Roast on a sheet pan at 425F for 25 minutes.","Prepare couscous with hot broth and fluff.","Whisk tahini, lemon, garlic, and water into a sauce.","Divide couscous and roasted veg among 5 boxes and drizzle with tahini."],"pair":"Mint iced tea"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Honey Mustard Chicken Prep","it":"Glazed chicken & roasted veg","time":"40 min","serves":"5 boxes","level":"Easy","cal":450,"protein":"42g","desc":"Tender honey-mustard chicken with roasted Brussels sprouts and sweet potato. A balanced, meal-prep staple that reheats moist.","ing":["2.5 lb chicken breast","1/4 cup dijon mustard","3 tbsp honey","1.5 lb sweet potato","1 lb Brussels sprouts","3 tbsp olive oil","2 cloves garlic","1 tsp thyme","1 tbsp apple cider vinegar","Salt and pepper"],"steps":["Whisk dijon, honey, vinegar, garlic, and thyme into a glaze.","Coat chicken and bake at 400F for 25 minutes.","Roast diced sweet potato and halved sprouts with olive oil.","Slice chicken once rested.","Divide chicken, sweet potato, and sprouts among 5 boxes."],"pair":"Crisp apple cider"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Coconut Curry Shrimp Prep Boxes","it":"Creamy curry shrimp & rice","time":"35 min","serves":"4 boxes","level":"Medium","cal":470,"protein":"35g","desc":"Plump shrimp simmered in a fragrant coconut curry over jasmine rice with peppers and snap peas. A vibrant prep that reheats gently.","ing":["1.5 lb shrimp","2 cans coconut milk","3 cups jasmine rice","2 bell peppers","2 cups snap peas","3 tbsp red curry paste","1 tbsp fish sauce","2 cloves garlic","1 tbsp grated ginger","1 lime"],"steps":["Saute garlic, ginger, and curry paste until fragrant.","Add coconut milk and fish sauce and simmer 5 minutes.","Add peppers and snap peas, then the shrimp, cooking until pink.","Cook jasmine rice separately.","Divide rice and curry among 4 boxes and finish with lime."],"pair":"Thai iced tea"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Turkey Meatball Marinara Prep","it":"Saucy meatballs & penne","time":"45 min","serves":"5 boxes","level":"Medium","cal":480,"protein":"38g","desc":"Juicy baked turkey meatballs simmered in marinara over whole-wheat penne. A comforting, freezer-friendly prep the whole week loves.","ing":["2 lb ground turkey","1 cup breadcrumbs","1 egg","1/2 cup parmesan","4 cups marinara","1 lb whole-wheat penne","3 cloves garlic","1 tbsp Italian seasoning","2 tbsp olive oil","Salt and pepper"],"steps":["Mix turkey, breadcrumbs, egg, parmesan, garlic, and seasoning.","Roll into meatballs and bake at 400F for 18 minutes.","Simmer meatballs in marinara for 10 minutes.","Cook penne until al dente.","Divide penne and saucy meatballs among 5 boxes."],"pair":"Light chianti"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Black Bean Quinoa Freezer Burritos","it":"Make-ahead veggie burritos","time":"45 min","serves":"6 boxes","level":"Easy","cal":440,"protein":"30g","desc":"Hearty black bean and quinoa burritos with peppers, corn, and cheese, wrapped for the freezer. Microwave one for a fast plant-based meal.","ing":["2 cans black beans","2 cups cooked quinoa","2 bell peppers","2 cups corn","1.5 cups shredded cheese","6 large tortillas","2 tsp cumin","1 tsp chili powder","1 onion","2 cloves garlic"],"steps":["Saute onion, garlic, and peppers until soft.","Stir in beans, quinoa, corn, cumin, and chili powder.","Cook until warmed through and slightly dry.","Fill tortillas with the mixture and cheese, then roll.","Wrap each burrito in foil and freeze."],"pair":"Cold horchata"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Greek Turkey Pita Prep Boxes","it":"Seasoned turkey & tzatziki","time":"35 min","serves":"5 boxes","level":"Easy","cal":430,"protein":"39g","desc":"Oregano-spiced ground turkey with cucumber salad, tzatziki, and warm pita pieces. A Greek-inspired prep that stays fresh and bright.","ing":["2 lb ground turkey","1 cup tzatziki","5 pita rounds","1 cucumber","2 cups cherry tomatoes","1/2 red onion","2 tbsp olive oil","2 tsp dried oregano","2 cloves garlic","Salt and pepper"],"steps":["Brown turkey with garlic, oregano, salt, and pepper.","Dice cucumber, halve tomatoes, and slice onion for the salad.","Toss the salad with olive oil and a pinch of salt.","Cut pita into wedges.","Divide turkey, salad, pita, and tzatziki among 5 boxes."],"pair":"Sparkling lemon water"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Sesame Ginger Beef Prep Bowls","it":"Stir-fry beef & rice batch","time":"35 min","serves":"5 boxes","level":"Medium","cal":520,"protein":"40g","desc":"Tender stir-fried beef in a sticky sesame-ginger sauce over rice with broccoli and peppers. A takeout-style prep that reheats great.","ing":["2 lb flank steak","1/3 cup tamari","2 tbsp honey","3 cups cooked rice","4 cups broccoli","2 bell peppers","2 tbsp sesame oil","2 tbsp grated ginger","3 cloves garlic","1 tbsp cornstarch"],"steps":["Slice beef thin and sear in batches in sesame oil.","Stir-fry broccoli and peppers until crisp-tender.","Whisk tamari, honey, ginger, garlic, and cornstarch with water.","Return beef to the pan and toss in the sauce until glossy.","Divide rice, beef, and veg among 5 boxes."],"pair":"Cold oolong tea"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Tuscan White Bean Soup Batch","it":"Cozy bean & kale soup","time":"40 min","serves":"6 boxes","level":"Easy","cal":330,"protein":"30g","desc":"A rustic batch of white beans, kale, and turkey sausage in a savory tomato broth. Freezes well and reheats into a hearty bowl.","ing":["12 oz turkey sausage","3 cans cannellini beans","6 cups kale","1 can diced tomatoes","6 cups chicken broth","1 onion","3 carrots","3 cloves garlic","2 tsp Italian seasoning","2 tbsp olive oil"],"steps":["Brown crumbled turkey sausage in olive oil.","Add onion, carrots, and garlic and cook until soft.","Stir in tomatoes, beans, broth, and seasoning.","Simmer 20 minutes, then add kale to wilt.","Cool and portion into 6 containers."],"pair":"Crusty bread"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Apple Cinnamon Protein Oat Jars","it":"Overnight oats meal prep","time":"15 min","serves":"5 boxes","level":"Easy","cal":340,"protein":"30g","desc":"Creamy overnight oats with diced apple, cinnamon, and a scoop of protein for a no-cook breakfast that lasts all week. Just grab and go.","ing":["2.5 cups rolled oats","2 scoops vanilla protein powder","2.5 cups milk","1/2 cup Greek yogurt","2 apples","2 tsp cinnamon","3 tbsp maple syrup","1/4 cup chopped walnuts","1 tbsp chia seeds","Pinch of salt"],"steps":["Whisk milk, yogurt, protein powder, maple, and cinnamon.","Stir in oats and chia seeds until combined.","Dice the apples and fold in.","Divide into 5 jars and top with walnuts.","Refrigerate overnight before eating."],"pair":"Hot coffee"},
+{"course":"main","cat":"mealprep","emoji":"","title":"Pulled Chicken Mason Jar Salads","it":"Layered protein salad jars","time":"30 min","serves":"4 boxes","level":"Easy","cal":380,"protein":"36g","desc":"Layered jar salads with shredded chicken, chickpeas, veggies, and greens that stay crisp until you shake and eat. Dressing on the bottom keeps it fresh.","ing":["2 lb chicken breast","1 can chickpeas","4 cups mixed greens","2 cups cherry tomatoes","1 cucumber","1/2 cup feta","1/3 cup balsamic vinaigrette","1 cup shredded carrot","2 tbsp olive oil","Salt and pepper"],"steps":["Poach and shred the chicken.","Add vinaigrette to the bottom of each jar.","Layer chickpeas, tomatoes, cucumber, carrot, and chicken.","Top each jar with greens and feta.","Seal and refrigerate; shake into a bowl to serve."],"pair":"Sparkling water with lime"},
+{"course":"main","cat":"comfort","emoji":"","title":"Smothered Pork Chops & Gravy","it":"Skillet chops in onion gravy","time":"40 min","serves":"4","level":"Medium","cal":560,"protein":"42g","desc":"Pan-seared bone-in pork chops smothered in a rich caramelized onion gravy. Pure Southern comfort over a bed of mashed potatoes.","ing":["4 bone-in pork chops","2 large onions","3 tbsp butter","3 tbsp flour","2 cups chicken broth","1 tsp thyme","2 cloves garlic","2 tbsp olive oil","1/2 cup milk","Salt and pepper"],"steps":["Season chops and sear in olive oil until browned, then set aside.","Cook sliced onions in butter until deeply caramelized.","Stir in flour and garlic, then whisk in broth and milk.","Return chops to the pan and simmer until tender.","Finish with thyme and season to taste."],"pair":"Creamy mashed potatoes"},
+{"course":"main","cat":"global","emoji":"","title":"One-Pot Jollof Rice with Chicken","it":"West African tomato rice","time":"55 min","serves":"6","level":"Medium","cal":540,"protein":"34g","desc":"Smoky one-pot jollof rice simmered in a spiced tomato-pepper base with browned chicken. A beloved West African centerpiece full of flavor.","ing":["6 chicken thighs","3 cups long-grain rice","1 can plum tomatoes","2 red bell peppers","1 scotch bonnet","2 onions","3 tbsp tomato paste","2 tbsp curry powder","1 tsp thyme","3 cups chicken stock"],"steps":["Brown seasoned chicken thighs, then remove.","Blend tomatoes, peppers, scotch bonnet, and onion into a puree.","Fry the puree with tomato paste until thick and reduced.","Add stock, spices, rice, and chicken, then cover and simmer.","Cook low until rice is tender and slightly smoky."],"pair":"Fried plantains"},
+{"course":"main","cat":"global","emoji":"","title":"Khao Soi Coconut Curry Noodles","it":"Northern Thai curry noodles","time":"45 min","serves":"4","level":"Medium","cal":600,"protein":"35g","desc":"A rich northern Thai coconut curry broth over egg noodles, topped with crispy noodles, lime, and pickled mustard greens. Deeply aromatic and craveable.","ing":["1.5 lb chicken thighs","2 cans coconut milk","12 oz egg noodles","3 tbsp khao soi curry paste","2 cups chicken stock","1 tbsp fish sauce","2 tsp palm sugar","2 limes","4 shallots","Fresh cilantro"],"steps":["Fry curry paste in a little coconut cream until fragrant.","Add chicken, remaining coconut milk, and stock, then simmer.","Season with fish sauce and palm sugar.","Boil egg noodles and fry a handful until crisp.","Ladle curry over noodles and top with crispy noodles, lime, and cilantro."],"pair":"Cold Thai beer"},
+{"course":"main","cat":"global","emoji":"","title":"Hungarian Chicken Paprikash","it":"Creamy paprika chicken stew","time":"50 min","serves":"4","level":"Medium","cal":520,"protein":"40g","desc":"Tender chicken braised in a velvety sweet-paprika sauce finished with sour cream. A classic Hungarian comfort dish served over egg noodles.","ing":["8 chicken thighs","3 tbsp sweet paprika","2 onions","1 red bell pepper","1 cup sour cream","2 tbsp flour","2 cups chicken broth","2 tbsp butter","2 cloves garlic","Salt and pepper"],"steps":["Brown seasoned chicken in butter, then remove.","Soften onions, pepper, and garlic, then stir in paprika.","Add broth and return the chicken to braise 30 minutes.","Whisk flour into sour cream and stir into the sauce off heat.","Simmer gently until silky and serve over noodles."],"pair":"Buttered egg noodles"},
+{"course":"main","cat":"seafood","emoji":"","title":"Cioppino Seafood Stew","it":"San Francisco fishermans stew","time":"50 min","serves":"6","level":"Hard","cal":420,"protein":"38g","desc":"A bold tomato-wine broth brimming with clams, mussels, shrimp, and white fish. This San Francisco classic is a showstopping seafood feast.","ing":["1 lb clams","1 lb mussels","1 lb shrimp","1 lb cod","1 can crushed tomatoes","1 cup white wine","1 onion","1 fennel bulb","4 cloves garlic","1 tsp red pepper flakes"],"steps":["Saute onion, fennel, garlic, and pepper flakes in olive oil.","Add wine and reduce, then stir in tomatoes and broth.","Simmer the broth 20 minutes to develop flavor.","Add clams and mussels, then shrimp and cod, cooking until shells open.","Serve hot with crusty bread to soak up the broth."],"pair":"Toasted sourdough"},
+{"course":"main","cat":"global","emoji":"","title":"Feijoada Brazilian Black Bean Stew","it":"Smoky pork & bean stew","time":"2 hr","serves":"8","level":"Medium","cal":580,"protein":"36g","desc":"A hearty Brazilian stew of black beans slow-cooked with smoky pork and sausage. Served over rice with orange and greens, it is the national comfort dish.","ing":["1 lb black beans","1 lb pork shoulder","8 oz smoked sausage","6 oz bacon","2 onions","4 cloves garlic","2 bay leaves","2 oranges","4 cups cooked rice","Salt and pepper"],"steps":["Soak black beans overnight, then drain.","Brown bacon, sausage, and pork, then remove.","Saute onion and garlic, then add beans, meats, bay, and water.","Simmer covered until beans are creamy and meat is tender.","Serve over rice with orange slices and sauteed greens."],"pair":"Caipirinha mocktail"},
+{"course":"main","cat":"vegan","emoji":"","title":"Ethiopian Misir Wot Lentils","it":"Spiced red lentil stew","time":"40 min","serves":"4","level":"Easy","cal":360,"protein":"30g","desc":"Silky red lentils simmered in a warming berbere spice blend with onions and garlic. This vegan Ethiopian stew is rich, spicy, and deeply satisfying.","ing":["2 cups red lentils","3 tbsp berbere spice","2 onions","4 cloves garlic","2 tbsp tomato paste","1 tbsp grated ginger","4 cups vegetable broth","3 tbsp olive oil","1 tsp ground cardamom","Salt"],"steps":["Cook finely chopped onion in olive oil until very soft.","Stir in garlic, ginger, berbere, and tomato paste.","Add rinsed lentils and broth.","Simmer 25 minutes until thick and creamy.","Season with cardamom and salt and serve with injera or rice."],"pair":"Warm flatbread"},
+{"course":"main","cat":"comfort","emoji":"","title":"Chicken and Dumplings","it":"Cozy stewed chicken & biscuits","time":"50 min","serves":"6","level":"Medium","cal":540,"protein":"35g","desc":"Tender chicken in a creamy herbed broth topped with pillowy drop dumplings. The ultimate cold-weather comfort food in a single pot.","ing":["2 lb chicken breast","2 cups flour","1 tbsp baking powder","3/4 cup milk","6 cups chicken broth","3 carrots","3 celery stalks","1 onion","4 tbsp butter","1 tsp thyme"],"steps":["Simmer chicken in broth with carrots, celery, and onion, then shred.","Stir butter and thyme into the broth.","Mix flour, baking powder, and milk into a soft dough.","Drop spoonfuls of dough into the simmering broth.","Cover and cook 15 minutes until dumplings are fluffy."],"pair":"Steamed green beans"},
+{"course":"main","cat":"global","emoji":"","title":"Pork Belly Bao Buns","it":"Steamed buns with braised pork","time":"2 hr","serves":"5","level":"Hard","cal":480,"protein":"28g","desc":"Pillowy steamed bao buns filled with sticky braised pork belly, pickled cucumber, and hoisin. A Taiwanese street-food favorite worth the effort.","ing":["2 lb pork belly","10 bao buns","1/3 cup soy sauce","3 tbsp brown sugar","2 star anise","1 cucumber","2 tbsp rice vinegar","2 tbsp hoisin sauce","3 scallions","2 cloves garlic"],"steps":["Braise pork belly in soy, sugar, star anise, and garlic for 90 minutes.","Quick-pickle sliced cucumber in rice vinegar.","Steam the bao buns until soft and puffed.","Slice the braised pork belly.","Fill each bun with pork, pickles, hoisin, and scallions."],"pair":"Cold lychee soda"},
+{"course":"main","cat":"comfort","emoji":"","title":"Tater Tot Hotdish","it":"Midwest casserole bake","time":"55 min","serves":"6","level":"Easy","cal":520,"protein":"30g","desc":"A nostalgic Midwestern casserole of seasoned ground beef and vegetables under a crispy tater tot crust. Comforting, filling, and family-approved.","ing":["1.5 lb ground beef","1 bag tater tots","1 can cream of mushroom soup","2 cups frozen mixed vegetables","1.5 cups shredded cheddar","1 onion","2 cloves garlic","1/2 cup milk","1 tsp paprika","Salt and pepper"],"steps":["Brown ground beef with onion and garlic.","Stir in soup, milk, vegetables, and paprika.","Spread the mixture into a baking dish.","Top with cheese and a single layer of tater tots.","Bake at 400F for 35 minutes until golden and bubbly."],"pair":"Crisp garden salad"},
+{"course":"main","cat":"seafood","emoji":"","title":"Garlic Butter Lobster Tails","it":"Broiled lobster with herb butter","time":"25 min","serves":"4","level":"Medium","cal":340,"protein":"36g","desc":"Sweet lobster tails broiled and basted in garlic-herb butter until tender and golden. An elegant, restaurant-worthy main for a special night.","ing":["4 lobster tails","6 tbsp butter","4 cloves garlic","1 lemon","2 tbsp chopped parsley","1 tsp paprika","1/2 tsp white pepper","1 tbsp olive oil","Pinch of salt","Lemon wedges"],"steps":["Butterfly lobster tails by cutting through the top shell.","Melt butter with garlic, paprika, and white pepper.","Brush the lobster meat with the garlic butter.","Broil 8 to 10 minutes, basting once, until opaque.","Finish with parsley, lemon, and a pinch of salt."],"pair":"Crisp chardonnay"},
+{"course":"main","cat":"vegan","emoji":"","title":"Jackfruit Carnitas Tacos","it":"Pulled jackfruit street tacos","time":"35 min","serves":"4","level":"Easy","cal":340,"protein":"12g","desc":"Shredded young jackfruit simmered in smoky citrus-chipotle spices makes a tender, plant-based taco filling. Pile onto warm tortillas with all the fixings.","ing":["2 cans young jackfruit","2 chipotles in adobo","1 orange","2 tsp cumin","2 tsp smoked paprika","1 onion","3 cloves garlic","8 corn tortillas","1/2 cup diced onion","Fresh cilantro"],"steps":["Drain jackfruit and shred with a fork.","Saute onion and garlic, then add jackfruit and spices.","Stir in chipotles and orange juice and simmer until tender.","Crisp the jackfruit under the broiler for a few minutes.","Serve in warm tortillas with onion and cilantro."],"pair":"Lime agua fresca"},
+{"course":"main","cat":"global","emoji":"","title":"Moroccan Lamb Tagine","it":"Slow-braised spiced lamb","time":"2 hr","serves":"6","level":"Medium","cal":560,"protein":"38g","desc":"Fall-apart lamb braised with apricots, chickpeas, and warm Moroccan spices. Sweet, savory, and aromatic, it is wonderful spooned over couscous.","ing":["3 lb lamb shoulder","1 cup dried apricots","1 can chickpeas","2 onions","3 tbsp ras el hanout","2 tbsp tomato paste","3 cups beef broth","4 cloves garlic","1 cinnamon stick","2 tbsp olive oil"],"steps":["Brown seasoned lamb in olive oil, then remove.","Soften onions and garlic, then stir in spices and tomato paste.","Return lamb with broth and cinnamon, then braise covered.","Add apricots and chickpeas in the last 30 minutes.","Simmer until lamb is fork-tender and serve over couscous."],"pair":"Mint tea"},
+{"course":"side","cat":"comfort","emoji":"","title":"Maple Roasted Acorn Squash","it":"Caramelized squash wedges","time":"40 min","serves":"4","level":"Easy","cal":180,"protein":"3g","desc":"Tender acorn squash wedges roasted with maple, butter, and a hint of cinnamon until caramelized at the edges. A cozy, naturally sweet side.","ing":["2 acorn squash","3 tbsp maple syrup","2 tbsp melted butter","1/2 tsp cinnamon","1/4 tsp nutmeg","1 tbsp olive oil","2 tbsp pumpkin seeds","Pinch of salt","Pinch of black pepper","Fresh thyme"],"steps":["Slice acorn squash into wedges and remove seeds.","Toss with olive oil, maple, butter, cinnamon, and nutmeg.","Arrange on a sheet pan and season with salt.","Roast at 425F for 30 minutes, flipping once.","Sprinkle with pumpkin seeds and thyme before serving."],"pair":"Roast pork or turkey"},
+{"course":"side","cat":"italian","emoji":"","title":"Crispy Parmesan Polenta Fries","it":"Golden baked polenta sticks","time":"45 min","serves":"4","level":"Medium","cal":260,"protein":"8g","desc":"Creamy parmesan polenta chilled, cut into sticks, and baked until crisp outside and soft within. A fun, gluten-free alternative to fries.","ing":["1 cup polenta","4 cups water","1/2 cup parmesan","2 tbsp butter","2 tbsp olive oil","1 tsp garlic powder","1 tsp Italian seasoning","1/2 tsp salt","1/4 tsp black pepper","Marinara for dipping"],"steps":["Cook polenta in water until thick, then stir in parmesan and butter.","Spread into a pan and chill until firm.","Cut the set polenta into thick fries.","Brush with olive oil and season with garlic and herbs.","Bake at 425F for 30 minutes, flipping, until crisp."],"pair":"Warm marinara"},
+{"course":"breakfast","cat":"breakfast","emoji":"","title":"Lemon Ricotta Pancakes","it":"Fluffy citrus ricotta stack","time":"25 min","serves":"4","level":"Easy","cal":380,"protein":"14g","desc":"Light, fluffy pancakes enriched with creamy ricotta and bright lemon zest. They cook up tender and tangy for a special weekend breakfast.","ing":["1.5 cups flour","1 cup ricotta","2 eggs","1.25 cups milk","2 lemons","2 tbsp sugar","2 tsp baking powder","1/2 tsp salt","2 tbsp melted butter","Maple syrup"],"steps":["Whisk flour, sugar, baking powder, and salt.","In another bowl mix ricotta, eggs, milk, lemon zest, and juice.","Fold the wet into the dry until just combined.","Cook scoops on a buttered griddle until bubbles form, then flip.","Serve warm with maple syrup."],"pair":"Fresh berries"},
+{"course":"lunch","cat":"lunch","emoji":"","title":"Roasted Red Pepper Hummus Wrap","it":"Veggie-packed lunch wrap","time":"15 min","serves":"2","level":"Easy","cal":390,"protein":"13g","desc":"A vibrant wrap loaded with roasted red pepper hummus, crunchy vegetables, and greens. Quick, portable, and bright for an easy plant-based lunch.","ing":["2 large tortillas","3/4 cup roasted red pepper hummus","1 cucumber","1 cup shredded carrot","1 cup baby spinach","1/2 red onion","1/4 cup kalamata olives","1 tbsp lemon juice","1/4 cup crumbled feta","Black pepper"],"steps":["Spread hummus generously across each tortilla.","Layer spinach, cucumber, carrot, and onion.","Scatter olives and feta over the top.","Drizzle with lemon juice and season with pepper.","Roll up tightly and slice in half."],"pair":"Kettle chips"},
+{"course":"snack","cat":"snack","emoji":"","title":"Baked Zucchini Tots","it":"Crispy veggie snack bites","time":"35 min","serves":"4","level":"Easy","cal":160,"protein":"9g","desc":"Grated zucchini bound with cheese and breadcrumbs, baked into crispy golden tots. A sneaky-veggie snack kids and adults both reach for.","ing":["3 cups grated zucchini","1 egg","3/4 cup breadcrumbs","3/4 cup shredded cheddar","1/4 cup parmesan","2 cloves garlic","1 tsp onion powder","1/2 tsp salt","1/4 tsp black pepper","Cooking spray"],"steps":["Grate zucchini, salt it, and squeeze out the moisture.","Mix zucchini with egg, breadcrumbs, cheeses, and seasonings.","Shape into small tot-sized logs.","Arrange on a greased sheet pan and spray the tops.","Bake at 425F for 22 minutes, flipping once, until crisp."],"pair":"Garlic yogurt dip"},
+{"course":"dessert","cat":"baking","emoji":"","title":"Brown Butter Pecan Blondies","it":"Chewy nutty butterscotch bars","time":"40 min","serves":"12","level":"Easy","cal":280,"protein":"4g","desc":"Rich, chewy blondies made with nutty brown butter, toasted pecans, and white chocolate chunks. A deeply caramelized twist on the classic bar.","ing":["3/4 cup butter","1.5 cups brown sugar","2 eggs","1.5 cups flour","1 cup chopped pecans","3/4 cup white chocolate chunks","2 tsp vanilla","1 tsp baking powder","1/2 tsp salt","Flaky sea salt"],"steps":["Brown the butter until nutty and amber, then cool slightly.","Whisk in brown sugar, eggs, and vanilla.","Fold in flour, baking powder, and salt.","Stir in pecans and white chocolate, then spread in a pan.","Bake at 350F for 25 minutes and finish with flaky salt."],"pair":"Vanilla ice cream"},
+{"course":"dessert","cat":"global","emoji":"","title":"No-Bake Mango Coconut Cheesecake","it":"Creamy tropical chilled cake","time":"20 min","serves":"8","level":"Easy","cal":330,"protein":"6g","desc":"A silky no-bake cheesecake swirled with mango puree on a coconut-graham crust. Cool, creamy, and tropical without ever turning on the oven.","ing":["2 cups graham crumbs","1/2 cup melted butter","1/2 cup shredded coconut","16 oz cream cheese","1 cup mango puree","3/4 cup powdered sugar","1 cup whipped cream","1 tbsp lime juice","1 tsp vanilla","Pinch of salt"],"steps":["Mix graham crumbs, coconut, and butter, then press into a pan.","Beat cream cheese with powdered sugar, vanilla, and lime.","Fold in whipped cream until smooth.","Swirl mango puree through the filling.","Spread over the crust and chill at least 4 hours."],"pair":"Iced coconut coffee"},
+{"course":"dessert","cat":"vegan","emoji":"","title":"Vegan Peanut Butter Banana Cookies","it":"Soft flourless cookie bites","time":"25 min","serves":"12","level":"Easy","cal":140,"protein":"5g","desc":"Soft, naturally sweet cookies made from just bananas, peanut butter, and oats with dark chocolate chips. A wholesome, vegan, gluten-free treat.","ing":["2 ripe bananas","3/4 cup peanut butter","1.5 cups oats","1/3 cup dairy-free chocolate chips","2 tbsp maple syrup","1 tsp vanilla","1/2 tsp cinnamon","1/4 tsp salt","2 tbsp ground flax","1/4 cup chopped peanuts"],"steps":["Mash the bananas in a large bowl.","Stir in peanut butter, maple, and vanilla.","Mix in oats, flax, cinnamon, and salt.","Fold in chocolate chips and peanuts.","Scoop onto a lined tray and bake at 350F for 14 minutes."],"pair":"Cold almond milk"},
+{"course":"side","cat":"global","emoji":"","title":"Charred Shishito Peppers","it":"Blistered peppers with sea salt","time":"15 min","serves":"4","level":"Easy","cal":90,"protein":"3g","desc":"Quick-blistered shishito peppers tossed with flaky salt and a squeeze of lemon. A simple, addictive side or appetizer with a hint of heat.","ing":["1 lb shishito peppers","2 tbsp olive oil","1 lemon","1 tsp flaky sea salt","1 clove garlic","1 tbsp soy sauce","1 tsp sesame seeds","1/2 tsp chili flakes","1 tsp rice vinegar","Black pepper"],"steps":["Heat a skillet until very hot.","Toss shishitos in olive oil and add to the pan.","Blister 5 to 7 minutes, turning until charred and soft.","Toss with garlic, soy sauce, and rice vinegar.","Finish with lemon, flaky salt, sesame, and chili flakes."],"pair":"Cold sparkling sake"},
+{"course":"breakfast","cat":"breakfast","emoji":"","title":"Savory Cheddar Chive Waffles","it":"Crispy herbed brunch waffles","time":"30 min","serves":"4","level":"Easy","cal":410,"protein":"16g","desc":"Golden, crispy waffles loaded with sharp cheddar and fresh chives for a savory brunch twist. Top with a fried egg for an extra-hearty meal.","ing":["2 cups flour","2 eggs","1.75 cups buttermilk","1 cup shredded cheddar","1/4 cup chopped chives","1/3 cup melted butter","1 tbsp baking powder","1 tsp sugar","1/2 tsp salt","1/4 tsp black pepper"],"steps":["Whisk flour, baking powder, sugar, salt, and pepper.","In another bowl beat eggs, buttermilk, and melted butter.","Combine wet and dry, then fold in cheddar and chives.","Cook in a hot waffle iron until golden and crisp.","Serve warm topped with a fried egg if desired."],"pair":"Hot drip coffee"},
+{"course":"drink","cat":"drink","emoji":"","title":"Spiced Apple Cider Smoothie","it":"Cozy blended fall sipper","time":"5 min","serves":"2","level":"Easy","cal":240,"protein":"8g","desc":"A creamy blended smoothie tasting of apple pie, with banana, cinnamon, and a hint of maple. Cozy fall flavors in a quick, drinkable form.","ing":["1 cup apple cider","1 frozen banana","1/2 cup Greek yogurt","1/2 cup rolled oats","1 tsp cinnamon","1 tbsp maple syrup","1/4 tsp nutmeg","1/2 cup ice","1 tbsp almond butter","1/2 cup milk"],"steps":["Add apple cider, milk, and yogurt to a blender.","Add the frozen banana, oats, and almond butter.","Sprinkle in cinnamon, nutmeg, and maple syrup.","Add ice and blend until smooth and creamy.","Pour into two glasses and dust with extra cinnamon."],"pair":"Warm cinnamon scone"}
 ];
 
 /* ---------------- LOGIC ---------------- */
@@ -1727,10 +1813,11 @@ function renderKitchenTabs(){ const host=document.getElementById('kitchenTabs');
 function renderKitchen(){ renderKitchenTabs(); const wrap=document.getElementById('kitchenView'); if(!wrap)return;
   if(kitchenTab==='saved'){ const items=RECIPES.map((r,i)=>({r,i})).filter(({i})=>isSaved(i)); wrap.innerHTML=items.length?`<div class="grid">${items.map(({r,i})=>cardHTML(r,i)).join('')}</div>`:`<div class="empty">No saved recipes yet — tap the ♥ on any recipe to start your cookbook.</div>`; return; }
   const items=plannedItems();
-  if(!items.length){ wrap.innerHTML=`<div class="empty">Your meal plan is empty. Tap the “+” on any recipe to add it, then get one combined shopping list for the whole plan.</div>`; return; }
+  if(!items.length){ wrap.innerHTML=`<div class="empty">Your meal plan is empty. Tap the “+” on any recipe to add it, then get one combined shopping list for the whole plan.<div class="plan-week-wrap"><button class="plan-week" type="button" onclick="planMyWeek()">🎲 Plan my week — 7 dinners + one cart</button></div></div>`; return; }
   const slugs=items.map(({r})=>slugify(r.title)).join(',');
   const combined=planCombined();
   wrap.innerHTML=`<div class="plan-head"><b>${items.length}</b> recipe${items.length>1?'s':''} planned · <b>${combined.length}</b> ingredients in one list</div>
+    <div class="plan-week-wrap"><button class="plan-week" type="button" onclick="planMyWeek()">🎲 Re-roll my week — 7 dinners</button></div>
     <div class="grid">${items.map(({r,i})=>cardHTML(r,i)).join('')}</div>
     <div class="shoplist">
       <h3>One combined shopping list</h3>
@@ -1798,7 +1885,7 @@ function cardHTML(r,i){
       <div class="cat">${c.label}</div>
       <h4>${r.title}</h4>
       <div class="it">${r.it}</div>
-      <div class="small">${r.time} · ${r.level} · serves ${r.serves}</div>${macro}${mine}
+      <div class="small">${r.time} · ${r.level} · serves ${r.serves}</div>${macro}${dietBadges(r)?`<div class="badges">${dietBadges(r)}</div>`:''}${mine}
     </div>
   </div>`;
 }
@@ -1865,10 +1952,206 @@ function renderReco(){
 }
 
 function slugify(s){ return String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); }
+
+/* ===== Substitutions data + feature engine (scaler, cooking mode, weekly plan, badges, swaps) ===== */
+const SUBS = {
+  "butter": "equal parts olive oil or coconut oil; or mashed avocado in baking",
+  "buttermilk": "1 cup milk + 1 tbsp lemon juice or vinegar, rested 5 min",
+  "heavy cream": "equal parts evaporated milk, or full-fat coconut milk (dairy-free)",
+  "half-and-half": "3/4 cup milk + 1/4 cup melted butter per cup",
+  "milk": "equal parts unsweetened almond, soy, or oat milk; or water + 1 tbsp butter",
+  "evaporated milk": "equal parts half-and-half, or light cream",
+  "sour cream": "equal parts plain Greek yogurt",
+  "yogurt": "equal parts sour cream, or buttermilk in batters",
+  "greek yogurt": "equal parts sour cream, or strained regular yogurt",
+  "creme fraiche": "equal parts sour cream, or mascarpone",
+  "mascarpone": "8 oz cream cheese + 1/4 cup cream + 1 tbsp sour cream",
+  "ricotta": "equal parts cottage cheese (blended), or silken tofu (vegan)",
+  "cream cheese": "equal parts mascarpone, or blended cottage cheese",
+  "egg": "1 flax egg (1 tbsp ground flax + 3 tbsp water) or 1/4 cup applesauce",
+  "parmesan": "pecorino, grana padano, or nutritional yeast (vegan)",
+  "mozzarella": "provolone, or low-moisture white cheddar",
+  "cheddar": "colby, gouda, or monterey jack",
+  "feta": "equal parts ricotta salata, or queso fresco",
+  "gruyere": "equal parts emmental, comte, or jarlsberg",
+  "all-purpose flour": "1:1 gluten-free flour blend, or equal parts oat flour",
+  "flour": "for thickening: half as much cornstarch; or 1:1 GF blend",
+  "cake flour": "1 cup minus 2 tbsp all-purpose + 2 tbsp cornstarch",
+  "self-rising flour": "1 cup all-purpose + 1.5 tsp baking powder + 1/4 tsp salt",
+  "cornstarch": "2 tbsp all-purpose flour per 1 tbsp; or equal arrowroot",
+  "breadcrumbs": "equal parts panko, crushed crackers, or rolled oats",
+  "panko": "equal parts coarse dry breadcrumbs or crushed cornflakes",
+  "sugar": "equal parts honey (reduce liquid) or coconut sugar",
+  "brown sugar": "1 cup white sugar + 1 tbsp molasses",
+  "powdered sugar": "blend 1 cup white sugar + 1 tbsp cornstarch until fine",
+  "honey": "equal parts maple syrup or agave; or 1.25 cup sugar + 1/4 cup water",
+  "maple syrup": "equal parts honey or agave nectar",
+  "molasses": "equal parts dark corn syrup, or honey",
+  "corn syrup": "equal parts honey, or 1.25 cup sugar + 1/4 cup water simmered",
+  "baking powder": "1/4 tsp baking soda + 1/2 tsp cream of tartar per tsp",
+  "baking soda": "3 tsp baking powder per 1 tsp (reduce other acids)",
+  "yeast": "for 1 packet, use 1 tbsp baking powder (no rise time, denser)",
+  "vanilla": "equal parts maple syrup, or almond extract (use half)",
+  "garlic": "1/8 tsp garlic powder per clove, or 1/2 tsp granulated garlic",
+  "fresh garlic": "1/8 tsp garlic powder per clove",
+  "shallot": "equal parts mild onion + a little garlic",
+  "onion": "1/4 cup dried minced onion, or 1 tsp onion powder per onion",
+  "scallion": "equal parts chives, or thinly sliced mild onion",
+  "fresh ginger": "1/4 tsp ground ginger per 1 tbsp grated",
+  "lemon": "equal parts lime juice, or 1/2 part white vinegar",
+  "lemon juice": "equal parts lime juice or white vinegar",
+  "lime": "equal parts lemon juice",
+  "white wine": "equal chicken broth + a splash of white-wine vinegar",
+  "red wine": "equal beef broth + 1 tsp red-wine vinegar; or grape juice",
+  "white wine vinegar": "equal parts rice vinegar or lemon juice",
+  "red wine vinegar": "equal parts apple cider or balsamic vinegar",
+  "balsamic vinegar": "1 tbsp cider vinegar + 1/2 tsp sugar per tbsp",
+  "rice vinegar": "equal parts white wine vinegar (add pinch sugar)",
+  "soy sauce": "tamari (gluten-free) or coconut aminos",
+  "tamari": "equal parts soy sauce (not gluten-free) or coconut aminos",
+  "fish sauce": "equal soy sauce + a pinch of anchovy paste, or coconut aminos",
+  "oyster sauce": "2 tbsp soy sauce + 1 tsp sugar + dash worcestershire",
+  "hoisin": "2 tbsp soy sauce + 1 tbsp peanut butter + 1 tsp honey",
+  "worcestershire": "equal parts soy sauce + a pinch of sugar and vinegar",
+  "dijon": "equal parts yellow mustard + a pinch of horseradish",
+  "mustard": "equal parts prepared mustard, or 1 tsp dry mustard per tbsp",
+  "mayonnaise": "equal parts plain Greek yogurt, or sour cream",
+  "ketchup": "1/2 cup tomato paste + 2 tbsp vinegar + 2 tbsp sugar",
+  "tomato paste": "3 tbsp tomato sauce simmered down per 1 tbsp",
+  "tomato sauce": "1/2 cup tomato paste + 1/2 cup water + pinch salt",
+  "tahini": "equal parts smooth almond or sunflower-seed butter",
+  "chicken broth": "equal parts vegetable broth, or water + 1 bouillon cube",
+  "beef broth": "equal parts vegetable broth + 1 tsp soy sauce for depth",
+  "vegetable broth": "equal water + 1 bouillon cube or 1 tsp miso",
+  "coconut milk": "equal parts heavy cream, or evaporated milk",
+  "vegetable oil": "equal parts canola, melted butter, or light olive oil",
+  "olive oil": "equal parts avocado or canola oil",
+  "cilantro": "equal parts flat-leaf parsley (different flavor)",
+  "basil": "equal parts oregano or fresh spinach; or 1 tsp dried per tbsp",
+  "rice": "equal parts quinoa, couscous, or cauliflower rice",
+  "pasta": "equal parts zucchini noodles, or any other pasta shape",
+  "tortilla": "equal lettuce wraps, or flatbread/pita",
+  "cumin": "equal parts ground coriander + a pinch of chili powder",
+  "paprika": "equal parts chili powder (milder) or cayenne (use 1/3)",
+  "cream of tartar": "1/2 tsp lemon juice or white vinegar per 1/4 tsp",
+  "shortening": "equal parts butter or coconut oil"
+};
+
+/* ---------- Smart swaps (substitutions) ---------- */
+function swapsFor(r){
+  const ingLc=(r.ing||[]).map(x=>String(x).toLowerCase());
+  const keys=Object.keys(SUBS).sort((a,b)=>b.length-a.length);
+  const found=[];
+  for(const k of keys){
+    if(found.length>=5) break;
+    if(ingLc.some(line=>line.includes(k))){
+      if(found.some(f=>f.key.includes(k))) continue;
+      found.push({key:k, sub:SUBS[k]});
+    }
+  }
+  return found;
+}
+
+/* ---------- Dietary badges (for cards) ---------- */
+function dietBadges(r){
+  const t=dietTags(r), out=[];
+  if(t.includes('vegan')) out.push('Vegan'); else if(t.includes('vegetarian')) out.push('Veg');
+  if(t.includes('glutenfree')) out.push('GF');
+  if(t.includes('highprotein')) out.push('High-protein');
+  if(out.length<3 && t.includes('quick')) out.push('≤30m');
+  return out.slice(0,3).map(b=>`<span class="badge">${b}</span>`).join('');
+}
+
+/* ---------- Serving scaler ---------- */
+let scaleServes=null, scaleBase=null, scaleIdx=null;
+function parseServesNum(s){ const m=String(s||'').match(/\d+/); return m?parseInt(m[0],10):null; }
+function fmtQty(n){
+  if(!isFinite(n)) return '';
+  const whole=Math.floor(n+1e-9), frac=n-whole;
+  const map=[[0,''],[0.125,'1/8'],[0.25,'1/4'],[0.333,'1/3'],[0.375,'3/8'],[0.5,'1/2'],[0.625,'5/8'],[0.667,'2/3'],[0.75,'3/4'],[0.875,'7/8'],[1,'']];
+  let best=map[0], bd=1;
+  for(const m of map){ const d=Math.abs(frac-m[0]); if(d<bd){bd=d;best=m;} }
+  if(bd>0.06){ const rr=Math.round(n*100)/100; return String(rr); }
+  let w=whole, fpart=best[1];
+  if(best[0]===1){ w+=1; fpart=''; }
+  if(w===0 && fpart==='') return '0';
+  if(w===0) return fpart;
+  if(fpart==='') return String(w);
+  return w+' '+fpart;
+}
+function parseQtyToken(tok){
+  tok=tok.trim();
+  if(/^\d+\s+\d+\/\d+$/.test(tok)){ const p=tok.split(/\s+/); const fr=p[1].split('/'); return parseInt(p[0])+parseInt(fr[0])/parseInt(fr[1]); }
+  if(/^\d+\/\d+$/.test(tok)){ const fr=tok.split('/'); return parseInt(fr[0])/parseInt(fr[1]); }
+  if(/^\d*\.?\d+$/.test(tok)) return parseFloat(tok);
+  return null;
+}
+function scaleIngredient(line, factor){
+  if(factor===1) return line;
+  const m=line.match(/^\s*(\d+\s+\d+\/\d+|\d+\/\d+|\d*\.?\d+)(\s*[–-]\s*(\d+\s+\d+\/\d+|\d+\/\d+|\d*\.?\d+))?(.*)$/);
+  if(!m) return line;
+  const q1=parseQtyToken(m[1]); if(q1===null) return line;
+  let out=fmtQty(q1*factor);
+  if(m[3]){ const q2=parseQtyToken(m[3]); if(q2!==null) out+='–'+fmtQty(q2*factor); }
+  return out+m[4];
+}
+function renderScaled(){
+  if(scaleIdx===null||!scaleBase) return;
+  const r=RECIPES[scaleIdx], f=scaleServes/scaleBase;
+  const ul=document.getElementById('ingList'); if(ul) ul.innerHTML=r.ing.map(x=>`<li>${scaleIngredient(String(x),f)}</li>`).join('');
+  const sv=document.getElementById('scaleVal'); if(sv) sv.textContent=scaleServes;
+}
+function setServes(delta){ if(scaleIdx===null||!scaleBase) return; scaleServes=Math.max(1, scaleServes+delta); renderScaled(); }
+
+/* ---------- Cooking mode (full-screen, step-by-step, timers) ---------- */
+let cookIdx=0, cookRecipe=null, cookTimer=null, cookRemain=0;
+function parseDur(txt){ const m=String(txt).match(/(\d+)\s*(hour|hr|minute|min|second|sec)/i); if(!m) return 0; const n=parseInt(m[1]), u=m[2].toLowerCase(); if(u[0]==='h') return n*3600; if(u[0]==='m') return n*60; return n; }
+function fmtClock(s){ const m=Math.floor(s/60), x=s%60; return m+':'+String(x).padStart(2,'0'); }
+function openCook(i){ cookRecipe=RECIPES[i]; cookIdx=0; document.getElementById('cookOverlay').classList.add('open'); document.body.style.overflow='hidden'; renderCook(); }
+function closeCook(){ stopTimer(); document.getElementById('cookOverlay').classList.remove('open'); document.body.style.overflow=overlay.classList.contains('open')?'hidden':''; }
+function cookStep(d){ cookIdx=Math.min(cookRecipe.steps.length-1, Math.max(0, cookIdx+d)); stopTimer(); renderCook(); }
+function renderCook(){
+  const r=cookRecipe, step=r.steps[cookIdx], dur=parseDur(step), last=cookIdx===r.steps.length-1;
+  document.getElementById('cookBody').innerHTML=`
+    <div class="cook-top"><span class="cook-name">${r.title}</span><button class="cook-x" onclick="closeCook()" aria-label="Close">×</button></div>
+    <div class="cook-count">Step ${cookIdx+1} of ${r.steps.length}</div>
+    <div class="cook-step">${step}</div>
+    ${dur?`<div class="cook-timer"><button id="timerBtn" onclick="toggleTimer(${dur})">▶ Start ${fmtClock(dur)} timer</button> <span id="timerDisp"></span></div>`:''}
+    <div class="cook-nav">
+      <button onclick="cookStep(-1)" ${cookIdx===0?'disabled':''}>← Prev</button>
+      ${last?`<button class="cook-done" onclick="closeCook()">Done ✓</button>`:`<button class="cook-next" onclick="cookStep(1)">Next →</button>`}
+    </div>`;
+}
+function toggleTimer(sec){
+  if(cookTimer){ stopTimer(); const b=document.getElementById('timerBtn'); if(b) b.textContent='▶ Resume '+fmtClock(cookRemain); return; }
+  cookRemain=cookRemain>0?cookRemain:sec;
+  const b=document.getElementById('timerBtn'); if(b) b.textContent='⏸ Pause';
+  const d=document.getElementById('timerDisp'); if(d) d.textContent=fmtClock(cookRemain);
+  cookTimer=setInterval(()=>{ cookRemain--; const dd=document.getElementById('timerDisp'); if(dd) dd.textContent=fmtClock(Math.max(0,cookRemain)); if(cookRemain<=0){ stopTimer(); beep(); const bb=document.getElementById('timerBtn'); if(bb) bb.textContent='✓ Done'; try{alert('Timer done!');}catch(e){} } },1000);
+}
+function stopTimer(){ if(cookTimer){ clearInterval(cookTimer); cookTimer=null; } }
+function beep(){ try{ const a=new (window.AudioContext||window.webkitAudioContext)(); const o=a.createOscillator(), g=a.createGain(); o.connect(g); g.connect(a.destination); o.frequency.value=880; o.start(); setTimeout(()=>o.stop(),450);}catch(e){} }
+
+/* ---------- One-click weekly meal plan ---------- */
+function planMyWeek(){
+  const mains=RECIPES.map((r,i)=>({r,i})).filter(({r})=>r.course==='main'&&r.cat!=='mealprep');
+  for(let k=mains.length-1;k>0;k--){ const j=Math.floor(Math.random()*(k+1)); const t=mains[k]; mains[k]=mains[j]; mains[j]=t; }
+  const pick=[], types=new Set();
+  for(const m of mains){ const ty=mainType(m.r); if(!types.has(ty)){ pick.push(m); types.add(ty); } if(pick.length>=7) break; }
+  for(const m of mains){ if(pick.length>=7) break; if(pick.indexOf(m)<0) pick.push(m); }
+  plan=new Set(pick.slice(0,7).map(({r})=>r.title));
+  try{localStorage.setItem(PLAN_KEY,JSON.stringify([...plan]))}catch(e){}
+  kitchenTab='plan'; renderKitchen();
+  const k=document.getElementById('kitchen'); if(k) k.scrollIntoView({behavior:'smooth'});
+}
+
 function openRecipe(i){
   modalOpenIndex=i;
   const r=RECIPES[i], c=CATS[r.cat];
   const side=(r.course==='main'&&r.cat!=='mealprep')?suggestedSide(r):null;
+  scaleIdx=i; scaleBase=parseServesNum(r.serves); scaleServes=scaleBase;
+  const swaps=swapsFor(r);
+  const scaler=scaleBase?`<span class="scaler">Servings <button type="button" onclick="setServes(-1)">−</button><b id="scaleVal">${scaleServes}</b><button type="button" onclick="setServes(1)">+</button></span>`:'';
   modal.innerHTML=`
     <button class="close" onclick="closeModal()">×</button>
     <div class="menu-card">
@@ -1886,9 +2169,11 @@ function openRecipe(i){
       </div>
       <div class="mc-rule"><span>✦</span></div>
       <div class="mc-cols">
-        <div><h5>The Plate</h5><ul>${r.ing.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div><h5>The Plate ${scaler}</h5><ul id="ingList">${r.ing.map(x=>`<li>${x}</li>`).join('')}</ul></div>
         <div><h5>Preparation</h5><ol>${r.steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>
       </div>
+      <button class="cook-btn" type="button" onclick="openCook(${i})">▶ Start cooking mode</button>
+      ${swaps.length?`<div class="mc-swaps"><h5>Smart swaps</h5><ul>${swaps.map(s=>`<li><b>No ${s.key}?</b> ${s.sub}</li>`).join('')}</ul></div>`:''}
       ${r.pair?`<div class="mc-pair">${r.cal?r.pair:'To drink — '+r.pair}</div>`:''}
       ${side?`<div class="mc-serve">Serve with <b>${side}</b></div>`:''}
       <div class="mc-cart">
@@ -1975,164 +2260,920 @@ document.getElementById('suForm').addEventListener('submit',async e=>{
 })();
 
 const RESTAURANTS=[
-  {name:"Robke's",town:"Northport",cat:"Italian-American",dishes:[
-    {dishTitle:"Baked Chicken Cutlet with Penne Vodka",tagline:"A Robke's Town Favorite — a crispy baked breaded chicken cutlet over penne in a silky vodka blush sauce.",
-     ing:["2 chicken breasts, pounded thin","1/2 cup flour","2 eggs, beaten","1 cup seasoned breadcrumbs","1/2 cup grated Parmesan","12 oz penne","3 tbsp olive oil","3 tbsp butter","4 cloves garlic, minced","3 tbsp tomato paste","1/3 cup vodka","1 cup heavy cream","1/2 cup crushed tomatoes","1/2 tsp red pepper flakes","Fresh basil","Salt, pepper"],
-     steps:["Heat oven to 425°F. Dredge the cutlets in flour, then egg, then breadcrumbs mixed with half the Parmesan.","Brown the cutlets in olive oil 2 min per side, then finish on a rack in the oven 10–12 min until cooked through and crisp.","Boil the penne until al dente; reserve 1/2 cup pasta water.","Make the vodka sauce: melt butter with the garlic and red pepper flakes; stir in tomato paste 2 min; add vodka and simmer 1 min; add crushed tomatoes and cream and simmer to a blush sauce.","Toss the penne in the sauce with the remaining Parmesan, loosening with pasta water. Plate the penne, slice a baked cutlet over the top, and finish with basil."]},
-    {dishTitle:"Skirt Steak Mac & Cheese",tagline:"Robke's Gourmet Mac & Cheese meets their famous sliced steak — a creamy three-cheese mac topped with seared skirt steak and caramelized onions.",
-     ing:["1.5 lb skirt steak","12 oz elbow macaroni","4 tbsp butter","1/4 cup flour","3 cups whole milk","2 cups sharp cheddar, shredded","1 cup gruyere, shredded","1 onion, sliced","4 strips bacon, chopped","2 tbsp olive oil","Salt, pepper, paprika"],
-     steps:["Season the skirt steak with salt, pepper and paprika; sear in olive oil 3 min per side; rest 8 min and slice thinly across the grain.","In the same pan, cook the bacon until crisp; remove. Soften the sliced onion in the bacon fat 10 min until deeply caramelized.","Boil the elbow macaroni until al dente; drain. Melt the butter in a saucepan, whisk in the flour 1 min, then the milk; simmer until thickened. Off heat, stir in the cheddar and gruyere.","Toss the pasta with the cheese sauce; pile into bowls, top with the sliced skirt steak, caramelized onions and bacon crumble; finish with cracked pepper."]},
-    {dishTitle:"Pork Chops with Cherry Peppers",tagline:"Robke's signature — crispy breaded pork chops crowned with a tangy cherry-pepper and arugula salad.",
-     ing:["2 thin-cut pork chops, pounded thin","1 cup breadcrumbs + 1/2 cup grated Parmesan","2 eggs, beaten","Flour for dredging","2 cups arugula","Chopped cherry peppers + a splash of their vinegar","Olive oil, lemon, salt"],
-     steps:["Dredge the pounded chops in flour, then egg, then the Parmesan breadcrumbs.","Fry in olive oil until golden and cooked through; drain.","Toss the arugula with cherry peppers, a splash of the vinegar, olive oil and lemon.","Pile the peppery salad on the hot chops and serve."]},
-    {dishTitle:"The \"Finger Tip\" — Sliced Steak & Potatoes",tagline:"Robke's famous sliced steak and potatoes — seared, sliced thin and piled over crispy garlic potatoes.",
-     ing:["1.5 lb skirt or shell steak","1.5 lb baby potatoes, halved","3 tbsp olive oil","3 cloves garlic, minced","2 tbsp butter","1 tsp rosemary, chopped","Salt, coarse pepper","Optional: chopped cherry peppers"],
-     steps:["Roast the halved potatoes tossed in olive oil, salt and pepper at 425°F for 25–30 min until crisp; toss with the garlic and rosemary for the last 5 min.","Season the steak well and rest at room temp 30 min; pat dry.","Sear in a screaming-hot pan 3–4 min per side for medium-rare; rest 8 min, then slice thin across the grain.","Pile the sliced steak over the potatoes, spoon over the resting juices and butter, and finish with coarse pepper (and cherry peppers if you like)."]},
-    {dishTitle:"Fried Mozzarella",tagline:"The Robke's appetizer — golden breaded fresh mozzarella with marinara for dipping.",
-     ing:["1 lb fresh mozzarella, cut into thick sticks","1 cup flour","3 eggs, beaten","2 cups seasoned breadcrumbs","1/2 cup grated Parmesan","Oil for frying","2 cups marinara, warmed","Fresh basil"],
-     steps:["Freeze the mozzarella sticks 20 min so they hold their shape.","Dredge each in flour, then egg, then breadcrumbs mixed with the Parmesan — then dip in egg and crumbs again for a sturdy double coat.","Heat oil to 360°F; fry in batches 1–2 min until golden, turning once; drain.","Serve hot with warm marinara and torn basil."]},
-    {dishTitle:"Eggplant Rollatini",tagline:"A Robke's dinner appetizer — breaded eggplant rolled around herby ricotta, baked in marinara under melted mozzarella.",
-     ing:["2 large eggplant, sliced lengthwise 1/4-inch thick","1 cup flour","3 eggs","2 cups breadcrumbs","1/3 cup parmesan, grated","2 cups ricotta","1 egg","2 cups shredded mozzarella","1/4 cup parsley, chopped","3 cups marinara","Olive oil","Fresh basil","Salt, pepper"],
-     steps:["Salt the eggplant slices 15 min; pat dry. Dredge in flour, egg, then breadcrumbs mixed with half the parmesan.","Pan-fry in olive oil until golden on both sides; drain.","Stir the ricotta with 1 egg, parsley, half the mozzarella, the rest of the parmesan, salt and pepper.","Spoon filling on each slice; roll up. Spread 1 cup marinara in a baking dish, arrange the rolls seam-side down, top with the remaining marinara and mozzarella.","Bake at 400°F for 25 min until bubbly; finish with basil."]}
-  ]},
-  {name:"Luca",town:"Stony Brook",cat:"Italian",dishes:[
-    {dishTitle:"Penne alla Vodka",tagline:"Luca's outstanding blush vodka sauce over fresh pasta.",
-     ing:["1 lb penne (fresh if you can)","1/4 cup tomato paste","1 onion, minced","3 cloves garlic","1/4 cup vodka","3/4 cup heavy cream","Parmesan, basil, chili flakes","Olive oil"],
-     steps:["Sauté onion and garlic in olive oil; add tomato paste and cook until brick-red.","Deglaze with vodka and cook off the alcohol.","Stir in cream and simmer to a blush sauce.","Toss with cooked pasta, Parmesan and basil; loosen with pasta water."]}
-  ]},
-  {name:"Ixchel Mexican Cuisine",town:"East Setauket",cat:"Mexican",dishes:[
-    {dishTitle:"Birria Tacos",tagline:"Rich, chili-braised beef tacos with consommé for dipping — a Three Village favorite.",
-     ing:["2 lb chuck roast","3 dried guajillo + 2 ancho chiles","2 tomatoes, 1 onion, 4 garlic cloves","Cumin, oregano, bay, a small cinnamon stick","2 cups beef broth","Corn tortillas","Oaxaca or Jack cheese, cilantro, onion, lime"],
-     steps:["Toast and soak the chiles; blend with tomato, onion, garlic and spices.","Braise the beef in the chile sauce + broth until it shreds, ~3 hours.","Shred the beef; skim the red consommé into a bowl.","Dip tortillas in the fat, fill with beef and cheese, crisp on a griddle, and serve with consommé."]}
-  ]},
-  {name:"Elaine's",town:"East Setauket",cat:"Italian",dishes:[
-    {dishTitle:"Linguine Carbonara",tagline:"Elaine's most-requested pasta — silky egg-and-pecorino carbonara with crisp guanciale.",
-     ing:["1 lb linguine","4 oz guanciale or pancetta, diced","3 egg yolks + 1 whole egg","3/4 cup grated Pecorino Romano","Lots of black pepper","Salt"],
-     steps:["Crisp the guanciale; reserve the rendered fat.","Whisk yolks, egg, Pecorino and black pepper.","Cook linguine; toss with the guanciale off the heat.","Add a splash of pasta water, then the egg mixture, tossing fast into a silky sauce."]}
-  ]},
-  {name:"Maria's",town:"Nesconset",cat:"Mexican & Latin",dishes:[
-    {dishTitle:"Tampiqueña al Mar",tagline:"Maria's showstopper — grilled skirt steak topped with shrimp, scallops and calamari in chipotle cream.",
-     ing:["1 lb skirt steak","1/2 lb shrimp","1/2 lb sea scallops","1/4 lb calamari","2 chipotles in adobo","1/2 cup cream","1 onion, 2 garlic cloves","Lime, cilantro, salt"],
-     steps:["Season and grill the skirt steak to medium-rare; rest and slice.","Sauté onion and garlic; blend with chipotle and cream into a sauce.","Sear the shrimp, scallops and calamari, then simmer in the chipotle cream.","Spoon the seafood over the steak; finish with lime and cilantro."]}
-  ]},
-  {name:"Peter Luger Steak House",town:"Great Neck",cat:"Steakhouse",dishes:[
-    {dishTitle:"Dry-Aged Porterhouse",tagline:"A steakhouse porterhouse you can pull off at home — high heat, butter and the famous-style sauce.",
-     ing:["1 porterhouse, 1.5–2 in thick","Kosher salt & coarse pepper","2 tbsp butter, melted","Sauce: ketchup, Worcestershire, prepared horseradish, brown sugar, splash of vinegar"],
-     steps:["Salt the steak and rest at room temp 45 min; pat very dry.","Heat the broiler (or cast iron) screaming hot.","Sear/broil ~4 min per side for medium-rare (130–135°F); rest 8 min.","Brush with melted butter, slice off the bone, serve with the whisked sauce."]}
-  ]},
-  {name:"Bigelow's New England Fried Clams",town:"Rockville Centre",cat:"Seafood",dishes:[
-    {dishTitle:"New England Fried Clams",tagline:"Sweet whole clams in a light, crisp cornmeal crust.",
-     ing:["1 lb shucked whole clams","1 cup buttermilk","1 cup corn flour (fine cornmeal)","1/2 cup flour","Salt, pepper, paprika","Neutral oil for frying","Lemon & tartar sauce"],
-     steps:["Soak clams in buttermilk 15 min.","Mix corn flour, flour and seasoning.","Heat oil to 375°F.","Dredge and fry clams 1–2 min until golden; drain. Serve with lemon and tartar."]}
-  ]},
-  {name:"Zorn's of Bethpage",town:"Bethpage",cat:"Comfort",dishes:[
-    {dishTitle:"Buttermilk Fried Chicken",tagline:"Juicy buttermilk-brined chicken with a craggy golden crust.",
-     ing:["8 pieces chicken","2 cups buttermilk","1 tbsp hot sauce","2 cups flour","Paprika, garlic powder, salt, pepper","Oil for frying"],
-     steps:["Brine chicken in buttermilk + hot sauce 2+ hours.","Dredge in seasoned flour, pressing to coat.","Fry at 325–350°F 12–15 min, turning, until 165°F.","Rest on a rack and salt right away."]}
-  ]},
-  {name:"All American Hamburger Drive-In",town:"Massapequa",cat:"Burgers",dishes:[
-    {dishTitle:"Smash Cheeseburger & Shake",tagline:"A thin, crispy-edged smash burger and a thick strawberry shake.",
-     ing:["1/2 lb ground beef (80/20)","2 potato buns","2 slices American cheese","Salt, pepper","Pickles, onion, ketchup, mustard","Shake: vanilla ice cream, milk, frozen strawberries"],
-     steps:["Form loose beef balls; smash hard on a screaming-hot griddle.","Season, flip at 2 min, add cheese.","Toast buns; build with pickles, onion and sauce.","Blend ice cream, milk and strawberries for the shake."]}
-  ]},
-  {name:"Limani",town:"Roslyn",cat:"Mediterranean",dishes:[
-    {dishTitle:"Grilled Octopus",tagline:"Tender, charred octopus with lemon, oregano and olive oil.",
-     ing:["1 octopus (~2 lb), cleaned","1 onion, bay leaf, peppercorns","1/4 cup olive oil","1 lemon","Dried oregano","Salt, pepper"],
-     steps:["Simmer octopus with onion, bay and peppercorns 45–60 min until tender; cool.","Cut into tentacles; toss with olive oil.","Grill over high heat until charred, 2–3 min per side.","Finish with lemon, oregano, salt and olive oil."]}
-  ]},
-  {name:"La Parma",town:"Williston Park",cat:"Italian",dishes:[
-    {dishTitle:"Chicken Scarpariello",tagline:"Family-style chicken and sausage with sweet peppers in a tangy garlic-vinegar sauce.",
-     ing:["2 lb chicken pieces","2 Italian sausages","1 bell pepper + a few cherry peppers","4 cloves garlic","1/2 cup white wine","1/2 cup chicken stock","2 tbsp vinegar, rosemary"],
-     steps:["Brown chicken and sausage; set aside.","Sauté garlic and peppers.","Deglaze with wine, vinegar and stock; add rosemary.","Return the meat; simmer until cooked and saucy."]}
-  ]},
-  {name:"The Lobster Roll — LUNCH",town:"Amagansett",cat:"Seafood",dishes:[
-    {dishTitle:"Classic Cold Lobster Roll",tagline:"Chilled lobster lightly dressed in lemon mayo on a buttery split-top bun.",
-     ing:["1 lb cooked lobster meat","3 tbsp mayo","1 tbsp lemon juice","1 stalk celery, minced","Chives, salt, pepper","2 split-top buns","Butter"],
-     steps:["Toss lobster with mayo, lemon, celery, chives, salt and pepper.","Butter and griddle the buns until golden.","Pile in the lobster salad.","Top with extra chives; serve cold."]}
-  ]},
-  {name:"Umberto's",town:"New Hyde Park",cat:"Pizza",dishes:[
-    {dishTitle:"Grandma Pizza",tagline:"Thin, square, crispy-bottomed pizza with garlic, crushed tomato and mozzarella.",
-     ing:["1 lb pizza dough","2 tbsp olive oil","2 cups low-moisture mozzarella","1 cup crushed tomatoes","2 cloves garlic","Oregano, basil, Parmesan"],
-     steps:["Stretch dough into an oiled sheet pan; rest 20 min.","Top with mozzarella, then spoon over crushed tomato mixed with garlic.","Bake at 500°F 15–18 min until the bottom is crisp.","Finish with oregano, basil and Parmesan."]}
-  ]},
-  {name:"Maureen's Kitchen",town:"Smithtown",cat:"Breakfast",dishes:[
-    {dishTitle:"The Big Diner Breakfast",tagline:"The full plate — eggs, crispy home fries, bacon and fluffy pancakes.",
-     ing:["4 eggs","4 strips bacon","2 potatoes, diced","Butter","Pancakes: flour, milk, egg, baking powder, sugar","Maple syrup"],
-     steps:["Crisp the bacon; fry the home fries in the drippings until golden.","Whisk pancake batter; cook on a buttered griddle.","Fry the eggs to your liking.","Plate it all with butter and syrup."]}
-  ]},
-  {name:"The Clam Bar at Napeague",town:"Amagansett",cat:"Seafood",dishes:[
-    {dishTitle:"Warm Buttered Lobster Roll",tagline:"Connecticut-style — warm lobster tossed in lemon butter on a toasted bun.",
-     ing:["1 lb cooked lobster meat","4 tbsp butter","1 tbsp lemon juice","Chives, flaky salt","2 split-top buns"],
-     steps:["Warm the lobster gently in melted butter with lemon.","Butter and griddle the buns.","Fill with the warm buttered lobster.","Finish with chives and flaky salt."]}
-  ]},
-  {name:"Se-Port Deli",town:"East Setauket",cat:"Deli",dishes:[
-    {dishTitle:"The Snider Hero",tagline:"An East Setauket deli legend — one of Se-Port's famous oversized heroes: chicken salad, crisp bacon and melted mozzarella with honey mustard on a toasted garlic roll.",
-     ing:["1 long hero roll","1 cup chicken salad","4 slices bacon, cooked crisp","1/2 cup shredded mozzarella","2 tbsp honey mustard","Lettuce & tomato","Garlic butter for the roll"],
-     steps:["Split the hero, spread the cut sides with garlic butter and toast until golden.","Pile on the chicken salad and top with the crisp bacon.","Cover with the mozzarella and melt under the broiler 1–2 min.","Drizzle with honey mustard, add lettuce and tomato, and close the hero."]}
-  ]},
-  {name:"Tara Inn",town:"Port Jefferson",cat:"Pub & Burgers",dishes:[
-    {dishTitle:"The Famous Bar Burger",tagline:"A Port Jeff institution — the legendary little griddled bar burger Tara Inn has slung for 40+ years (the famous $1, now $2, classic).",
-     ing:["1/4 lb ground beef (80/20) per burger","Soft potato burger buns","American cheese","Salt, pepper","Butter for the buns","Pickles, onion, ketchup, mustard"],
-     steps:["Loosely form thin patties; season with salt and pepper.","Griddle hard on high heat 2 min per side for crispy edges; add cheese to melt.","Butter and toast the buns on the griddle.","Build with pickles, onion and your sauces — keep it simple and classic."]}
-  ]},
-  {name:"Crazy Beans",town:"Stony Brook",cat:"Brunch",dishes:[
-    {dishTitle:"Pancake Quesadilla",tagline:"The Stony Brook brunch favorite — Crazy Beans' savory-sweet mash-up of a fluffy pancake and a melty quesadilla.",
-     ing:["1 cup pancake batter","2 tbsp shredded cheddar","2 strips bacon, cooked and chopped (or sausage)","1 egg, scrambled","Butter","Powdered sugar","Maple syrup for serving"],
-     steps:["Pour the pancake batter into a buttered nonstick pan to make one large pancake; cook until the bubbles set.","On one half, scatter the cheddar, bacon and scrambled egg.","Fold the pancake over like a quesadilla; press and cook until the cheese melts and both sides are golden.","Cut into wedges, dust with powdered sugar and serve with warm maple syrup."]}
-  ]},
-  {name:"Pasta Pasta",town:"Port Jefferson",cat:"Italian",dishes:[
-    {dishTitle:"Squid-Ink Lobster Ravioli",tagline:"Port Jeff's North Shore favorite — Pasta Pasta's celebrated black squid-ink ravioli filled with sweet lobster in a light tomato-cream sauce.",
-     ing:["1 package lobster ravioli (squid-ink if you can find it)","1 cup cooked lobster meat, chopped","2 tbsp butter","2 cloves garlic, minced","1/4 cup white wine","3/4 cup cream","1/2 cup crushed tomatoes","Pinch chili flakes","Fresh chives, salt, pepper"],
-     steps:["Boil the ravioli gently until they float; drain.","Melt the butter with the garlic and chili flakes; add the white wine and reduce 1 min.","Stir in the crushed tomatoes and cream; simmer to a light blush sauce.","Warm the lobster in the sauce, fold in the ravioli, and finish with chives."]}
-  ]},
-  {name:"Eddie's Pizza",town:"New Hyde Park",cat:"Pizza",dishes:[
-    {dishTitle:"Thin-Crust Bar Pie",tagline:"A New Hyde Park classic since 1931 — Eddie's cracker-thin 'bar pie,' crisp enough to fold and finish with a beer.",
-     ing:["1 (10-inch) thin pizza shell or 8 oz dough","1/3 cup pizza sauce","1 cup low-moisture mozzarella","2 tbsp grated Parmesan","Olive oil","Oregano","Optional: thin-sliced pepperoni"],
-     steps:["Heat the oven as hot as it goes (500°F+) with a pizza stone or steel inside.","Stretch the dough super thin into a 10-inch round; brush the rim with olive oil.","Top almost edge-to-edge with a thin layer of sauce, then the mozzarella and Parmesan.","Bake 8–10 min until the crust is crackery and browned; finish with oregano and cut into squares."]}
-  ]},
-  {name:"Thomas's Ham & Eggery",town:"Carle Place",cat:"Breakfast",dishes:[
-    {dishTitle:"Lemon Ricotta Pancakes",tagline:"The standout at this 75-year-old Carle Place diner — light, tangy lemon-ricotta pancakes.",
-     ing:["1 cup flour","1 tbsp sugar","1 tsp baking powder","1/2 tsp salt","3/4 cup ricotta","3/4 cup milk","2 eggs, separated","Zest of 1 lemon + 1 tbsp juice","Butter","Powdered sugar & syrup"],
-     steps:["Whisk the flour, sugar, baking powder and salt.","In another bowl, mix the ricotta, milk, egg yolks, lemon zest and juice; stir into the dry ingredients.","Whip the egg whites to soft peaks and fold them in for fluffiness.","Cook on a buttered griddle until golden; dust with powdered sugar and serve with syrup."]}
-  ]},
-  {name:"The Cull House",town:"Sayville",cat:"Seafood",dishes:[
-    {dishTitle:"Baked Clams",tagline:"Sayville's waterfront favorite — Cull House is famous for some of the best baked clams on Long Island.",
-     ing:["18 littleneck clams on the half shell","1.5 cups breadcrumbs","1/2 cup grated Parmesan","4 cloves garlic, minced","1/4 cup parsley, chopped","2 tsp oregano","1/3 cup olive oil","2 tbsp lemon juice","Pinch chili flakes","Lemon wedges"],
-     steps:["Heat the oven to 425°F.","Mix the breadcrumbs, Parmesan, garlic, parsley, oregano, lemon juice, chili and olive oil into a moist crumb.","Top each clam with a generous spoonful and set on a sheet pan.","Bake 10–12 min until golden and the clams are just cooked; serve with lemon."]}
-  ]},
-  {name:"Ralph's Famous Italian Ices",town:"Long Island",cat:"Italian Ices",dishes:[
-    {dishTitle:"Cherry Italian Ice",tagline:"The quintessential Long Island summer treat — Ralph's-style real-fruit cherry Italian ice.",
-     ing:["2 cups water","3/4 cup sugar","2 cups pitted cherries (fresh or frozen)","1 tbsp lemon juice","Pinch of salt"],
-     steps:["Make a simple syrup: heat the water and sugar until dissolved, then cool.","Blend the cherries with the syrup, lemon juice and salt until smooth.","Pour into a shallow pan and freeze, scraping with a fork every 30 min for 3–4 hours until fluffy and granular.","Scoop into cups (or churn in an ice-cream maker for an ultra-smooth ice)."]}
-  ]},
-  {name:"Starbucks",town:"Café favorite",cat:"Coffee Shop",dishes:[
-    {dishTitle:"Spinach, Feta & Egg White Wrap",tagline:"Copycat of the Starbucks favorite — protein-packed egg whites with spinach, feta and sun-dried tomatoes in a toasted spinach wrap.",
-     ing:["1 cup egg whites","2 cups baby spinach","1/4 cup crumbled feta cheese","2 tbsp sun-dried tomatoes, chopped","1 spinach tortilla","1 tsp olive oil","1/4 tsp garlic powder","Salt, pepper"],
-     steps:["Heat 1 tsp olive oil in a nonstick skillet; add the baby spinach and a pinch of salt and wilt 1 min; push to one side.","Pour the egg whites into the pan and scramble gently 2–3 min until just set; season with garlic powder, salt and pepper.","Sprinkle the feta and chopped sun-dried tomatoes over the eggs and fold the spinach in.","Warm the spinach tortilla 15 sec; pile the filling in the center, fold the sides over the top and bottom, then toast seam-side down in the dry skillet 1–2 min for the signature golden seal."]},
-    {dishTitle:"Bacon, Gouda & Egg Sandwich",tagline:"The Starbucks breakfast classic — smoky gouda, bacon and a folded egg on a toasted artisan roll.",
-     ing:["2 ciabatta or artisan rolls","2 eggs","2 slices smoked gouda","4 slices bacon","1 tbsp butter","Salt, pepper"],
-     steps:["Cook the bacon until crisp; drain.","Whisk the eggs with salt and pepper; cook in a small buttered pan (or ring mold) into two folded rounds.","Split and toast the rolls; lay the gouda on the warm bottom so it starts to melt.","Stack the egg and bacon, close the sandwich, and press in the warm pan 1 min to melt the cheese."]}
-  ]},
-  {name:"Hummus",town:"High-protein dips & bowls",cat:"Fit recipes",kind:"collection",dishes:[
-    {dishTitle:"Classic Hummus",tagline:"The original — creamy whipped chickpea hummus with tahini, lemon and garlic. ~100 cal · 4g protein per serving.",
-     ing:["1 can (15 oz) chickpeas, drained (save the liquid)","1/4 cup tahini","2 tbsp lemon juice","1 clove garlic","3 tbsp olive oil","1/2 tsp ground cumin","1/2 tsp salt","2–3 tbsp ice water or reserved chickpea liquid","Paprika + olive oil to finish"],
-     steps:["Blend the tahini and lemon juice alone for 1 min until pale and whipped.","Add the garlic, olive oil, cumin and salt; blend.","Add the chickpeas and blend, drizzling in ice water until silky-smooth.","Spread in a bowl, swirl the top, and finish with olive oil and a dusting of paprika."]},
-    {dishTitle:"Roasted Red Pepper Hummus",tagline:"Smoky-sweet with roasted red peppers blended in. ~110 cal · 4g protein per serving.",
-     ing:["1 can chickpeas, drained","1/2 cup roasted red peppers, patted dry","1/4 cup tahini","2 tbsp lemon juice","1 clove garlic","2 tbsp olive oil","1/2 tsp smoked paprika","1/2 tsp salt"],
-     steps:["Blend the tahini and lemon until whipped.","Add the roasted peppers, garlic, olive oil, smoked paprika and salt; blend smooth.","Add the chickpeas and blend, loosening with a little water as needed.","Finish with a swirl of olive oil and an extra pinch of smoked paprika."]},
-    {dishTitle:"Roasted Garlic Hummus",tagline:"Mellow, sweet roasted garlic folded all the way through. ~105 cal · 4g protein per serving.",
-     ing:["1 head garlic","1 can chickpeas, drained","1/4 cup tahini","2 tbsp lemon juice","3 tbsp olive oil","1/2 tsp salt","Ice water to loosen"],
-     steps:["Drizzle the garlic head with oil, wrap in foil, and roast at 400°F for 35–40 min until soft; squeeze out the cloves.","Blend the tahini and lemon until pale.","Add the roasted garlic, olive oil and salt; blend.","Add the chickpeas and blend with ice water until creamy; finish with olive oil."]},
-    {dishTitle:"Spicy Sriracha Hummus",tagline:"Creamy with a clean sriracha kick. ~105 cal · 4g protein per serving.",
-     ing:["1 can chickpeas, drained","1/4 cup tahini","2 tbsp lemon juice","2–3 tbsp sriracha","1 clove garlic","2 tbsp olive oil","1/2 tsp cumin","1/2 tsp salt"],
-     steps:["Blend the tahini and lemon until whipped.","Add the sriracha, garlic, olive oil, cumin and salt; blend.","Add the chickpeas and blend smooth, loosening with water.","Swirl extra sriracha on top with a drizzle of olive oil."]},
-    {dishTitle:"Avocado Hummus",tagline:"Hummus meets guac — extra creamy, fresh and green. ~120 cal · 4g protein per serving.",
-     ing:["1 can chickpeas, drained","1 ripe avocado","3 tbsp tahini","2 tbsp lime juice","1 clove garlic","2 tbsp olive oil","1/4 cup cilantro","1/2 tsp salt"],
-     steps:["Blend the tahini and lime until pale.","Add the avocado, garlic, cilantro, olive oil and salt; blend.","Add the chickpeas and blend until smooth.","Serve right away with a squeeze of lime (press wrap onto the surface if storing)."]},
-    {dishTitle:"Edamame Hummus",tagline:"Bright green and extra high-protein from edamame. ~130 cal · 7g protein per serving.",
-     ing:["1.5 cups shelled edamame, cooked","1/2 cup chickpeas, drained","3 tbsp tahini","2 tbsp lemon juice","1 clove garlic","3 tbsp olive oil","1/4 tsp cumin","1/2 tsp salt","Ice water to loosen"],
-     steps:["Blend the edamame, tahini and lemon until broken down.","Add the chickpeas, garlic, olive oil, cumin and salt; blend.","Drizzle in ice water and blend until smooth and bright.","Finish with olive oil and a scatter of whole edamame."]}
-  ]}
+ {
+  "name": "Robke's",
+  "town": "Northport",
+  "cat": "Italian-American",
+  "dishes": [
+   {
+    "dishTitle": "Baked Chicken Cutlet with Penne Vodka",
+    "tagline": "A Robke's Town Favorite — a crispy baked breaded chicken cutlet over penne in a silky vodka blush sauce.",
+    "ing": [
+     "2 boneless chicken breasts (about 1.25 lb), pounded 1/4-inch thin",
+     "1/2 cup all-purpose flour",
+     "2 large eggs, beaten",
+     "1 cup seasoned breadcrumbs",
+     "3/4 cup grated Parmesan, divided",
+     "12 oz penne",
+     "3 tbsp olive oil (for frying the cutlets)",
+     "3 tbsp butter, 4 cloves garlic minced, 1/2 tsp red pepper flakes (for the sauce)",
+     "3 tbsp tomato paste",
+     "1/3 cup vodka",
+     "1 cup heavy cream",
+     "1/2 cup crushed tomatoes",
+     "6 fresh basil leaves, torn",
+     "1 tsp salt, 1/2 tsp black pepper"
+    ],
+    "steps": [
+     "Heat oven to 425°F. Season the cutlets with salt and pepper, then dredge in flour, then egg, then the breadcrumbs mixed with 1/4 cup of the Parmesan.",
+     "Brown the cutlets in the olive oil over medium-high 2 min per side, then transfer to a rack on a sheet pan and bake 10–12 min until cooked through (165°F) and crisp.",
+     "Meanwhile, boil the penne in salted water until al dente, about 11 min; reserve 1/2 cup pasta water, then drain.",
+     "Make the vodka sauce: melt the butter with the garlic and red pepper flakes over medium 1 min; stir in the tomato paste and cook 2 min; add the vodka and simmer 1 min; stir in the crushed tomatoes and cream and simmer 4–5 min to a blush sauce. Season with salt and pepper.",
+     "Toss the penne in the sauce with another 1/4 cup Parmesan, loosening with pasta water as needed. Plate the penne, slice a baked cutlet over the top, and finish with the remaining Parmesan and torn basil."
+    ]
+   },
+   {
+    "dishTitle": "Skirt Steak Mac & Cheese",
+    "tagline": "Robke's Gourmet Mac & Cheese meets their famous sliced steak — a creamy three-cheese mac topped with seared skirt steak and caramelized onions.",
+    "ing": [
+     "1.5 lb skirt steak",
+     "12 oz elbow macaroni",
+     "4 tbsp butter",
+     "1/4 cup all-purpose flour",
+     "3 cups whole milk, warmed",
+     "2 cups sharp cheddar, shredded",
+     "1 cup gruyere, shredded",
+     "1/2 cup grated Parmesan",
+     "1 large onion, thinly sliced",
+     "4 strips bacon, chopped",
+     "2 tbsp olive oil",
+     "1.5 tsp salt, 1 tsp black pepper, 1 tsp paprika"
+    ],
+    "steps": [
+     "Season the skirt steak all over with 1 tsp salt, the pepper and paprika; sear in the olive oil over high heat 3 min per side for medium-rare; rest 8 min, then slice thinly across the grain.",
+     "In the same pan, cook the bacon until crisp; remove and set aside. Soften the sliced onion in the bacon fat over medium-low 10–12 min until deeply caramelized.",
+     "Boil the elbow macaroni in salted water until al dente, about 8 min; drain. Melt the butter in a saucepan, whisk in the flour and cook 1 min, then whisk in the warm milk; simmer 3–4 min until thickened. Off heat, stir in the cheddar, gruyere and Parmesan with the remaining 1/2 tsp salt.",
+     "Toss the pasta with the cheese sauce until coated; pile into bowls, top with the sliced skirt steak, caramelized onions and bacon crumble, and finish with cracked pepper."
+    ]
+   },
+   {
+    "dishTitle": "Pork Chops with Cherry Peppers",
+    "tagline": "Robke's signature — crispy breaded pork chops crowned with a tangy cherry-pepper and arugula salad.",
+    "ing": [
+     "2 thin-cut boneless pork chops, pounded 1/4-inch thin",
+     "1 cup seasoned breadcrumbs",
+     "1/2 cup grated Parmesan",
+     "2 large eggs, beaten",
+     "1/2 cup all-purpose flour, for dredging",
+     "2 cups arugula",
+     "1/2 cup chopped pickled cherry peppers, plus 1 tbsp of their vinegar",
+     "1/4 cup olive oil, plus more for frying",
+     "1/2 lemon, juiced",
+     "1/2 tsp salt, 1/4 tsp black pepper"
+    ],
+    "steps": [
+     "Season the pounded chops with salt and pepper, then dredge in the flour, then egg, then the breadcrumbs mixed with the Parmesan.",
+     "Fry in 1/4 inch of olive oil over medium-high 2–3 min per side until golden and cooked through (145°F); drain on paper towels.",
+     "Toss the arugula with the chopped cherry peppers, their vinegar, the olive oil and lemon juice.",
+     "Pile the peppery salad on the hot chops and serve right away."
+    ]
+   },
+   {
+    "dishTitle": "The \"Finger Tip\" — Sliced Steak & Potatoes",
+    "tagline": "Robke's famous sliced steak and potatoes — seared, sliced thin and piled over crispy garlic potatoes.",
+    "ing": [
+     "1.5 lb skirt or shell steak",
+     "1.5 lb baby potatoes, halved",
+     "3 tbsp olive oil",
+     "3 cloves garlic, minced",
+     "2 tbsp butter",
+     "1 tsp fresh rosemary, chopped",
+     "1.5 tsp salt, 1 tsp coarse black pepper",
+     "Optional: 1/4 cup chopped pickled cherry peppers"
+    ],
+    "steps": [
+     "Heat oven to 425°F. Toss the halved potatoes with the olive oil, 1/2 tsp salt and 1/2 tsp pepper; roast 25–30 min until crisp, tossing with the garlic and rosemary for the last 5 min.",
+     "Meanwhile, season the steak well with the remaining salt and pepper and rest at room temp 30 min; pat dry.",
+     "Sear in a screaming-hot dry pan 3–4 min per side for medium-rare (130–135°F); rest 8 min, then slice thin across the grain.",
+     "Pile the sliced steak over the potatoes, melt the butter into the resting juices and spoon over the top, and finish with coarse pepper (and cherry peppers if you like)."
+    ]
+   },
+   {
+    "dishTitle": "Fried Mozzarella",
+    "tagline": "The Robke's appetizer — golden breaded fresh mozzarella with marinara for dipping.",
+    "ing": [
+     "1 lb fresh mozzarella, cut into thick sticks",
+     "1 cup all-purpose flour",
+     "3 large eggs, beaten",
+     "2 cups seasoned breadcrumbs",
+     "1/2 cup grated Parmesan",
+     "4 cups neutral oil, for frying",
+     "2 cups marinara, warmed",
+     "6 fresh basil leaves, torn"
+    ],
+    "steps": [
+     "Freeze the mozzarella sticks 20 min so they hold their shape.",
+     "Dredge each in the flour, then egg, then the breadcrumbs mixed with the Parmesan — then dip in egg and the crumbs again for a sturdy double coat.",
+     "Heat the oil to 360°F; fry in batches 1–2 min until golden, turning once; drain on paper towels.",
+     "Serve hot with the warm marinara for dipping and torn basil."
+    ]
+   },
+   {
+    "dishTitle": "Eggplant Rollatini",
+    "tagline": "A Robke's dinner appetizer — breaded eggplant rolled around herby ricotta, baked in marinara under melted mozzarella.",
+    "ing": [
+     "2 large eggplant, sliced lengthwise 1/4-inch thick (about 12 slices)",
+     "1 cup all-purpose flour",
+     "4 large eggs (3 for breading, 1 for filling)",
+     "2 cups breadcrumbs",
+     "1/3 cup grated Parmesan, divided",
+     "2 cups ricotta",
+     "2 cups shredded mozzarella, divided",
+     "1/4 cup parsley, chopped",
+     "3 cups marinara, divided",
+     "1/2 cup olive oil, for frying",
+     "6 fresh basil leaves, torn",
+     "1 tsp salt, 1/2 tsp black pepper"
+    ],
+    "steps": [
+     "Salt the eggplant slices and let sit 15 min; pat dry. Dredge in the flour, then 3 beaten eggs, then the breadcrumbs mixed with half the Parmesan.",
+     "Pan-fry in the olive oil over medium-high until golden on both sides, about 2 min per side; drain on paper towels.",
+     "Stir together the ricotta, 1 egg, parsley, 1 cup of the mozzarella, the rest of the Parmesan, and the salt and pepper.",
+     "Heat oven to 400°F. Spoon filling on each slice and roll up. Spread 1 cup marinara in a baking dish, arrange the rolls seam-side down, then top with the remaining 2 cups marinara and 1 cup mozzarella.",
+     "Bake 25 min until bubbly and the cheese is melted; finish with torn basil."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Luca",
+  "town": "Stony Brook",
+  "cat": "Italian",
+  "dishes": [
+   {
+    "dishTitle": "Penne alla Vodka",
+    "tagline": "Luca's outstanding blush vodka sauce over fresh pasta.",
+    "ing": [
+     "1 lb penne (fresh if you can)",
+     "1/4 cup tomato paste",
+     "1 small onion, minced",
+     "3 cloves garlic, minced",
+     "1/4 cup vodka",
+     "3/4 cup heavy cream",
+     "1/2 cup grated Parmesan",
+     "8 fresh basil leaves, torn",
+     "1/2 tsp chili flakes",
+     "3 tbsp olive oil",
+     "1 tsp salt"
+    ],
+    "steps": [
+     "Sauté the onion and garlic in the olive oil over medium 5 min until soft; stir in the chili flakes, then add the tomato paste and cook 3–4 min until brick-red.",
+     "Deglaze with the vodka and simmer 1–2 min to cook off the raw alcohol.",
+     "Stir in the cream and simmer 3 min to a blush sauce; season with the salt.",
+     "Meanwhile, boil the penne in salted water until al dente; reserve 1/2 cup pasta water. Toss the pasta with the sauce, Parmesan and basil, loosening with pasta water until silky."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Ixchel Mexican Cuisine",
+  "town": "East Setauket",
+  "cat": "Mexican",
+  "dishes": [
+   {
+    "dishTitle": "Birria Tacos",
+    "tagline": "Rich, chili-braised beef tacos with consommé for dipping — a Three Village favorite.",
+    "ing": [
+     "2 lb chuck roast, cut into large chunks",
+     "3 dried guajillo chiles, 2 dried ancho chiles (stemmed and seeded)",
+     "2 tomatoes, 1 onion (halved), 4 garlic cloves",
+     "1 tsp cumin, 1 tsp dried oregano, 2 bay leaves, 1 small cinnamon stick",
+     "2 cups beef broth",
+     "12 corn tortillas",
+     "2 cups shredded Oaxaca or Jack cheese",
+     "1/2 cup chopped cilantro, 1/2 cup diced onion, 2 limes (cut into wedges)",
+     "2 tsp salt"
+    ],
+    "steps": [
+     "Toast the chiles in a dry pan 30 sec until fragrant, then soak in hot water 15 min. Blend the soaked chiles with the tomatoes, half the onion, garlic, cumin, oregano and 1 cup of the broth until smooth.",
+     "Season the beef with the salt and place in a pot with the chile sauce, the remaining broth, bay leaves and cinnamon stick; cover and braise at a low simmer (or 325°F oven) until fork-tender, about 3 hours.",
+     "Shred the beef; discard the bay and cinnamon. Skim the red fat from the top of the consommé into a small bowl, and ladle the remaining broth into bowls for dipping.",
+     "Dip each tortilla in the skimmed red fat, set on a hot griddle, fill with beef and cheese, fold and crisp 1–2 min per side. Serve with the diced onion, cilantro, lime and consommé for dipping."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Elaine's",
+  "town": "East Setauket",
+  "cat": "Italian",
+  "dishes": [
+   {
+    "dishTitle": "Linguine Carbonara",
+    "tagline": "Elaine's most-requested pasta — silky egg-and-pecorino carbonara with crisp guanciale.",
+    "ing": [
+     "1 lb linguine",
+     "4 oz guanciale or pancetta, diced",
+     "3 egg yolks plus 1 whole egg",
+     "3/4 cup grated Pecorino Romano",
+     "1 tsp freshly cracked black pepper, plus more to finish",
+     "1 tsp salt (for the pasta water)"
+    ],
+    "steps": [
+     "Cook the linguine in salted water until al dente; reserve 1 cup pasta water before draining.",
+     "Meanwhile, crisp the guanciale in a dry skillet over medium until golden; reserve the rendered fat in the pan.",
+     "Whisk the yolks, whole egg, Pecorino and black pepper into a paste.",
+     "Off the heat, toss the drained pasta with the guanciale and its fat, then quickly stir in the egg mixture with a splash of warm pasta water, tossing fast into a silky, glossy sauce (add more water as needed). Finish with extra cracked pepper."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Maria's",
+  "town": "Nesconset",
+  "cat": "Mexican & Latin",
+  "dishes": [
+   {
+    "dishTitle": "Tampiqueña al Mar",
+    "tagline": "Maria's showstopper — grilled skirt steak topped with shrimp, scallops and calamari in chipotle cream.",
+    "ing": [
+     "1 lb skirt steak",
+     "1/2 lb shrimp, peeled and deveined",
+     "1/2 lb sea scallops",
+     "1/4 lb calamari, cut into rings",
+     "2 chipotles in adobo, plus 1 tsp adobo sauce",
+     "1/2 cup heavy cream",
+     "1 small onion, chopped; 2 garlic cloves, minced",
+     "2 tbsp olive oil",
+     "1 lime, 1/4 cup chopped cilantro",
+     "1 tsp salt, 1/2 tsp black pepper"
+    ],
+    "steps": [
+     "Season the skirt steak with 1/2 tsp salt and the pepper and grill (or sear) over high heat 3 min per side to medium-rare; rest 8 min and slice thinly across the grain.",
+     "Sauté the onion and garlic in 1 tbsp olive oil 4 min until soft; blend with the chipotles, adobo and cream into a smooth sauce.",
+     "Sear the shrimp, scallops and calamari in the remaining 1 tbsp oil over high heat 2 min, then pour in the chipotle cream and simmer 2–3 min until the seafood is just cooked; season with the remaining salt.",
+     "Fan the sliced steak on plates, spoon the seafood and chipotle cream over the top, and finish with a squeeze of lime and the cilantro."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Peter Luger Steak House",
+  "town": "Great Neck",
+  "cat": "Steakhouse",
+  "dishes": [
+   {
+    "dishTitle": "Dry-Aged Porterhouse",
+    "tagline": "A steakhouse porterhouse you can pull off at home — high heat, butter and the famous-style sauce.",
+    "ing": [
+     "1 porterhouse, 1.5–2 in thick (about 2 lb)",
+     "1.5 tsp kosher salt, 1 tsp coarse black pepper",
+     "2 tbsp butter, melted",
+     "1/4 cup ketchup",
+     "1 tbsp Worcestershire sauce",
+     "2 tbsp prepared horseradish",
+     "1 tsp brown sugar",
+     "1 tsp white vinegar"
+    ],
+    "steps": [
+     "Salt the steak all over and rest at room temp 45 min; pat very dry and season with the coarse pepper.",
+     "Heat the broiler (or a cast-iron pan) screaming hot. Whisk the ketchup, Worcestershire, horseradish, brown sugar and vinegar into the sauce and set aside.",
+     "Sear or broil the steak about 4 min per side for medium-rare (130–135°F internal); rest 8 min.",
+     "Brush with the melted butter, slice the strip and tenderloin off the bone, and serve with the whisked sauce."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Bigelow's New England Fried Clams",
+  "town": "Rockville Centre",
+  "cat": "Seafood",
+  "dishes": [
+   {
+    "dishTitle": "New England Fried Clams",
+    "tagline": "Sweet whole clams in a light, crisp cornmeal crust.",
+    "ing": [
+     "1 lb shucked whole clams, drained",
+     "1 cup buttermilk",
+     "1 cup corn flour (fine cornmeal)",
+     "1/2 cup all-purpose flour",
+     "1 tsp salt, 1/2 tsp black pepper, 1/2 tsp paprika",
+     "4 cups neutral oil, for frying",
+     "1 lemon, cut into wedges",
+     "1/2 cup tartar sauce"
+    ],
+    "steps": [
+     "Soak the clams in the buttermilk 15 min.",
+     "In a bowl, mix the corn flour, flour, salt, pepper and paprika.",
+     "Heat the oil to 375°F.",
+     "Working in batches, lift the clams from the buttermilk, dredge in the seasoned flour, and fry 1–2 min until golden and crisp; drain on paper towels. Serve with the lemon wedges and tartar sauce."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Zorn's of Bethpage",
+  "town": "Bethpage",
+  "cat": "Comfort",
+  "dishes": [
+   {
+    "dishTitle": "Buttermilk Fried Chicken",
+    "tagline": "Juicy buttermilk-brined chicken with a craggy golden crust.",
+    "ing": [
+     "8 pieces bone-in chicken (legs, thighs, breasts)",
+     "2 cups buttermilk",
+     "1 tbsp hot sauce",
+     "2 cups all-purpose flour",
+     "1 tbsp paprika, 1 tbsp garlic powder, 2 tsp salt, 1 tsp black pepper",
+     "4 cups oil, for frying"
+    ],
+    "steps": [
+     "Brine the chicken in the buttermilk and hot sauce, covered in the fridge, at least 2 hours (or overnight).",
+     "Mix the flour with the paprika, garlic powder, salt and pepper. Lift each piece from the buttermilk and dredge in the seasoned flour, pressing hard to coat, then let rest 10 min so the crust sets.",
+     "Heat the oil to 350°F. Fry in batches 12–15 min, turning, until deep golden and the chicken reaches 165°F internal (lower heat to 325°F if browning too fast).",
+     "Rest on a rack and salt right away."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "All American Hamburger Drive-In",
+  "town": "Massapequa",
+  "cat": "Burgers",
+  "dishes": [
+   {
+    "dishTitle": "Smash Cheeseburger & Shake",
+    "tagline": "A thin, crispy-edged smash burger and a thick strawberry shake.",
+    "ing": [
+     "1/2 lb ground beef (80/20)",
+     "2 potato buns",
+     "2 slices American cheese",
+     "1/2 tsp salt, 1/4 tsp black pepper",
+     "8 pickle chips, 2 tbsp diced onion, 2 tbsp ketchup, 1 tbsp mustard",
+     "1 tbsp butter, for the buns",
+     "Shake: 2 cups vanilla ice cream, 1/2 cup milk, 1 cup frozen strawberries"
+    ],
+    "steps": [
+     "Form the beef into 2 loose balls. Smash each hard onto a screaming-hot griddle into a thin patty; season with the salt and pepper.",
+     "Cook 2 min until the edges are crisp and lacy, then flip and immediately top each with a slice of cheese; cook 1 min more.",
+     "Butter and toast the buns on the griddle; build each burger with pickles, onion, ketchup and mustard.",
+     "Blend the ice cream, milk and frozen strawberries until thick; serve the shake alongside the burgers."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Limani",
+  "town": "Roslyn",
+  "cat": "Mediterranean",
+  "dishes": [
+   {
+    "dishTitle": "Grilled Octopus",
+    "tagline": "Tender, charred octopus with lemon, oregano and olive oil.",
+    "ing": [
+     "1 octopus (~2 lb), cleaned",
+     "1 onion, halved",
+     "2 bay leaves",
+     "1 tsp peppercorns",
+     "1/4 cup olive oil, divided",
+     "1 lemon (half juiced, half in wedges)",
+     "1 tsp dried oregano",
+     "1 tsp salt, 1/2 tsp black pepper"
+    ],
+    "steps": [
+     "Simmer the octopus with the onion, bay leaves and peppercorns in a covered pot 45–60 min until a knife slides easily into the thickest part; cool in the liquid, then drain.",
+     "Cut into individual tentacles and toss with 2 tbsp of the olive oil, the salt and pepper.",
+     "Grill over high heat until charred and crisp at the edges, 2–3 min per side.",
+     "Arrange on a platter and finish with the lemon juice, oregano and the remaining 2 tbsp olive oil; serve with lemon wedges."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "La Parma",
+  "town": "Williston Park",
+  "cat": "Italian",
+  "dishes": [
+   {
+    "dishTitle": "Chicken Scarpariello",
+    "tagline": "Family-style chicken and sausage with sweet peppers in a tangy garlic-vinegar sauce.",
+    "ing": [
+     "2 lb bone-in chicken pieces",
+     "2 Italian sausages, cut into chunks",
+     "1 bell pepper, sliced; 4 pickled cherry peppers, sliced",
+     "4 cloves garlic, sliced",
+     "1/2 cup white wine",
+     "1/2 cup chicken stock",
+     "2 tbsp red wine vinegar",
+     "1 tsp fresh rosemary, chopped",
+     "2 tbsp olive oil",
+     "1 tsp salt, 1/2 tsp black pepper"
+    ],
+    "steps": [
+     "Season the chicken with the salt and pepper. Brown the chicken and sausage in the olive oil over medium-high until golden, about 8 min; set aside.",
+     "In the same pan, sauté the garlic, bell pepper and cherry peppers 4 min until softened.",
+     "Deglaze with the wine, vinegar and stock, scraping up the browned bits; stir in the rosemary and simmer 2 min.",
+     "Return the chicken and sausage to the pan; cover and simmer 20–25 min until the chicken is cooked through (165°F) and the sauce is glossy."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "The Lobster Roll — LUNCH",
+  "town": "Amagansett",
+  "cat": "Seafood",
+  "dishes": [
+   {
+    "dishTitle": "Classic Cold Lobster Roll",
+    "tagline": "Chilled lobster lightly dressed in lemon mayo on a buttery split-top bun.",
+    "ing": [
+     "1 lb cooked lobster meat, chilled and chopped",
+     "3 tbsp mayonnaise",
+     "1 tbsp lemon juice",
+     "1 stalk celery, minced",
+     "2 tbsp chopped chives, divided",
+     "1/4 tsp salt, 1/8 tsp black pepper",
+     "2 split-top buns",
+     "2 tbsp butter, softened"
+    ],
+    "steps": [
+     "Gently toss the lobster with the mayo, lemon juice, celery, 1 tbsp of the chives, the salt and pepper; keep chilled.",
+     "Butter the outsides of the buns and griddle over medium until golden on both sides.",
+     "Pile the lobster salad generously into the toasted buns.",
+     "Top with the remaining chives and serve cold."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Umberto's",
+  "town": "New Hyde Park",
+  "cat": "Pizza",
+  "dishes": [
+   {
+    "dishTitle": "Grandma Pizza",
+    "tagline": "Thin, square, crispy-bottomed pizza with garlic, crushed tomato and mozzarella.",
+    "ing": [
+     "1 lb pizza dough",
+     "3 tbsp olive oil, divided",
+     "2 cups low-moisture mozzarella, shredded",
+     "1 cup crushed tomatoes",
+     "2 cloves garlic, minced",
+     "1 tsp dried oregano",
+     "6 fresh basil leaves",
+     "1/4 cup grated Parmesan",
+     "1/2 tsp salt"
+    ],
+    "steps": [
+     "Coat a sheet pan with 2 tbsp of the olive oil. Stretch the dough to fill the pan and let rest 20 min (re-stretch into the corners if it springs back).",
+     "Heat oven to 500°F. Scatter the mozzarella over the dough, then spoon over the crushed tomatoes mixed with the garlic, salt and remaining 1 tbsp olive oil.",
+     "Bake 15–18 min until the cheese is bubbling and the bottom is crisp and golden.",
+     "Finish with the oregano, basil and Parmesan; cut into squares."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Maureen's Kitchen",
+  "town": "Smithtown",
+  "cat": "Breakfast",
+  "dishes": [
+   {
+    "dishTitle": "The Big Diner Breakfast",
+    "tagline": "The full plate — eggs, crispy home fries, bacon and fluffy pancakes.",
+    "ing": [
+     "4 large eggs",
+     "4 strips bacon",
+     "2 russet potatoes, diced 1/2-inch",
+     "2 tbsp butter, divided",
+     "Pancakes: 1 cup flour, 1 cup milk, 1 egg, 1 tbsp baking powder, 1 tbsp sugar, 1/4 tsp salt",
+     "1/4 cup maple syrup",
+     "Salt, pepper"
+    ],
+    "steps": [
+     "Crisp the bacon in a skillet; remove and reserve the drippings. Fry the diced potatoes in the drippings over medium-high 12–15 min, turning, until golden and crisp; season with salt and pepper.",
+     "Whisk the pancake batter (flour, milk, egg, baking powder, sugar, salt) until just combined; cook on a buttered griddle, flipping when bubbles set, until golden.",
+     "Fry the eggs in the remaining butter to your liking; season with salt and pepper.",
+     "Plate the eggs, bacon, home fries and pancakes with butter and maple syrup."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "The Clam Bar at Napeague",
+  "town": "Amagansett",
+  "cat": "Seafood",
+  "dishes": [
+   {
+    "dishTitle": "Warm Buttered Lobster Roll",
+    "tagline": "Connecticut-style — warm lobster tossed in lemon butter on a toasted bun.",
+    "ing": [
+     "1 lb cooked lobster meat, chopped",
+     "5 tbsp butter, divided",
+     "1 tbsp lemon juice",
+     "1 tbsp chopped chives",
+     "1/2 tsp flaky salt",
+     "2 split-top buns"
+    ],
+    "steps": [
+     "Melt 4 tbsp of the butter in a skillet over low heat with the lemon juice; add the lobster and warm gently 2–3 min, just until heated through.",
+     "Butter the outsides of the buns with the remaining 1 tbsp butter and griddle until golden on both sides.",
+     "Fill the toasted buns with the warm buttered lobster, spooning over any butter from the pan.",
+     "Finish with the chives and flaky salt."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Se-Port Deli",
+  "town": "East Setauket",
+  "cat": "Deli",
+  "dishes": [
+   {
+    "dishTitle": "The Snider Hero",
+    "tagline": "An East Setauket deli legend — one of Se-Port's famous oversized heroes: chicken salad, crisp bacon and melted mozzarella with honey mustard on a toasted garlic roll.",
+    "ing": [
+     "1 long hero roll",
+     "1 cup chicken salad",
+     "4 slices bacon, cooked crisp",
+     "1/2 cup shredded mozzarella",
+     "2 tbsp honey mustard",
+     "4 leaves lettuce, 4 slices tomato",
+     "2 tbsp garlic butter, for the roll"
+    ],
+    "steps": [
+     "Split the hero, spread the cut sides with the garlic butter, and toast under the broiler until golden.",
+     "Pile the chicken salad along the bottom half and top with the crisp bacon.",
+     "Cover with the mozzarella and melt under the broiler 1–2 min until bubbly.",
+     "Drizzle with the honey mustard, add the lettuce and tomato, and close the hero."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Tara Inn",
+  "town": "Port Jefferson",
+  "cat": "Pub & Burgers",
+  "dishes": [
+   {
+    "dishTitle": "The Famous Bar Burger",
+    "tagline": "A Port Jeff institution — the legendary little griddled bar burger Tara Inn has slung for 40+ years (the famous $1, now $2, classic).",
+    "ing": [
+     "1/4 lb ground beef (80/20) per burger",
+     "1 soft potato burger bun per burger",
+     "1 slice American cheese per burger",
+     "1/4 tsp salt, pinch black pepper per burger",
+     "1 tsp butter per bun",
+     "Pickles, sliced onion, ketchup, mustard, to taste"
+    ],
+    "steps": [
+     "Loosely form the beef into thin patties; season both sides with salt and pepper.",
+     "Griddle hard over high heat 2 min per side for crispy edges, adding a slice of cheese after the flip to melt.",
+     "Butter and toast the buns on the griddle until golden.",
+     "Build each burger with pickles, onion, ketchup and mustard — keep it simple and classic."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Crazy Beans",
+  "town": "Stony Brook",
+  "cat": "Brunch",
+  "dishes": [
+   {
+    "dishTitle": "Pancake Quesadilla",
+    "tagline": "The Stony Brook brunch favorite — Crazy Beans' savory-sweet mash-up of a fluffy pancake and a melty quesadilla.",
+    "ing": [
+     "1 cup pancake batter",
+     "1/4 cup shredded cheddar",
+     "2 strips bacon, cooked and chopped (or crumbled sausage)",
+     "1 egg, scrambled",
+     "1 tbsp butter",
+     "1 tbsp powdered sugar",
+     "2 tbsp maple syrup, for serving"
+    ],
+    "steps": [
+     "Pour the pancake batter into a buttered nonstick pan to make one large pancake; cook over medium until the bubbles set and the bottom is golden.",
+     "On one half, scatter the cheddar, bacon and scrambled egg.",
+     "Fold the pancake over like a quesadilla; press gently and cook 1–2 min per side until the cheese melts and both sides are golden.",
+     "Cut into wedges, dust with the powdered sugar, and serve with the warm maple syrup."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Pasta Pasta",
+  "town": "Port Jefferson",
+  "cat": "Italian",
+  "dishes": [
+   {
+    "dishTitle": "Squid-Ink Lobster Ravioli",
+    "tagline": "Port Jeff's North Shore favorite — Pasta Pasta's celebrated black squid-ink ravioli filled with sweet lobster in a light tomato-cream sauce.",
+    "ing": [
+     "1 package lobster ravioli (squid-ink if you can find it)",
+     "1 cup cooked lobster meat, chopped",
+     "2 tbsp butter",
+     "2 cloves garlic, minced",
+     "1/4 cup white wine",
+     "3/4 cup heavy cream",
+     "1/2 cup crushed tomatoes",
+     "1/4 tsp chili flakes",
+     "2 tbsp chopped fresh chives",
+     "1/2 tsp salt, 1/4 tsp black pepper"
+    ],
+    "steps": [
+     "Boil the ravioli gently in salted water until they float, about 4 min; drain.",
+     "Meanwhile, melt the butter with the garlic and chili flakes over medium 1 min; add the white wine and reduce 1 min.",
+     "Stir in the crushed tomatoes and cream and simmer 3–4 min to a light blush sauce; season with the salt and pepper.",
+     "Warm the lobster in the sauce 1 min, gently fold in the ravioli to coat, and finish with the chives."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Eddie's Pizza",
+  "town": "New Hyde Park",
+  "cat": "Pizza",
+  "dishes": [
+   {
+    "dishTitle": "Thin-Crust Bar Pie",
+    "tagline": "A New Hyde Park classic since 1931 — Eddie's cracker-thin 'bar pie,' crisp enough to fold and finish with a beer.",
+    "ing": [
+     "1 (10-inch) thin pizza shell or 8 oz dough",
+     "1/3 cup pizza sauce",
+     "1 cup low-moisture mozzarella, shredded",
+     "2 tbsp grated Parmesan",
+     "1 tbsp olive oil",
+     "1 tsp dried oregano",
+     "Optional: 2 oz thin-sliced pepperoni"
+    ],
+    "steps": [
+     "Heat the oven as hot as it goes (500°F+) with a pizza stone or steel inside for at least 30 min.",
+     "Stretch the dough super thin into a 10-inch round; brush the rim with the olive oil.",
+     "Top almost edge-to-edge with a thin layer of the sauce, then the mozzarella and Parmesan (and pepperoni if using).",
+     "Slide onto the hot stone and bake 8–10 min until the crust is crackery and browned; finish with the oregano and cut into squares."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Thomas's Ham & Eggery",
+  "town": "Carle Place",
+  "cat": "Breakfast",
+  "dishes": [
+   {
+    "dishTitle": "Lemon Ricotta Pancakes",
+    "tagline": "The standout at this 75-year-old Carle Place diner — light, tangy lemon-ricotta pancakes.",
+    "ing": [
+     "1 cup all-purpose flour",
+     "1 tbsp sugar",
+     "1 tsp baking powder",
+     "1/2 tsp salt",
+     "3/4 cup ricotta",
+     "3/4 cup milk",
+     "2 large eggs, separated",
+     "Zest of 1 lemon plus 1 tbsp lemon juice",
+     "2 tbsp butter, for the griddle",
+     "1 tbsp powdered sugar and 1/4 cup maple syrup, to serve"
+    ],
+    "steps": [
+     "Whisk together the flour, sugar, baking powder and salt.",
+     "In another bowl, mix the ricotta, milk, egg yolks, lemon zest and juice; stir into the dry ingredients until just combined.",
+     "Whip the egg whites to soft peaks and gently fold them in for fluffiness.",
+     "Cook on a buttered griddle over medium 2–3 min per side until golden; dust with the powdered sugar and serve with maple syrup."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "The Cull House",
+  "town": "Sayville",
+  "cat": "Seafood",
+  "dishes": [
+   {
+    "dishTitle": "Baked Clams",
+    "tagline": "Sayville's waterfront favorite — Cull House is famous for some of the best baked clams on Long Island.",
+    "ing": [
+     "18 littleneck clams on the half shell",
+     "1.5 cups breadcrumbs",
+     "1/2 cup grated Parmesan",
+     "4 cloves garlic, minced",
+     "1/4 cup parsley, chopped",
+     "2 tsp dried oregano",
+     "1/3 cup olive oil",
+     "2 tbsp lemon juice",
+     "Pinch chili flakes",
+     "1 lemon, cut into wedges"
+    ],
+    "steps": [
+     "Heat the oven to 425°F.",
+     "Mix the breadcrumbs, Parmesan, garlic, parsley, oregano, lemon juice, chili flakes and olive oil into a moist crumb.",
+     "Top each clam with a generous spoonful of the crumb and set on a sheet pan.",
+     "Bake 10–12 min until golden and the clams are just cooked through; serve with the lemon wedges."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Ralph's Famous Italian Ices",
+  "town": "Long Island",
+  "cat": "Italian Ices",
+  "dishes": [
+   {
+    "dishTitle": "Cherry Italian Ice",
+    "tagline": "The quintessential Long Island summer treat — Ralph's-style real-fruit cherry Italian ice.",
+    "ing": [
+     "2 cups water",
+     "3/4 cup sugar",
+     "2 cups pitted cherries (fresh or frozen)",
+     "1 tbsp lemon juice",
+     "Pinch of salt"
+    ],
+    "steps": [
+     "Make a simple syrup: heat the water and sugar in a saucepan until the sugar dissolves, about 3 min, then cool completely.",
+     "Blend the cherries with the cooled syrup, lemon juice and salt until smooth.",
+     "Pour into a shallow pan and freeze, scraping with a fork every 30 min for 3–4 hours until fluffy and granular.",
+     "Scoop into cups (or churn in an ice-cream maker for an ultra-smooth ice)."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Starbucks",
+  "town": "Café favorite",
+  "cat": "Coffee Shop",
+  "dishes": [
+   {
+    "dishTitle": "Spinach, Feta & Egg White Wrap",
+    "tagline": "Copycat of the Starbucks favorite — protein-packed egg whites with spinach, feta and sun-dried tomatoes in a toasted spinach wrap.",
+    "ing": [
+     "1 cup egg whites",
+     "2 cups baby spinach",
+     "1/4 cup crumbled feta cheese",
+     "2 tbsp sun-dried tomatoes, chopped",
+     "1 spinach tortilla",
+     "1 tsp olive oil",
+     "1/4 tsp garlic powder",
+     "1/4 tsp salt, pinch black pepper"
+    ],
+    "steps": [
+     "Heat the olive oil in a nonstick skillet; add the baby spinach and a pinch of salt and wilt 1 min, then push to one side.",
+     "Pour the egg whites into the pan and scramble gently 2–3 min until just set; season with the garlic powder, remaining salt and pepper.",
+     "Sprinkle the feta and chopped sun-dried tomatoes over the eggs and fold the wilted spinach in.",
+     "Warm the spinach tortilla 15 sec, pile the filling in the center, fold the sides over the top and bottom, then toast seam-side down in the dry skillet 1–2 min for the signature golden seal."
+    ]
+   },
+   {
+    "dishTitle": "Bacon, Gouda & Egg Sandwich",
+    "tagline": "The Starbucks breakfast classic — smoky gouda, bacon and a folded egg on a toasted artisan roll.",
+    "ing": [
+     "2 ciabatta or artisan rolls",
+     "2 large eggs",
+     "2 slices smoked gouda",
+     "4 slices bacon",
+     "1 tbsp butter",
+     "1/4 tsp salt, pinch black pepper"
+    ],
+    "steps": [
+     "Cook the bacon until crisp; drain on paper towels.",
+     "Whisk the eggs with the salt and pepper; cook in a small buttered pan (or ring mold) into two folded rounds.",
+     "Split and toast the rolls; lay a slice of gouda on each warm bottom so it starts to melt.",
+     "Stack the egg and bacon, close the sandwiches, and press in the warm pan 1 min to melt the cheese."
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Hummus",
+  "town": "High-protein dips & bowls",
+  "cat": "Fit recipes",
+  "kind": "collection",
+  "dishes": [
+   {
+    "dishTitle": "Classic Hummus",
+    "tagline": "The original — creamy whipped chickpea hummus with tahini, lemon and garlic. ~100 cal · 4g protein per serving.",
+    "ing": [
+     "1 can (15 oz) chickpeas, drained (save the liquid)",
+     "1/4 cup tahini",
+     "2 tbsp lemon juice",
+     "1 clove garlic",
+     "3 tbsp olive oil, plus more to finish",
+     "1/2 tsp ground cumin",
+     "1/2 tsp salt",
+     "2–3 tbsp ice water or reserved chickpea liquid",
+     "1/4 tsp paprika, to finish"
+    ],
+    "steps": [
+     "Blend the tahini and lemon juice alone for 1 min until pale and whipped.",
+     "Add the garlic, olive oil, cumin and salt; blend smooth.",
+     "Add the chickpeas and blend, drizzling in the ice water until silky-smooth, about 2 min.",
+     "Spread in a bowl, swirl the top, and finish with a drizzle of olive oil and a dusting of paprika."
+    ]
+   },
+   {
+    "dishTitle": "Roasted Red Pepper Hummus",
+    "tagline": "Smoky-sweet with roasted red peppers blended in. ~110 cal · 4g protein per serving.",
+    "ing": [
+     "1 can (15 oz) chickpeas, drained",
+     "1/2 cup roasted red peppers, patted dry",
+     "1/4 cup tahini",
+     "2 tbsp lemon juice",
+     "1 clove garlic",
+     "2 tbsp olive oil, plus more to finish",
+     "1/2 tsp smoked paprika, plus more to finish",
+     "1/2 tsp salt",
+     "2 tbsp water, to loosen"
+    ],
+    "steps": [
+     "Blend the tahini and lemon juice until whipped, about 1 min.",
+     "Add the roasted peppers, garlic, olive oil, smoked paprika and salt; blend smooth.",
+     "Add the chickpeas and blend, loosening with the water as needed until creamy.",
+     "Finish with a swirl of olive oil and an extra pinch of smoked paprika."
+    ]
+   },
+   {
+    "dishTitle": "Roasted Garlic Hummus",
+    "tagline": "Mellow, sweet roasted garlic folded all the way through. ~105 cal · 4g protein per serving.",
+    "ing": [
+     "1 head garlic",
+     "1 can (15 oz) chickpeas, drained",
+     "1/4 cup tahini",
+     "2 tbsp lemon juice",
+     "3 tbsp olive oil, plus more to finish",
+     "1/2 tsp salt",
+     "2–3 tbsp ice water, to loosen"
+    ],
+    "steps": [
+     "Slice the top off the garlic head, drizzle with a little of the oil, wrap in foil, and roast at 400°F for 35–40 min until soft; squeeze out the cloves.",
+     "Blend the tahini and lemon juice until pale, about 1 min.",
+     "Add the roasted garlic, remaining olive oil and salt; blend smooth.",
+     "Add the chickpeas and blend with the ice water until creamy; finish with a drizzle of olive oil."
+    ]
+   },
+   {
+    "dishTitle": "Spicy Sriracha Hummus",
+    "tagline": "Creamy with a clean sriracha kick. ~105 cal · 4g protein per serving.",
+    "ing": [
+     "1 can (15 oz) chickpeas, drained",
+     "1/4 cup tahini",
+     "2 tbsp lemon juice",
+     "2–3 tbsp sriracha, plus more to finish",
+     "1 clove garlic",
+     "2 tbsp olive oil, plus more to finish",
+     "1/2 tsp ground cumin",
+     "1/2 tsp salt",
+     "2 tbsp water, to loosen"
+    ],
+    "steps": [
+     "Blend the tahini and lemon juice until whipped, about 1 min.",
+     "Add the sriracha, garlic, olive oil, cumin and salt; blend smooth.",
+     "Add the chickpeas and blend, loosening with the water until creamy.",
+     "Swirl extra sriracha on top with a drizzle of olive oil."
+    ]
+   },
+   {
+    "dishTitle": "Avocado Hummus",
+    "tagline": "Hummus meets guac — extra creamy, fresh and green. ~120 cal · 4g protein per serving.",
+    "ing": [
+     "1 can (15 oz) chickpeas, drained",
+     "1 ripe avocado",
+     "3 tbsp tahini",
+     "2 tbsp lime juice, plus more to finish",
+     "1 clove garlic",
+     "2 tbsp olive oil",
+     "1/4 cup cilantro",
+     "1/2 tsp salt"
+    ],
+    "steps": [
+     "Blend the tahini and lime juice until pale, about 1 min.",
+     "Add the avocado, garlic, cilantro, olive oil and salt; blend smooth.",
+     "Add the chickpeas and blend until creamy.",
+     "Serve right away with a squeeze of lime (press plastic wrap onto the surface if storing to keep it green)."
+    ]
+   },
+   {
+    "dishTitle": "Edamame Hummus",
+    "tagline": "Bright green and extra high-protein from edamame. ~130 cal · 7g protein per serving.",
+    "ing": [
+     "1.5 cups shelled edamame, cooked (reserve a few for garnish)",
+     "1/2 cup chickpeas, drained",
+     "3 tbsp tahini",
+     "2 tbsp lemon juice",
+     "1 clove garlic",
+     "3 tbsp olive oil, plus more to finish",
+     "1/4 tsp ground cumin",
+     "1/2 tsp salt",
+     "2–3 tbsp ice water, to loosen"
+    ],
+    "steps": [
+     "Blend the edamame, tahini and lemon juice until broken down, about 1 min.",
+     "Add the chickpeas, garlic, olive oil, cumin and salt; blend.",
+     "Drizzle in the ice water and blend until smooth and bright green.",
+     "Finish with a drizzle of olive oil and a scatter of the reserved whole edamame."
+    ]
+   }
+  ]
+ }
 ];
 function mapUrl(r){ return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(r.name+' '+r.town+' NY'); }
 function restaurantSlug(r,d){ return slugify(r.name + ' ' + d.dishTitle); }
