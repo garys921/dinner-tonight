@@ -653,6 +653,7 @@
       <a href="#browse">Menu</a>
       <a href="#kitchen">My Kitchen</a>
       <a href="#mealprep">Meal Prep</a>
+      <a href="#browse" onclick="event.preventDefault();selectCraving('Grill &amp; BBQ')">Grill</a>
       <a href="#localspots">Long Island</a>
       <a href="#calendar">Calendar</a>
       <button class="theme-toggle" id="themeToggle" type="button" onclick="toggleTheme()">☾ Dark</button>
@@ -3066,6 +3067,11 @@ function cardHTML(r,i){
 }
 
 let activeCraving=null;
+function isGrill(r){
+  const t=(r.title||'').toLowerCase();
+  if(/grilled cheese/.test(t)) return false;
+  return /grill|bbq|barbecue|barbeque|skewer|kebab|kabob|charred|char-grill|flame-grill|carne asada|baby back ribs|beer brats/.test(t);
+}
 function cravingGroups(){
   const groups=[];
   const mains=byCourse('main').filter(x=>x.r.cat!=='mealprep');
@@ -3074,6 +3080,8 @@ function cravingGroups(){
   MAIN_TYPE_ORDER.filter(t=>t!=='Meal Prep'&&byType[t]).forEach(t=>groups.push({key:t,items:byType[t]}));
   Object.keys(byType).filter(t=>!MAIN_TYPE_ORDER.includes(t)).forEach(t=>groups.push({key:t,items:byType[t]}));
   [['breakfast','Breakfast'],['lunch','Lunch'],['appetizer','Appetizers'],['side','Sides'],['snack','Snacks'],['drink','Drinks'],['dessert','Desserts'],['baking','Baking']].forEach(([c,label])=>{ const items=byCourse(c); if(items.length) groups.push({key:label,items}); });
+  const grill=RECIPES.map((r,i)=>({r,i})).filter(x=>isGrill(x.r));
+  if(grill.length) groups.unshift({key:'Grill & BBQ',items:grill});
   return groups;
 }
 
