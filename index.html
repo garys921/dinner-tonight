@@ -2797,7 +2797,27 @@ const RECIPES = [
     ing: ["4 bananas", "1/3 cup chocolate chips", "1/3 cup mini marshmallows", "2 tbsp chopped pecans", "2 tbsp caramel sauce", "foil for wrapping"],
     steps: ["Slice each banana lengthwise through the peel without cutting all the way through.", "Stuff the pockets with chocolate chips, marshmallows and pecans.", "Wrap in foil and grill over medium heat 8 to 10 minutes until melty.", "Open the foil, drizzle with caramel, and eat with a spoon."],
     pair: "~320 cal · 4g protein"
-  }
+  },
+{course:"appetizer",cat:"italian",emoji:"",title:"Tomato & Burrata Salad",it:"Insalata di burrata",time:"10 min",serves:"4",level:"Easy",cal:320,protein:"12g",
+ desc:"Cool, creamy burrata torn over ripe heirloom and cherry tomatoes with fresh basil, good olive oil, and a drizzle of balsamic. Ten minutes, no cooking, pure summer.",
+ ing:["2 large heirloom tomatoes, sliced","1 cup cherry tomatoes, halved","8 oz burrata (2 balls)","1/4 cup fresh basil leaves, torn","3 tbsp extra-virgin olive oil","1 tbsp balsamic glaze","Flaky sea salt & cracked black pepper","Toasted baguette, to serve (optional)"],
+ steps:["Arrange the heirloom and cherry tomatoes on a platter and season with a little flaky salt.","Tear the burrata over the top, letting the creamy center spill out.","Scatter with basil, then drizzle generously with olive oil and balsamic glaze.","Finish with more flaky salt and cracked pepper. Serve with toasted baguette if you like."],
+ pair:"A crisp Pinot Grigio"},
+{course:"main",cat:"italian",emoji:"",title:"Creamy Tuscan Chicken & Rice",it:"One pan, weeknight magic",time:"40 min",serves:"4",level:"Medium",cal:640,protein:"46g",
+ desc:"Golden seared chicken thighs nestled into creamy parmesan rice with sun-dried tomatoes, garlic, and wilted spinach — all in one pan. Cozy, rich, and the kind of dinner people ask for again.",
+ ing:["6 boneless, skinless chicken thighs (about 2 lb)","1 tsp kosher salt","1/2 tsp black pepper","1 tsp Italian seasoning","2 tbsp olive oil","3 tbsp butter","4 garlic cloves, minced","1/2 cup sun-dried tomatoes, chopped","1 1/2 cups long-grain white rice","3 cups chicken broth","1/2 cup heavy cream","3/4 cup grated parmesan","3 cups fresh spinach","Fresh basil or parsley, to finish"],
+ steps:["Season the chicken with salt, pepper, and Italian seasoning. Heat the olive oil in a large deep skillet over medium-high and sear the thighs 3 to 4 minutes per side until golden. Remove to a plate.","Lower the heat to medium. Melt the butter, add the garlic and sun-dried tomatoes, and cook 1 minute until fragrant.","Stir in the rice and toast 1 minute, then pour in the chicken broth and scrape up any browned bits. Bring to a simmer.","Nestle the chicken back in, cover, and cook 18 to 20 minutes until the rice is tender and the chicken reaches 165F.","Stir in the cream, parmesan, and spinach until the spinach wilts and the rice turns creamy; loosen with a splash of broth if needed.","Rest 5 minutes, finish with fresh basil or parsley, and serve."],
+ pair:"A medium Chianti or Sangiovese"},
+{course:"side",cat:"italian",emoji:"",title:"Garlic Butter Green Beans",it:"Crisp-tender and quick",time:"12 min",serves:"4",level:"Easy",cal:120,protein:"3g",
+ desc:"Bright green beans blistered in garlic butter with a pinch of chili and a squeeze of lemon — the fresh, snappy counterpoint to a creamy main.",
+ ing:["1 lb fresh green beans, trimmed","2 tbsp butter","1 tbsp olive oil","3 garlic cloves, thinly sliced","1/4 tsp red pepper flakes","1/2 tsp kosher salt","Squeeze of lemon","2 tbsp grated parmesan (optional)"],
+ steps:["Bring a pot of salted water to a boil. Blanch the green beans 3 minutes, then drain.","Melt the butter with the olive oil in a skillet over medium heat. Add the garlic and red pepper flakes and cook 30 seconds until fragrant.","Add the green beans and salt, and saute 3 to 4 minutes until crisp-tender and glossy.","Finish with a squeeze of lemon and parmesan if using."],
+ pair:"—"},
+{course:"dessert",cat:"italian",emoji:"",title:"Whipped Ricotta with Honey & Berries",it:"Light and barely-a-recipe",time:"10 min",serves:"4",level:"Easy",cal:260,protein:"9g",
+ desc:"Ricotta whipped silky-smooth, spooned into bowls with honey, fresh berries, and a little lemon zest. A light, elegant finish that takes five minutes.",
+ ing:["1 1/2 cups whole-milk ricotta","2 tbsp honey, plus more to drizzle","1/2 tsp vanilla extract","Zest of 1/2 lemon","2 cups mixed berries (strawberries, blueberries, raspberries)","Pinch of flaky salt","Toasted pistachios or almonds (optional)"],
+ steps:["Whip the ricotta with the honey, vanilla, and lemon zest until smooth and fluffy (a hand mixer or a few minutes of whisking does it).","Spoon into bowls or a shallow dish and top with the berries.","Drizzle with more honey, add a pinch of flaky salt, and scatter with nuts if using."],
+ pair:"A glass of Moscato d'Asti"}
 ];
 
 /* ---------------- LOGIC ---------------- */
@@ -2869,9 +2889,26 @@ function setFootMeta(){
     el.textContent = 'Last updated ' + fmt + ' ET';
   }catch(e){}
 }
+/* ---------- Featured tonight (overrides the auto daily menu; set active:false to return to the rotation) ---------- */
+const FEATURED = {
+  active: true,
+  eyebrow: "Tonight's Featured Dinner · Serves 4",
+  appetizer: "Tomato & Burrata Salad",
+  main: "Creamy Tuscan Chicken & Rice",
+  side: "Garlic Butter Green Beans",
+  dessert: "Whipped Ricotta with Honey & Berries"
+};
+function featuredPick(course){
+  if(FEATURED && FEATURED.active && FEATURED[course]){
+    const i=RECIPES.findIndex(r=>r.title===FEATURED[course]);
+    if(i>=0) return {r:RECIPES[i], i};
+  }
+  return dailyPick(course);
+}
 function renderTodayMenu(){
   document.getElementById('dateLine').textContent = fmtDate();
-  const app=dailyPick('appetizer'), main=dailyPick('main'), side=dailyPick('side'), des=dailyPick('dessert');
+  const est = (FEATURED && FEATURED.active) ? FEATURED.eyebrow : "Tonight's Prix Fixe · For Two";
+  const app=featuredPick('appetizer'), main=featuredPick('main'), side=featuredPick('side'), des=featuredPick('dessert');
   const row=(label,pick)=>{
     const r=pick.r;
     return `<div class="course-row" onclick="openRecipe(${pick.i})">
@@ -2882,7 +2919,7 @@ function renderTodayMenu(){
   };
   document.getElementById('todayMenu').innerHTML = `
     <div class="mb-head">
-      <div class="est">Tonight's Prix Fixe · For Two</div>
+      <div class="est">${est}</div>
       <h1>This Evening's Menu</h1>
       <div class="sub">Four courses, chosen for tonight — tap any one for the recipe</div>
     </div>
