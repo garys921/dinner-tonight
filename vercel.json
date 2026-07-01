@@ -6,7 +6,7 @@
           { "source": "/dinner.ics", "destination": "/api/calendar" },
           { "source": "/recipe/:slug", "destination": "/api/recipe?slug=:slug" },
           { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-          { "source": "/robots.txt", "destination": "/api/robots" },
+          { "source": "/robots.txt", "destination": "/api/sitemap?robots=1" },
           { "source": "/api/amazon-cart", "destination": "/api/store?service=amazon" },
           { "source": "/api/walmart", "destination": "/api/store?service=walmart" },
           { "source": "/api/freshdirect", "destination": "/api/store?service=freshdirect" },
