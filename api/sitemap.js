@@ -1,9 +1,19 @@
 // GET /sitemap.xml  (rewritten to /api/sitemap) — homepage + every recipe page.
+// GET /robots.txt   (rewritten to /api/sitemap?robots=1) — allow all, point to sitemap.
 import { RECIPES } from '../recipes.js';
 import { slugify } from '../grocery.js';
 
 export default function handler(req, res){
   const base = 'https://' + (req.headers.host || 'dinner-tonight-daily.vercel.app');
+
+  const q = req.query || {};
+  const isRobots = (q.robots != null) || /robots/i.test(req.url || '');
+  if (isRobots){
+    res.setHeader('Content-Type','text/plain; charset=utf-8');
+    res.setHeader('Cache-Control','s-maxage=86400');
+    return res.status(200).send('User-agent: *\nAllow: /\n\nSitemap: ' + base + '/sitemap.xml\n');
+  }
+
   const today = new Date().toISOString().slice(0,10);
   const rows = [`  <url><loc>${base}/</loc><lastmod>${today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>`];
   const seen = new Set();
