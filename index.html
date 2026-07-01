@@ -8,7 +8,7 @@
 <script>(function(){try{var t=localStorage.getItem('dt_theme');if(t!=='dark')document.documentElement.classList.add('theme-light');}catch(e){document.documentElement.classList.add('theme-light');}})();</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Dinner Tonight","url":"https://dinner-tonight-daily.vercel.app/","description":"A new full dinner menu every day, 330+ free recipes you can search by name or by the ingredients you have, a weekly meal planner, and one-tap shopping. No ads, no clutter.","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://dinner-tonight-daily.vercel.app/?q={search_term_string}"},"query-input":"required name=search_term_string"}}</script>
 <meta name="description" content="A new full dinner menu every day — appetizer, main, side and dessert. Tap the button and tonight’s ingredients drop right into your Walmart cart.">
-<meta name="theme-color" content="#16140f">
+<meta name="theme-color" content="#ff6a3d">
 <link rel="canonical" href="https://dinner-tonight-daily.vercel.app/">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='6'%20fill='%2316140f'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='6.5'%20fill='%23c9a14a'/%3E%3Ctext%20x='16'%20y='21'%20font-family='Georgia,serif'%20font-size='10'%20text-anchor='middle'%20fill='%23221d10'%3ED%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20180%20180'%3E%3Crect%20width='180'%20height='180'%20rx='36'%20fill='%2316140f'/%3E%3Ccircle%20cx='90'%20cy='90'%20r='42'%20fill='%23c9a14a'/%3E%3Ctext%20x='90'%20y='110'%20font-family='Georgia,serif'%20font-size='56'%20text-anchor='middle'%20fill='%23221d10'%3ED%3C/text%3E%3C/svg%3E">
@@ -2141,7 +2141,7 @@ function cardHTML(r,i){
     </div>
     <div class="info">
       <div class="cat" style="color:${c.color}">${c.label}</div>
-      <h4>${r.title}</h4>
+      <h4><a href="/recipe/${slugify(r.title)}" onclick="event.preventDefault();return false;" style="color:inherit;text-decoration:none">${r.title}</a></h4>
       <div class="it">${r.it}</div>
       <div class="small">${r.time} · ${r.level} · serves ${r.serves}</div>${macro}${dietBadges(r)?`<div class="badges">${dietBadges(r)}</div>`:''}${mine}
     </div>
