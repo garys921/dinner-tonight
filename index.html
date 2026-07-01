@@ -347,7 +347,8 @@
     /* nav: brand on top, links in a scrollable row below */
     .nav{height:auto;flex-direction:column;align-items:stretch;gap:8px;padding:11px 0}
     .brand{font-size:20px}
-    .nav .links{display:flex;gap:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+    .nav .links{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none}
+    .nav .links::-webkit-scrollbar{display:none}
     .nav .links a{padding:9px 13px;font-size:12.5px;white-space:nowrap;background:var(--panel);border:1px solid var(--line);border-radius:999px;min-height:36px;display:inline-flex;align-items:center}
 
     .hero{padding:30px 0 6px}
@@ -363,10 +364,19 @@
     .mb-actions{flex-direction:column}
     .mb-actions .btn{width:100%;text-align:center}
 
-    .section{padding:26px 0 6px}
+    .section{padding:22px 0 4px}
     .section h2{font-size:22px}
     .course-head h3{font-size:19px}
     .grid{grid-template-columns:1fr;gap:14px}
+    .craving-grid{grid-template-columns:1fr 1fr;gap:10px}
+    .ctile{padding:13px 14px}
+    .ctile .cname{font-size:15px}
+    .filter-chips{gap:6px}
+    .fchip{padding:6px 12px;font-size:12.5px}
+    .search-wrap{margin-top:4px}
+    .pantry{padding:16px 14px}
+    .kitchen-tabs .ktab{padding:9px 14px;font-size:13px}
+    .mp-banner{padding:20px 16px}
 
     /* modal fits the screen */
     .overlay{padding:16px 10px}
